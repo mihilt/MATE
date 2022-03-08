@@ -505,6 +505,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             </TouchableOpacity>
             
         </View>
+        
         <BottomSheet 
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
