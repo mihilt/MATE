@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import Login from "./Screens/Login/Login"; // 로그인 선택(학번, 카카오, ...)화면
+import Main from "./Screens/Main/Main"; // 메인 화면
+import StudendNumberLoginScreen from './Screens/Login/StudendNumberLoginScreen'; // 학번로그인 일경우 학번 로그인 화면으로 전환 
+import SignUpScreen from "./Screens/Login/SignUpScreen"; // 회원가입 페이지
+import ProfileScreen from "./Screens/Profile/ProfileScreen"; // 프로필 화면 페이지
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const Stack = createStackNavigator();
+
+export default class App extends React.Component {
+    
+    render() {
+
+        return (
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{ headerShown: false }}
+            > 
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="StudendNumberLoginScreen" component={StudendNumberLoginScreen} /> 
+              <Stack.Screen name="SignUpScreen" component={SignUpScreen} /> 
+              <Stack.Screen name="Main" component={Main} />
+              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+              
+            </Stack.Navigator>
+          </NavigationContainer>
+        );
+    }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
