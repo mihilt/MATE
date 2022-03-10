@@ -49,6 +49,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     const pressButton = () => {
         setModalVisible(true);
     };
+    
     /*
     지금은 입력창 대신 드롭다운으로 했으므로 일단은 주석으로 남겼다. 
     // 출발지, 도착지, 닉네임, 학과, 텍스트 받을 state
@@ -63,7 +64,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
 
     useEffect (() => {
         Read(); // Firebase의 문서들을 불러온다.
-        //selectCarpoolTicket();
+        selectCarpoolTicket();
         console.log("메인 화면 : ", UserInfo.UserInfo[0]);
     },[]);
 

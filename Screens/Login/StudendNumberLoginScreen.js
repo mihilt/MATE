@@ -6,68 +6,95 @@ import { Input, Button } from 'react-native-elements';
 // firebase db 경로 불러오기
 import { db } from '../../Database/DatabaseConfig/firebase';
 // firebase db read 모듈 불러오기
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocFromCache } from 'firebase/firestore';
 // 회원정보 기본데이터 틀(기반) 불러오기
 import { UserInfo } from '../../Database/Data/User/userInfo';
-
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const StudendNumberLoginScreen = ({navigation}) => {
     const [studentNumber, SetStudentNumber] = useState(''); // 학번
     const [password, SetPassword] = useState(''); // 비밀번호
-    const [signIn, SetSignIn] = useState(false);
+    //const [signIn, setSignIn] = useState(false);
 
-    let readDoc = {}; // firebase에서 읽어온 데이터를 선언 할 변수이다.
-    let userInfoDatas = [];
+    //const [userInfoDatas, setUserInfoDatas] = useState([]);
+
+
+    // let readDoc = {}; // firebase에서 읽어온 데이터를 선언 할 변수이다.
+    // // let userInfoDatas = [];
+
+    // let userInfoDatas = [];
 
     // 회원정보 기본데이터를 UserInfoDefaultData 변수로 선언 (로그인 성공하면 학번, 학과, 이름 값을 넣을 예정 (티켓 생성 할때 유용 할것 같다,))
     const UserInfoDefaultData = UserInfo.UserInfo[0];
 
     // firebase db 회원정보 불러오기, 로그인 기능 포함
-    const Read = () => {
+    /*
+    async function  Read() {
       // 회원정보 문서 db 불러오기
       const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
 
-      getDoc(myDoc)
-      .then((snapshot) => {
-        if (snapshot.exists) {
-          readDoc = snapshot.data();
-          userInfoDatas = readDoc.UserInfo;
-          console.log(userInfoDatas[0]);
-          
-          for (let i = 0; i < userInfoDatas.length; i++) {
-            // 로그인 성공
-            if (userInfoDatas[i].student_number === studentNumber && userInfoDatas[i].password === password) {
-              SetSignIn(true);
-              UserInfoDefaultData.nickname = userInfoDatas[i].nickname;
-              UserInfoDefaultData.student_number = userInfoDatas[i].student_number;
-              UserInfoDefaultData.department = userInfoDatas[i].department;
+      const docSnap =  await getDoc(myDoc);
 
-              console.log("회원정보 기본데이터 값 : ", UserInfoDefaultData);
-            }
-          }
-        }
-      })
-      .catch((error) => alert(error.messeage));
-    }
+      
+        if (docSnap.exists()) {
+          readDoc = docSnap.data();
+          userInfoDatas = readDoc.UserInfo;
+          console.log("회원정보 데이터들 : ", userInfoDatas);
+          
+        //   for (let i = 0; i < userInfoDatas.length; i++) {
+        //     // 로그인 성공
+        //     if (userInfoDatas[i].student_number === studentNumber && userInfoDatas[i].password === password) {
+        //       SetSignIn(true);
+        //       UserInfoDefaultData.nickname = userInfoDatas[i].nickname;
+        //       UserInfoDefaultData.student_number = userInfoDatas[i].student_number;
+        //       UserInfoDefaultData.department = userInfoDatas[i].department;
+
+        //       console.log("회원정보 기본데이터 값 : ", UserInfoDefaultData);
+        //     }
+        //   }
+        // }
+      }
+    }*/
     
-    /*
+    
     // useEffect
     useEffect (() => {
-      Read(); // Firebase의 문서들을 불러온다.
+      console.log("useEffect 호출");
     },[]);
-    */
+    
 
-    /*
+    
     // 로그인 기능 함수
     const SignIn = () => {
-      for (let i = 0; i < userInfoDatas.length; i++) {
-        Read();
-        if (userInfoDatas[i].student_number === studentNumber && userInfoDatas[i].password === password) {
-          SetSignIn(true);
+      //Read();
+      console.log("화원정보 수 : ", UserInfo.userInfoDatas.length)
+      console.log(studentNumber);
+      let signIn = false;
+
+      for (let i = 0; i < UserInfo.userInfoDatas.length; i++) {
+        if (UserInfo.userInfoDatas[i].student_number === studentNumber && UserInfo.userInfoDatas[i].password === password) {
+          
+          // 로그인 성공
+          UserInfoDefaultData.nickname = UserInfo.userInfoDatas[i].nickname;
+          UserInfoDefaultData.student_number = UserInfo.userInfoDatas[i].student_number;
+          UserInfoDefaultData.department = UserInfo.userInfoDatas[i].department;
+
+          console.log("회원정보 기본데이터 값 : ", UserInfoDefaultData);
+          //setSignIn(true);
+          signIn = true;
+
+          console.log(signIn);
+
+          if (signIn === true) {
+            //alert("로그인 성공");
+            navigation.navigate("Main");
+          }
         }
       }
+      if (signIn === false) {
+        alert("학번 또는 비밀번호 잘못 입력 했습니다.");
+      }
     };
-*/
 
     return (
     <View style={styles.container}>
@@ -92,22 +119,19 @@ const StudendNumberLoginScreen = ({navigation}) => {
         onPress={
           () => {
             // 로그인 (학번을 보고 읽어온 회원 db를 하나씩 비교하는 알고리즘으로 설계 하였다.)
-            Read();
-            if (signIn === true) {
-              alert("로그인 성공");
-              navigation.navigate("Main");
-            }
-            else {
-              alert("학번 또는 비밀번호 잘못 입력 했습니다.");
-            }
+            //Read();
+            SignIn();
           }
         } />
-       <Button title='회원가입' style={styles.button} onPress={() => navigation.navigate("SignUpScreen")} />
+
+      <Button title='회원가입' style={styles.button} onPress={() => navigation.navigate("SignUpScreen")} />
+
+      <Button title='데이터 불러오기' style={styles.button} onPress={() => Read()} />
     </View>
   )
 }
 
-export default StudendNumberLoginScreen
+export default StudendNumberLoginScreen;
 
 const styles = StyleSheet.create({
     button: {

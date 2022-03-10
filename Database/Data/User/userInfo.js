@@ -11,7 +11,7 @@ export const UserInfo = {
         }
     ],
 
-    ReadUserInfo : [
+    userInfoDatas : [
 
     ],
 
