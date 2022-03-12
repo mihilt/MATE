@@ -65,6 +65,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     useEffect (() => {
         Read(); // Firebase의 문서들을 불러온다.
         selectCarpoolTicket();
+        showTaxiTicket();
         console.log("메인 화면 : ", UserInfo.UserInfo[0]);
     },[]);
 
@@ -197,148 +198,71 @@ export default function Main({ navigation }) { // 정보 메인 부분
     
     // 티켓을 보여주는 부분(Ticket UI)
     function selectCarpoolTicket() {
-        if (all_selecting === true) { // 전체창 눌렀을때 티켓을 보여주는 부분이다.
-            
-            // 전체 버튼으로 눌렀을경우 택시, 카풀 티켓들을 보여준다.
-            if (userDoc != null) {
-                return ([
-                    userDoc.CarpoolTicket.map(key => (
-                        <View style={{alignItems: "center",}}>
-                          <View style={styles.carpool_text}>
-                            <View style={{flexDirection: "row"}}>
-                                <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
-                                <View style={styles.info_text_container}>
-                                    <Text style={styles.info_text1}>{key.nickname}</Text> 
-                                    <Text style={styles.info_text2}>{key.department}</Text>
-                                </View>
-                    
-                                <View style={styles.info_carpool_container}>
-                                    <Text style={styles.info_carpool_text}>{key.ticket_name}</Text> 
-                                    <View style={styles.pointvar}/>
-                                </View>
-                        
-                                <View>
-                                    <Text style={styles.info_text_local}>{key.depart_area}</Text>
-                                    <Text style={styles.info_time_text}>09:40</Text>
-                                </View>
-                                <View style={styles.count_container}>
-                                    <Text>{(key.recruitment_count+1)}/4</Text>
-                                </View>
-                            </View>
-                            <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
-                                    <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                            </View>
-                          </View>
-                        </View>
-                    )),
-                    userDoc.TaxiTicket.map(key => (
-                        <View style={{alignItems: "center",}}>
-                          <View style={styles.carpool_text}>
-                          <View style={{flexDirection: "row"}}>
-                                <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
-                                <View style={styles.info_text_container}>
-                                    <Text style={styles.info_text1}>{key.nickname}</Text> 
-                                    <Text style={styles.info_text2}>{key.department}</Text>
-                                </View>
-                   
-                                <View style={styles.info_carpool_container}>
-                                    <Text style={styles.info_carpool_text}>{key.ticket_name}</Text> 
-                                    <View style={styles.pointvar}/>
-                                </View>
-                    
-                                <View>
-                                    <Text style={styles.info_text_local}>{key.depart_area}</Text>
-                                    <Text style={styles.info_time_text}>09:40</Text>
-                                </View>
-                                <View style={styles.count_container}>
-                                    <Text>{(key.recruitment_count+1)}/4</Text>
-                                </View>
-                            </View>
-                            <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
-                                <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                            </View>
-                          </View>
-                        </View>
-                    ))
-                ]
 
-                );
-            }
-        }
-        // 카풀 버튼눌렀을 경우 카풀티켓만 보여줌. 
-        else if (carpool_selecting === true) {
-            if (userDoc != null) {
-                return (
-                    userDoc.CarpoolTicket.map(key => (
-                        <View style={{alignItems: "center",}}>
-                          <View style={styles.carpool_text}>
-                              <View style={{flexDirection: "row"}}>
-                                    <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
-                                    <View style={styles.info_text_container}>
-                                        <Text style={styles.info_text1}>{key.nickname}</Text> 
-                                        <Text style={styles.info_text2}>{key.department}</Text>
-                                    </View>
+        if (userDoc != null) {
+            return (
+                userDoc.CarpoolTicket.map(key => (
                     
-                                    <View style={styles.info_carpool_container}>
-                                        <Text style={styles.info_carpool_text}>{key.ticket_name}</Text> 
-                                        <View style={styles.pointvar}/>
-                                    </View>
-                        
-                                    <View>
-                                        <Text style={styles.info_text_local}>{key.depart_area}</Text>
-                                        <Text style={styles.info_time_text}>09:40</Text>
-                                    </View>
-                                    <View style={styles.count_container}>
-                                        <Text>{(key.recruitment_count+1)}/4</Text>
-                                    </View>
-                                </View>
-                                <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
-                                    <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                                </View>
-                          </View>
+                    <View style={styles.ticket_container}> 
+                        <View style={styles.ticket_info}>
+                            <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
+                            <View style={{marginHorizontal: 10, alignItems: 'center'}}>
+                                <Text>{key.nickname}</Text> 
+                                <Text style={{fontSize: 8}}>{key.department}</Text>
+                            </View>
+            
+                            <View style={{marginHorizontal: 12, alignItems: 'center'}}>
+                                <Text>{key.ticket_name}</Text> 
+                                <View style={styles.carpool_pointvar}/>
+                            </View>
+                
+                            <View style={{marginHorizontal: 30, alignItems: 'center'}}>
+                                <Text>{key.depart_area}</Text>
+                                <Text style={{fontSize: 8}}>09:40</Text>
+                            </View>
                         </View>
-                    ))
-                );
-            }
-        }
-        // 택시 버튼 눌렀을 경우 택시 티켓들만 보여준다.
-        else if (taxi_selecting === true) {
-            if (userDoc != null) {
-                return (
-                    userDoc.TaxiTicket.map(key => (
-                        <View style={{alignItems: "center",}}>
-                          <View style={styles.carpool_text}>
-                            <View style={{flexDirection: "row"}}>
-                                <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
-                                <View style={styles.info_text_container}>
-                                    <Text style={styles.info_text1}>{key.nickname}</Text> 
-                                    <Text style={styles.info_text2}>{key.department}</Text>
-                                </View>
-                   
-                                <View style={styles.info_carpool_container}>
-                                    <Text style={styles.info_carpool_text}>{key.ticket_name}</Text> 
-                                    <View style={styles.pointvar}/>
-                                </View>
+                        <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
+                            <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
+                        </View>
+                    </View>
                     
-                                <View>
-                                    <Text style={styles.info_text_local}>{key.depart_area}</Text>
-                                    <Text style={styles.info_time_text}>09:40</Text>
-                                </View>
-                                <View style={styles.count_container}>
-                                    <Text>{(key.recruitment_count+1)}/4</Text>
-                                </View>
-                            </View>
-                            <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
-                                <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                            </View>
-                          </View>
-                        </View>
-                    ))
-                );
-            }
+                ))
+            );
         }
     }
 
+    const showTaxiTicket = () => {
+        if (userDoc != null) {
+            return (
+                userDoc.TaxiTicket.map(key => (
+                    
+                    <View style={styles.ticket_container}>
+                        <View style={styles.ticket_info}>
+                            <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
+                            <View style={{marginHorizontal: 10, alignItems: 'center'}}>
+                                <Text>{key.nickname}</Text> 
+                                <Text style={{fontSize: 8}}>{key.department}</Text>
+                            </View>
+                
+                            <View style={{marginHorizontal: 12, alignItems: 'center'}}>
+                                <Text>{key.ticket_name}</Text> 
+                                <View style={styles.taxi_pointvar}/>
+                            </View>
+                
+                            <View style={{marginHorizontal :30, alignItems: 'center'}}>
+                                <Text>{key.depart_area}</Text>
+                                <Text style={{fontSize: 8}}>09:40</Text>
+                            </View>
+                        </View>
+                        <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
+                            <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
+                        </View>
+                    </View>
+                    
+                ))
+            );
+        }
+    }
   return (
     <View style={styles.container}>
         {/*Title 부분 */}
@@ -346,16 +270,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
             <View style={{justifyContent: 'space-between', flexDirection: 'row',}}>
                 <Text style={styles.text1}>MATE</Text>
                 <View style={{flexDirection: 'row'}}>
-                    <Fontisto style={styles.map_icon} name="map" size={24} color="black" />
                     <Fontisto style={styles.bell_icon} name="bell" size={24} color="black" />
                 </View>
             </View>
-            <View style={{alignItems: 'center', backgroundColor:'white', margin:10, borderRadius: 15}}>
-                
-                {/*시간절약 출력창 부분*/}
-                <View style={{width: 325, borderBottomWidth: 1, borderBottomColor: '#C4C4C4', alignItems: 'center'}}>
-                    <Text style={{fontSize: 40, }}>11,429</Text>
-                </View>
+
+            <View style={{alignItems: 'center', backgroundColor:'white', margin:10, borderRadius: 15, padding: 25, zIndex: 1 }}>
                 
                 <View style={styles.text_input_container}>
                     
@@ -420,72 +339,19 @@ export default function Main({ navigation }) { // 정보 메인 부분
                         }
                     />
                 </View>
-
-                {/*선택 창*/}
-                <View style={styles.selection_container}>
-                    <View style={styles.selection_text}>
-                        {/*전체 선택항목*/}
-                        <View style={styles.selection_text_all}>
-                            <TouchableOpacity onPress={all_select}>
-                                    <Text style={{fontSize: 17, marginLeft: 10,}}>전체</Text>
-                            </TouchableOpacity>
-                            <View style={{...styles.status_bar, backgroundColor: all_selecting ? "#315EFF" : "#C4C4C4"}}/>
-                        </View>
-
-                        <View style={styles.selection_text_carpool}>
-                            <TouchableOpacity onPress={carpool_select}>
-                                <Text style={{ fontSize: 17, marginLeft: 10, }}>카풀</Text>
-                            </TouchableOpacity>
-                            <View style={{...styles.status_bar, backgroundColor: carpool_selecting ? "#315EFF" : "#C4C4C4"}}/>
-                        </View>
-                        <View style={styles.selection_text_taxi}>
-                            <TouchableOpacity onPress={taxi_select}>
-                                <Text style={{ fontSize: 17, marginLeft: 10 }}>택시</Text>
-                            </TouchableOpacity>
-                            <View style={{...styles.status_bar, backgroundColor: taxi_selecting ? "#315EFF" : "#C4C4C4"}}/>
-                        </View>
-                    </View>
-                </View>
             </View>
-            {/*
-            <View style={{alignItems: 'center',}}>
-                <View style={styles.selection_container}>
-                    <View style={styles.selection_text}>
-                        <View style={styles.selection_text_carpool}>
-                            <TouchableOpacity onPress={carpool_select}>
-                                <Text style={{width: 26.42, height: 13.39, fontSize: 17, marginLeft: 10,}}>카풀</Text>
-                            </TouchableOpacity>
-                            <View style={{...styles.status_bar, backgroundColor: carpool_selecting ? "#315EFF" : "#C4C4C4"}}/>
-                        </View>
-                        <View style={styles.selection_text_taxi}>
-                            <TouchableOpacity onPress={taxi_select}>
-                                <Text style={{width: 26.42, height: 13.39, fontSize: 17, marginLeft: 10}}>택시</Text>
-                            </TouchableOpacity>
-                            <View style={{...styles.status_bar, backgroundColor: taxi_selecting ? "#315EFF" : "#C4C4C4"}}/>
-                        </View>
-                        <View style={styles.selection_text_delivery}>
-                            <TouchableOpacity onPress={deliver_select}>
-                                <Text style={{width: 26.42, height: 13.39, fontSize: 17, marginLeft: 10}}>배달</Text>
-                            </TouchableOpacity>
-                            <View style={{...styles.status_bar, backgroundColor: deliver_selecting ? "#315EFF" : "#C4C4C4"}}/>
-                        </View>
-                        <View style={styles.selection_text_bus}>
-                            <TouchableOpacity onPress={bus_select}>
-                                <Text style={{width: 26.42, height: 13.39, fontSize: 17, marginLeft: 10}}>버스</Text>
-                            </TouchableOpacity>
-                            <View style={{...styles.status_bar, backgroundColor: bus_selecting ? "#315EFF" : "#C4C4C4"}}/>
-                        </View>
-                    </View>
-                </View>
-            </View>
-            */}
                 
         </View>
 
         <View style={styles.carpool}>
             <ScrollView horizontal={true}>
-                <View style={{alignItems: "center", flexDirection: "row"}}>
+                <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
                     {selectCarpoolTicket()}
+                </View>
+            </ScrollView>
+            <ScrollView horizontal={true}>
+                <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
+                    {showTaxiTicket()}
                 </View>
             </ScrollView>
         </View>
@@ -499,7 +365,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 <Fontisto name="plus-a" size={24} color="black" style={styles.plus_icon}/>
             </TouchableOpacity>
             
-            <Fontisto name="bookmark" size={24} color="black" style={styles.save_icon}/>
+            <Fontisto name="map" size={24} color="black" style={styles.save_icon}/>
             
             <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
                 <Ionicons name="person-outline" size={24} color="black" style={styles.profile_icon}/>
@@ -521,21 +387,29 @@ const styles = StyleSheet.create({
         backgroundColor: '#E5E5E5',
     },
     search: {
-        flex: 0.4,
+        flex: 0.3,
         backgroundColor: '#315EFF',
         borderBottomLeftRadius: 40,
+        zIndex: 2,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 4,
+            height: 0
+        },
+        shadowOpacity: 0.35,
     },
     carpool: {
-        flex: 0.5,
+        flex: 0.7,
         backgroundColor: '#E5E5E5',
         marginTop: 14,
     },
     footer: {
         flex: 0.1,
         flexDirection: 'row',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: "white",
         alignItems: 'center',
         justifyContent: 'space-between',
+    
     },
     text1: {
         marginLeft: 15,
@@ -579,7 +453,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         marginTop: 8,
-        borderBottomWidth: 1,
         borderBottomColor: '#C4C4C4',
     },
     input_start: {
@@ -622,7 +495,7 @@ const styles = StyleSheet.create({
     },
     
     carpool_text: {
-        paddingHorizontal: 4.3,
+        paddingHorizontal: 30.3,
         paddingVertical: 10.3,
         backgroundColor: '#FFFFFF',
         marginBottom: 14,
@@ -648,8 +521,7 @@ const styles = StyleSheet.create({
         width: 33.8, 
         height: 35.2, 
         borderRadius: 25, 
-        marginTop: 9.9, 
-        marginLeft: 10
+        
     },
     info_text_container: {
         flexDirection: 'column',
@@ -666,8 +538,15 @@ const styles = StyleSheet.create({
     info_carpool_text: {
         fontSize: 18,
     },
-    pointvar: {
+    carpool_pointvar: {
         backgroundColor: '#315EFF',
+        width: 47,
+        height: 4.09,
+        marginTop: 6.17,
+        borderRadius: 10,
+    },
+    taxi_pointvar: {
+        backgroundColor: '#90EE90',
         width: 47,
         height: 4.09,
         marginTop: 6.17,
@@ -709,5 +588,17 @@ const styles = StyleSheet.create({
         marginRight: 20,
         
     },
-
+    ticket_container: {
+        backgroundColor: "#FFFFFF", 
+        width: 340, 
+        marginLeft: 8, 
+        borderWidth: 1, 
+        borderRadius: 15,
+    },
+    ticket_info: {
+        flexDirection: 'row',
+        margin: 5,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
 });
