@@ -12,8 +12,9 @@ import { UserInfo } from '../../Database/Data/User/userInfo';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const StudendNumberLoginScreen = ({navigation}) => {
-    const [studentNumber, SetStudentNumber] = useState(''); // 학번
-    const [password, SetPassword] = useState(''); // 비밀번호
+    const [ studentNumber, SetStudentNumber ] = useState(''); // 학번
+    const [ password, SetPassword ] = useState(''); // 비밀번호
+
     //const [signIn, setSignIn] = useState(false);
 
     //const [userInfoDatas, setUserInfoDatas] = useState([]);
@@ -126,7 +127,6 @@ const StudendNumberLoginScreen = ({navigation}) => {
 
       <Button title='회원가입' style={styles.button} onPress={() => navigation.navigate("SignUpScreen")} />
 
-      <Button title='데이터 불러오기' style={styles.button} onPress={() => Read()} />
     </View>
   )
 }

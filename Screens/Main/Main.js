@@ -20,7 +20,7 @@ import BottomSheet from '../Modal/BottomSheet';
 
 // 드롭 다운
 // 드롭다운 항목들 이다.
-const localList = ["경운대", "인동"] // 선택 할 수 있는 지역
+const localList = ["", "인동"] // 선택 할 수 있는 지역
 
 // 기본 데이터 선언
 // docData : 카풀데이터이며 빈데이터로 구성 되어있다. 
@@ -34,12 +34,12 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // state 영역
     // 버튼 전체, 카풀, 택시 선택 했는지를 state로 선언 하였다.
     const [ all_selecting, setAllSelect ] = useState(false);
-    const [ carpool_selecting, setCarpoolSelect ] = useState(true); // 카풀 선택일때 true, 아니면 false
+    //const [ carpool_selecting, setCarpoolSelect ] = useState(true); // 카풀 선택일때 true, 아니면 false
     const [ taxi_selecting, setTaxiSelect ] = useState(false); //택시 선택일때 true, 아니면 false
     const [ likeButton, setLikeButton ] = useState(0);
     const [ startInputText, setStartInputText ] = useState(''); // 출발지점 입력부분 state 값
     const [ endInputText, setEndInputText ] = useState(''); // 출발지점 입력부분 state 값
-
+    const [ ticket, setTicket ] = useState('');
     // database state 영역
     // firebase 문서로 부터 데이터를 읽으면 userDoc state에 선언 할려고 한다.
     const [ userDoc, setUserDoc ] = useState(null);
@@ -67,7 +67,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
         selectCarpoolTicket();
         showTaxiTicket();
         console.log("메인 화면 : ", UserInfo.UserInfo[0]);
-    },[]);
+    }, []);
 
 
     const sheetRef = React.useRef(null);
@@ -111,10 +111,10 @@ export default function Main({ navigation }) { // 정보 메인 부분
             // userDoc 변수는 firebase 문서의 데이터로 가르키고 있다.
             if (userDoc.Count === 0) {
                 // 카풀, 택시 둘중 하나가 선택일 경우 그중 하나를 티켓이름으로 정한다.
-                if (carpool_selecting === true) {
+                if (ticket === '카풀') {
                     docData.CarpoolTicket[0].ticket_name = "카풀";
                 }
-                else {
+                else if (ticket === '택시') {
                     docData.CarpoolTicket[0].ticket_name = "택시";
                 }
                 docData.CarpoolTicket[0].nickname = "Son";
@@ -137,7 +137,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             }
             else {
                 Read();
-                if (carpool_selecting === true) {
+                if (ticket === '카풀') {
                     docData.CarpoolTicket[0].ticket_name = "카풀";
                     docData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; // 닉네임
                     docData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department // 학과
@@ -149,13 +149,13 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docData.CarpoolTicket[0].recruitment_count = 1;
                     docData.Count = userDoc.Count + 1;
 
-                    updateDoc(myDoc, {"CarpoolTicket": arrayUnion(docData.CarpoolTicket[0]), "Count": userDoc.Count}, {merge: true})
+                    updateDoc(myDoc, {"CarpoolTicket": arrayUnion(docData.CarpoolTicket[0]), "Count": userDoc.Count})
                     .then(() => {
                         alert("Successed Update Ticket");
                     })
                     .catch((error) => alert(error.messeage));
                 }
-                else {
+                else if (ticket === '택시') {
                     docData.CarpoolTicket[0].ticket_name = "택시";
                     docData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; // 닉네임
                     docData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department;  // 학과
@@ -167,9 +167,10 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docData.CarpoolTicket[0].recruitment_count = 1;
                     docData.Count = userDoc.Count + 1;
 
-                    updateDoc(myDoc, {"TaxiTicket": arrayUnion(docData.CarpoolTicket[0]), "Count": userDoc.Count}, {merge: true})
+                    updateDoc(myDoc, {"TaxiTicket": arrayUnion(docData.CarpoolTicket[0]), "Count": userDoc.Count})
                     .then(() => {
                         alert("Successed Update Ticket");
+                        selectCarpoolTicket();
                     })
                     .catch((error) => alert(error.messeage));
                 }
@@ -205,7 +206,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     
                     <View style={styles.ticket_container}> 
                         <View style={styles.ticket_info}>
-                            <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
                             <View style={{marginHorizontal: 10, alignItems: 'center'}}>
                                 <Text>{key.nickname}</Text> 
                                 <Text style={{fontSize: 8}}>{key.department}</Text>
@@ -238,7 +238,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     
                     <View style={styles.ticket_container}>
                         <View style={styles.ticket_info}>
-                            <Image style={styles.info_profile} source={require('../../profile_img1.jpeg')}/>
                             <View style={{marginHorizontal: 10, alignItems: 'center'}}>
                                 <Text>{key.nickname}</Text> 
                                 <Text style={{fontSize: 8}}>{key.department}</Text>
@@ -277,67 +276,13 @@ export default function Main({ navigation }) { // 정보 메인 부분
             <View style={{alignItems: 'center', backgroundColor:'white', margin:10, borderRadius: 15, padding: 25, zIndex: 1 }}>
                 
                 <View style={styles.text_input_container}>
-                    
-                    <SelectDropdown  // 출발지 드롭다운 버튼
-                        data={localList}
-                        defaultValue={localList[0]} // 초기값 설정
-                        onSelect={(selectedLocal, index) => { // 드롭바 내용선택 하게 되면 요소이름, 인덱스 받을수 있다.
-                            console.log(selectedLocal, index);
-                        }}
-                        buttonTextAfterSelection={(selectedLocal, index) => { // 드롭바 내용선택 하게 되면 요소이름, 인덱스 받을수 있다.
-                            // text represented after item is selected
-                            // if data array is an array of objects then return selectedItem.property to render after item is selected
-                            
-                            setStartInputText(selectedLocal); // 클릭시 출발지점 받음
-
-                            return selectedLocal;
-                        }}
-                        rowTextForSelection={(local, index) => { // 선택지를 행으로 보여주게 한다.
-                            // text represented for each item in dropdown
-                            // if data array is an array of objects then return item.property to represent item in dropdown
-                            return local;
-                        }}
-                        buttonStyle={{
-                            width: 130,
-                            borderRadius: 15,
-                            backgroundColor: '#FFFFFF'
-                        }}
-                    />
-                    
-                    <Fontisto  style={{transform:[{ rotate: '90deg'}], marginLeft: 22}}name="plane" size={24} color="black" />
-                    
-                    <SelectDropdown // 도착지 드롭다운 버튼
-                        data={localList}
-                        defaultValue={localList[1]} // 초기값 설정
-                        onSelect={(selectedLocal, index) => { // 드롭바 내용선택 하게 되면 요소이름, 인덱스 받을수 있다.
-                            console.log(selectedLocal, index);
-                        }}
-                        buttonTextAfterSelection={(selectedLocal, index) => { // 드롭바 내용선택 하게 되면 요소이름, 인덱스 받을수 있다.
-                            // text represented after item is selected
-                            // if data array is an array of objects then return selectedItem.property to render after item is selected
-                            
-                            setEndInputText(selectedLocal); // 클릭시 도착지점 받음
-
-                            return selectedLocal;
-                        }}
-                        rowTextForSelection={(local, index) => { // 선택지를 행으로 보여주게 한다.
-                            // text represented for each item in dropdown
-                            // if data array is an array of objects then return item.property to represent item in dropdown
-                            return local;
-                        }}
-                        buttonStyle={
-                            {
-                                borderRadius: 15,
-                                width: 130,
-                                marginHorizontal: 10,
-                                backgroundColor: '#FFFFFF',
-                            }
-                        }
-                        buttonTextStyle={
-                            {
-                            }
-                        }
-                    />
+                    <View>
+                        <Text>{startInputText}</Text>
+                    </View>
+                    <Fontisto  style={{transform:[{ rotate: '90deg'}], marginLeft: 22, marginRight:22}}name="plane" size={24} color="black" />
+                    <View>
+                        <Text>{endInputText}</Text>
+                    </View>
                 </View>
             </View>
                 
@@ -376,7 +321,16 @@ export default function Main({ navigation }) { // 정보 메인 부분
         <BottomSheet 
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
+            startInputText = {startInputText}
+            endInputText = {endInputText}
+            setStartInputText = {setStartInputText}
+            setEndInputText = {setEndInputText}
+            ticket = {ticket}
+            setTicket = {setTicket}
+            Create = {Create}
+            Read = {Read}
         />
+        {console.log("Main 출발지 : ", startInputText)}
     </View>
   );
 }

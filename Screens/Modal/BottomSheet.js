@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     View,
     StyleSheet,
@@ -9,9 +9,12 @@ import {
     Dimensions,
     PanResponder
 } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const BottomSheet = (props) => {
-    const { modalVisible, setModalVisible } = props;
+    const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read} = props;
+    //const [ button, setButton ] = useState(0);
+
     const screenHeight = Dimensions.get("screen").height;
     const panY = useRef(new Animated.Value(screenHeight)).current;
     const translateY = panY.interpolate({
@@ -56,8 +59,55 @@ const BottomSheet = (props) => {
     const closeModal = () => {
         closeBottomSheet.start(()=>{
             setModalVisible(false);
+            Create();
+            Read();
         })
     }
+
+    const setStartLocalSelect = () => {
+        if (button === 1) {
+            setStartInputText('경운대학교');
+            console.log('modal console : ', startInputText);
+            console.log(button);
+        }
+        else if (button === 2) {
+            setStartInputText('인동');
+            console.log('modal console : ', startInputText);
+            console.log(button);
+        }
+        else if (button === 3) {
+            setStartInputText('옥계');
+            console.log('modal console : ', startInputText);
+            console.log(button);
+        }
+        else if (button === 4) {
+            setTicket('카풀');
+        }
+        else if (button === 5) {
+            setTicket('택시');
+        }
+    }
+
+    const setEndLocalSelect = () => {
+        if (button === 1) {
+            setEndInputText('경운대학교');
+            console.log('modal console : ', startInputText);
+            console.log(button);
+        }
+        else if (button === 2) {
+            setEndInputText('인동');
+            console.log('modal console : ', startInputText);
+            console.log(button);
+        }
+        else {
+            setEndInputText('옥계');
+            console.log('modal console : ', startInputText);
+            console.log(button);
+        }
+    }
+
+    const loacte = ['경운대학교', '인동', '옥계']; // 지역 선택 목록들
+    let button = 0;
 
     return (
         <Modal
@@ -76,7 +126,21 @@ const BottomSheet = (props) => {
                     style={{...styles.bottomSheetContainer, transform: [{ translateY: translateY }]}}
                     {...panResponders.panHandlers}
                 >
-                    <Text>This is BottomSheet</Text>   
+                    <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'center', marginRight: 5}}>
+                        <View style={{marginBottom: 10}}><Text>출발지 선택</Text></View>
+                        <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 50, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>경운대학교</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>인동</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>옥계</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>카풀</Text></TouchableOpacity>
+
+                    </View>
+                    <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'center' }}>
+                        <View style={{marginBottom: 10}}><Text>도착지 선택</Text></View>
+                        <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 50, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>경운대학교</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>인동</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>옥계</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { button = 5; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>택시</Text></TouchableOpacity>
+                    </View>
                 </Animated.View>
             </View>
         </Modal>
@@ -99,6 +163,8 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+        flexDirection: 'row'
+        
     }
 })
 

@@ -66,13 +66,10 @@ function Login({ navigation }) {
       <View style={styles.login}>
         <View style={{marginBottom: 15,}}>
           <TouchableOpacity onPress={() => navigation.navigate("StudendNumberLoginScreen")}>
-            <Text style= {{height: 45, paddingHorizontal: 85, paddingVertical: 5,  backgroundColor: "#315EFF", color: "#FFFFFF", fontSize: 30, alignItems: 'center'}}>학번 로그인</Text>
+            <Text style= {{height: 45, paddingHorizontal: 85, paddingVertical: 5,  backgroundColor: "#315EFF", color: "#FFFFFF", fontSize: 30, alignItems: 'center', }}>로그인</Text>
           </TouchableOpacity>
         </View>
         
-        <TouchableOpacity onPress={() => navigation.navigate("Main")}>
-          <Text style= {{height: 45, paddingHorizontal: 72, paddingVertical: 5,  backgroundColor: "#FEE500", fontSize: 30, alignItems: 'center'}}>카카오 로그인</Text>
-        </TouchableOpacity>
       </View>
 
     </View>
@@ -89,6 +86,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#315EFF',
     borderBottomLeftRadius: 64, // borderRadius -> borderBottomLeftRadius, borderTopLeftRadius,...
+    
 
   },
   login: {

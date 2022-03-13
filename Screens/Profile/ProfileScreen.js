@@ -70,7 +70,7 @@ export default function ProfileScreen({navigation})  {
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.profile_info}>
-                    <Image style={styles.profile_img} source={require('../../profile_img1.jpeg')}/>
+                    
                     <Text style={styles.user_name_text}>{UserInfo.UserInfo[0].nickname}</Text>
                     
                 </View>
