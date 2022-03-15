@@ -10,9 +10,8 @@ const CarpoolTicket = {
             "nickname": "",
             "recruitment_count": 0,
             "ticket_name": "카풀",
-        }
+        },
     ],
-    Count: 0,
 };
 
 export { CarpoolTicket };

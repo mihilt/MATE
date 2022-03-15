@@ -12,7 +12,6 @@ const TaxiTicket = {
             "ticket_name": "택시",
         }
     ],
-    Count: 0,
 };
 
 export { TaxiTicket };

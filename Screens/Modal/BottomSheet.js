@@ -12,7 +12,7 @@ import {
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const BottomSheet = (props) => {
-    const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read} = props;
+    const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read, showCarpoolTicket, showTaxiTicket} = props;
     //const [ button, setButton ] = useState(0);
 
     const screenHeight = Dimensions.get("screen").height;
@@ -61,6 +61,9 @@ const BottomSheet = (props) => {
             setModalVisible(false);
             Create();
             Read();
+            Read();
+            showCarpoolTicket();
+            showTaxiTicket();
         })
     }
 

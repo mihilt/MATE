@@ -12,6 +12,7 @@ import { db } from '../../Database/DatabaseConfig/firebase';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 // 기본 데이터 불러오기 (CarpoolTicket, TexiTicket)
 import { CarpoolTicket } from'../../Database/Data/Ticket/carpoolData';
+import { TaxiTicket } from '../../Database/Data/Ticket/taxiData';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
 
@@ -24,7 +25,8 @@ const localList = ["", "인동"] // 선택 할 수 있는 지역
 
 // 기본 데이터 선언
 // docData : 카풀데이터이며 빈데이터로 구성 되어있다. 
-const docData = CarpoolTicket; 
+const docCarpoolData = CarpoolTicket; 
+const docTaxiData = TaxiTicket;
 
 // 회원정보 데이터 (아직 데이터 설계 안되어 있음.)
 //const userDocData = UserInfo;
@@ -42,7 +44,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     const [ ticket, setTicket ] = useState('');
     // database state 영역
     // firebase 문서로 부터 데이터를 읽으면 userDoc state에 선언 할려고 한다.
-    const [ userDoc, setUserDoc ] = useState(null);
+    const [ userDoc, setUserDoc ] = useState([]);
 
     const [ modalVisible, setModalVisible ] = useState(false);
 
@@ -64,7 +66,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
 
     useEffect (() => {
         Read(); // Firebase의 문서들을 불러온다.
-        selectCarpoolTicket();
+        showCarpoolTicket();
         showTaxiTicket();
         console.log("메인 화면 : ", UserInfo.UserInfo[0]);
     }, []);
@@ -72,6 +74,8 @@ export default function Main({ navigation }) { // 정보 메인 부분
 
     const sheetRef = React.useRef(null);
 
+    let carpoolCount = 0;
+    let taxiCount = 0;
 
     // Database Read 부분
     const Read = ()  => {
@@ -90,6 +94,8 @@ export default function Main({ navigation }) { // 정보 메인 부분
             //console.log(snapshot.data());
             setUserDoc(snapshot.data()); // snapshot.data() 호출 되면 CloudDB에 있는 데이터들을 객체로 반환해준다.(console.log(snapshot.data()))
             console.log(snapshot.data());
+            carpoolCount = userDoc.CarpoolCount;
+            taxiCount = userDoc.TaxiCount;
             
         }
           else {
@@ -98,6 +104,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
         })
         .catch((error) => {
           alert(error.message);
+          console.log(myDoc);
         });
     
     };
@@ -109,72 +116,101 @@ export default function Main({ navigation }) { // 정보 메인 부분
 
             // 티켓이 아무것도 없을경우 실행
             // userDoc 변수는 firebase 문서의 데이터로 가르키고 있다.
-            if (userDoc.Count === 0) {
-                // 카풀, 택시 둘중 하나가 선택일 경우 그중 하나를 티켓이름으로 정한다.
-                if (ticket === '카풀') {
-                    docData.CarpoolTicket[0].ticket_name = "카풀";
-                }
-                else if (ticket === '택시') {
-                    docData.CarpoolTicket[0].ticket_name = "택시";
-                }
-                docData.CarpoolTicket[0].nickname = "Son";
-                docData.CarpoolTicket[0].department = "항공소프트웨어공학과"
-                docData.CarpoolTicket[0].arrival_area = startInputText; // 출발지
-                docData.CarpoolTicket[0].depart_area = endInputText; // 도착지
-                docData.CarpoolTicket[0].departure_time = "09:30";
-                docData.CarpoolTicket[0].day = "2022/02/22";
-                docData.CarpoolTicket[0].carpool_id += 1;
-                docData.CarpoolTicket[0].recruitment_count += 1;
-                docData.Count = userDoc.Count + 1;
-
-                setDoc(myDoc, docData, {merge: true})
-                .then(() => {
-                    alert("Successed Make a Ticket");
-                })
-                .catch((error) => {
-                    alert(error.messeage);
-                });
-            }
-            else {
-                Read();
-                if (ticket === '카풀') {
-                    docData.CarpoolTicket[0].ticket_name = "카풀";
-                    docData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; // 닉네임
-                    docData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department // 학과
-                    docData.CarpoolTicket[0].arrival_area = startInputText; // 출발지
-                    docData.CarpoolTicket[0].depart_area = endInputText; // 도착지
-                    docData.CarpoolTicket[0].departure_time = "09:30";
-                    docData.CarpoolTicket[0].day = "2022/02/22";
-                    docData.CarpoolTicket[0].carpool_id = 1000 + userDoc.Count;
-                    docData.CarpoolTicket[0].recruitment_count = 1;
-                    docData.Count = userDoc.Count + 1;
-
-                    updateDoc(myDoc, {"CarpoolTicket": arrayUnion(docData.CarpoolTicket[0]), "Count": userDoc.Count})
-                    .then(() => {
-                        alert("Successed Update Ticket");
-                    })
-                    .catch((error) => alert(error.messeage));
-                }
-                else if (ticket === '택시') {
-                    docData.CarpoolTicket[0].ticket_name = "택시";
-                    docData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; // 닉네임
-                    docData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department;  // 학과
-                    docData.CarpoolTicket[0].arrival_area = startInputText; // 출발지
-                    docData.CarpoolTicket[0].depart_area = endInputText; // 도착지
-                    docData.CarpoolTicket[0].departure_time = "09:30";
-                    docData.CarpoolTicket[0].day = "2022/02/22";
-                    docData.CarpoolTicket[0].carpool_id = 1000 + userDoc.Count;
-                    docData.CarpoolTicket[0].recruitment_count = 1;
-                    docData.Count = userDoc.Count + 1;
-
-                    updateDoc(myDoc, {"TaxiTicket": arrayUnion(docData.CarpoolTicket[0]), "Count": userDoc.Count})
-                    .then(() => {
-                        alert("Successed Update Ticket");
-                        selectCarpoolTicket();
-                    })
-                    .catch((error) => alert(error.messeage));
-                }
+           
+            // 카풀, 택시 둘중 하나가 선택일 경우 그중 하나를 티켓이름으로 정한다.
+            console.log("카풀 : ", userDoc.CarpoolCount);
+            if (userDoc.CarpoolCount === 0) {
                 
+                if (ticket === '카풀') {
+                    carpoolCount = userDoc.CarpoolCount + 1;
+                    docCarpoolData.CarpoolTicket[0].ticket_name = "카풀";
+                    docCarpoolData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; 
+                    docCarpoolData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department; 
+                    docCarpoolData.CarpoolTicket[0].arrival_area = startInputText; // 출발지
+                    docCarpoolData.CarpoolTicket[0].depart_area = endInputText; // 도착지
+                    docCarpoolData.CarpoolTicket[0].departure_time = "09:30";
+                    docCarpoolData.CarpoolTicket[0].day = "2022/02/22";
+                    docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
+                    docCarpoolData.CarpoolTicket[0].recruitment_count += 1;
+                    
+    
+                    setDoc(myDoc, {CarpoolCount : carpoolCount, CarpoolTicket : arrayUnion(docCarpoolData.CarpoolTicket[0]) }, {merge: true})
+                    .then(() => {
+                        alert("Successed Make a Ticket");
+                        Read();
+                    })
+                    .catch((error) => {
+                        alert(error.messeage);
+                    });
+                }
+                else if (ticket === '택시') {
+                    taxiCount = userDoc.TaxiCount + 1;
+                    docTaxiData.TaxiTicket[0].ticket_name = "택시";
+                    docTaxiData.TaxiTicket[0].nickname = UserInfo.UserInfo[0].nickname;
+                    docTaxiData.TaxiTicket[0].department = UserInfo.UserInfo[0].department;
+                    docTaxiData.TaxiTicket[0].arrival_area = startInputText; // 출발지
+                    docTaxiData.TaxiTicket[0].depart_area = endInputText; // 도착지
+                    docTaxiData.TaxiTicket[0].departure_time = "09:30";
+                    docTaxiData.TaxiTicket[0].day = "2022/02/22";
+                    docTaxiData.TaxiTicket[0].carpool_id = 2000 + taxiCount;
+                    docTaxiData.TaxiTicket[0].recruitment_count += 1;
+    
+                    setDoc(myDoc, {TaxiCount : taxiCount, TaxiTicket : arrayUnion(docTaxiData.TaxiTicket[0]) }, {merge: true})
+                    .then(() => {
+                        alert("Successed Make a Ticket");
+                        Read();
+                    })
+                    .catch((error) => {
+                        alert(error.messeage);
+                    });
+                }
+            }
+
+            else {
+                console.log("1이상");
+                if (ticket === '카풀') {
+                    carpoolCount = userDoc.CarpoolCount + 1;
+                    docCarpoolData.CarpoolTicket[0].ticket_name = "카풀";
+                    docCarpoolData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; 
+                    docCarpoolData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department; 
+                    docCarpoolData.CarpoolTicket[0].arrival_area = startInputText; // 출발지
+                    docCarpoolData.CarpoolTicket[0].depart_area = endInputText; // 도착지
+                    docCarpoolData.CarpoolTicket[0].departure_time = "09:30";
+                    docCarpoolData.CarpoolTicket[0].day = "2022/02/22";
+                    docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
+                    docCarpoolData.CarpoolTicket[0].recruitment_count += 1;
+                    
+    
+                    updateDoc(myDoc, {"CarpoolTicket" : arrayUnion(docCarpoolData.CarpoolTicket[0]), "CarpoolCount" : carpoolCount }, {merge : true })
+                    .then(() => {
+                        alert("Successed Make a Ticket");
+                        Read();
+                    })
+                    .catch((error) => {
+                        alert(error.messeage);
+                    });
+                }
+                else if (ticket === '택시') {
+                    taxiCount = userDoc.TaxiCount + 1;
+                    docTaxiData.TaxiTicket[0].ticket_name = "택시";
+                    docTaxiData.TaxiTicket[0].nickname = UserInfo.UserInfo[0].nickname;
+                    docTaxiData.TaxiTicket[0].department = UserInfo.UserInfo[0].department;
+                    docTaxiData.TaxiTicket[0].arrival_area = startInputText; // 출발지
+                    docTaxiData.TaxiTicket[0].depart_area = endInputText; // 도착지
+                    docTaxiData.TaxiTicket[0].departure_time = "09:30";
+                    docTaxiData.TaxiTicket[0].day = "2022/02/22";
+                    docTaxiData.TaxiTicket[0].carpool_id = 2000 + taxiCount;
+                    docTaxiData.TaxiTicket[0].recruitment_count += 1;
+    
+                    updateDoc(myDoc, { "TaxiTicket" : arrayUnion(docTaxiData.TaxiTicket[0]), "TaxiCount" : taxiCount }, {merge : true})
+                    .then(() => {
+                        alert("Successed Make a Ticket");
+                        Read();
+                    })
+                    .catch((error) => {
+                        alert(error.messeage);
+                    });
+                }
             }
 
         }
@@ -198,11 +234,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
     };
     
     // 티켓을 보여주는 부분(Ticket UI)
-    function selectCarpoolTicket() {
+    function showCarpoolTicket() {
 
-        if (userDoc != null) {
+        if (userDoc.CarpoolCount > 0) {
             return (
-                userDoc.CarpoolTicket.map(key => (
+                userDoc.CarpoolTicket.slice(0).reverse().map(key => (
                     
                     <View style={styles.ticket_container}> 
                         <View style={styles.ticket_info}>
@@ -232,9 +268,9 @@ export default function Main({ navigation }) { // 정보 메인 부분
     }
 
     const showTaxiTicket = () => {
-        if (userDoc != null) {
+        if (userDoc.CarpoolCount > 0) {
             return (
-                userDoc.TaxiTicket.map(key => (
+                userDoc.TaxiTicket.slice(0).reverse().map(key => (
                     
                     <View style={styles.ticket_container}>
                         <View style={styles.ticket_info}>
@@ -273,17 +309,17 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 </View>
             </View>
 
-            <View style={{alignItems: 'center', backgroundColor:'white', margin:10, borderRadius: 15, padding: 25, zIndex: 1 }}>
+            <View style={{alignItems: 'center', justifyContent: 'space-between', backgroundColor:'#FFFFFF', margin:10, borderRadius: 15, padding: 25, zIndex: 1,flexDirection:'row' }}>
                 
-                <View style={styles.text_input_container}>
-                    <View>
-                        <Text>{startInputText}</Text>
+                
+                    <View style={{width:100, alignItems: 'center'}}>
+                        <Text style={{fontSize: 20}}>{startInputText}</Text>
                     </View>
-                    <Fontisto  style={{transform:[{ rotate: '90deg'}], marginLeft: 22, marginRight:22}}name="plane" size={24} color="black" />
-                    <View>
-                        <Text>{endInputText}</Text>
+                    <Fontisto  style={{transform:[{ rotate: '90deg'}],}}name="plane" size={24} color="black" />
+                    <View style={{width:100, alignItems:'center'}}>
+                        <Text style={{fontSize: 20}}>{endInputText}</Text>
                     </View>
-                </View>
+                
             </View>
                 
         </View>
@@ -291,7 +327,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
         <View style={styles.carpool}>
             <ScrollView horizontal={true}>
                 <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
-                    {selectCarpoolTicket()}
+                    {showCarpoolTicket()}
                 </View>
             </ScrollView>
             <ScrollView horizontal={true}>
@@ -329,6 +365,8 @@ export default function Main({ navigation }) { // 정보 메인 부분
             setTicket = {setTicket}
             Create = {Create}
             Read = {Read}
+            showCarpoolTicket = {showCarpoolTicket}
+            showTaxiTicket = {showTaxiTicket}
         />
         {console.log("Main 출발지 : ", startInputText)}
     </View>
