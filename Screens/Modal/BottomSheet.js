@@ -59,7 +59,6 @@ const BottomSheet = (props) => {
     const closeModal = () => {
         closeBottomSheet.start(()=>{
             setModalVisible(false);
-            Create();
             Read();
             Read();
             showCarpoolTicket();
@@ -129,21 +128,35 @@ const BottomSheet = (props) => {
                     style={{...styles.bottomSheetContainer, transform: [{ translateY: translateY }]}}
                     {...panResponders.panHandlers}
                 >
-                    <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'center', marginRight: 5}}>
-                        <View style={{marginBottom: 10}}><Text>출발지 선택</Text></View>
-                        <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 50, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>경운대학교</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>인동</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>옥계</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>카풀</Text></TouchableOpacity>
+                    <View style={{flexDirection: 'row', borderBottomWidth: 2, paddingBottom: 5,}}>
+                        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'center', marginRight: 5}}>
+                            <View style={{marginBottom: 10}}><Text>출발지 선택</Text></View>
+                            <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 50, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>경운대학교</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>인동</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>옥계</Text></TouchableOpacity>
 
+                        </View>
+                        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'center' }}>
+                            <View style={{marginBottom: 10}}><Text>도착지 선택</Text></View>
+                            <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 50, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>경운대학교</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>인동</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>옥계</Text></TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={{flexDirection: 'column', justifyContent: 'center', alignItems:'center' }}>
-                        <View style={{marginBottom: 10}}><Text>도착지 선택</Text></View>
-                        <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 50, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>경운대학교</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>인동</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>옥계</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => { button = 5; setStartLocalSelect();}} style={{backgroundColor: 'green', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text>택시</Text></TouchableOpacity>
+
+                    <View style={{flexDirection: 'column', marginTop: 5}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginHorizontal: 2}}><Text style={{color: 'white'}}>카풀</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 5; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginHorizontal: 2}}><Text style={{color: 'white'}}>택시</Text></TouchableOpacity>
+                        </View>
                     </View>
+
+                    <View style={{ marginTop: 5}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity onPress={() => { button = 4; Create(); closeModal(); alert("티켓 생성 하였습니다.");}} style={{backgroundColor: '#315EFF', paddingHorizontal: 70, paddingVertical: 10, borderRadius: 10, marginHorizontal: 2}}><Text style={{color: 'white'}}>확인</Text></TouchableOpacity>
+                        </View>
+                    </View>
+
                 </Animated.View>
             </View>
         </Modal>
@@ -163,10 +176,10 @@ const styles = StyleSheet.create({
         height: 300,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "white",
+        backgroundColor: 'white',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
-        flexDirection: 'row'
+    
         
     }
 })

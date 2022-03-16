@@ -18,6 +18,7 @@ import { UserInfo } from'../../Database/Data/User/userInfo';
 
 import Animated from 'react-native-reanimated';
 import BottomSheet from '../Modal/BottomSheet';
+import TicketBottomSheet from '../Modal/TicketBottomSheet';
 
 // 드롭 다운
 // 드롭다운 항목들 이다.
@@ -46,11 +47,19 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // firebase 문서로 부터 데이터를 읽으면 userDoc state에 선언 할려고 한다.
     const [ userDoc, setUserDoc ] = useState([]);
 
+    // '+'아이콘 티켓생성 state
     const [ modalVisible, setModalVisible ] = useState(false);
+    // 티켓 클릭 할시 state
+    const [ ticketModalVisible, setTicketModalVisible ] = useState(false);
 
     const pressButton = () => {
         setModalVisible(true);
     };
+
+    // 티켓을 클릭하면 모달창으로 상세 정보 보여주제 한다.
+    const pressTicket = () => {
+        setTicketModalVisible(true);
+    }
     
     /*
     지금은 입력창 대신 드롭다운으로 했으므로 일단은 주석으로 남겼다. 
@@ -136,7 +145,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
     
                     setDoc(myDoc, {CarpoolCount : carpoolCount, CarpoolTicket : arrayUnion(docCarpoolData.CarpoolTicket[0]) }, {merge: true})
                     .then(() => {
-                        alert("Successed Make a Ticket");
                         Read();
                     })
                     .catch((error) => {
@@ -183,7 +191,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
     
                     updateDoc(myDoc, {"CarpoolTicket" : arrayUnion(docCarpoolData.CarpoolTicket[0]), "CarpoolCount" : carpoolCount }, {merge : true })
                     .then(() => {
-                        alert("Successed Make a Ticket");
                         Read();
                     })
                     .catch((error) => {
@@ -204,7 +211,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
     
                     updateDoc(myDoc, { "TaxiTicket" : arrayUnion(docTaxiData.TaxiTicket[0]), "TaxiCount" : taxiCount }, {merge : true})
                     .then(() => {
-                        alert("Successed Make a Ticket");
                         Read();
                     })
                     .catch((error) => {
@@ -240,27 +246,29 @@ export default function Main({ navigation }) { // 정보 메인 부분
             return (
                 userDoc.CarpoolTicket.slice(0).reverse().map(key => (
                     
-                    <View style={styles.ticket_container}> 
-                        <View style={styles.ticket_info}>
-                            <View style={{marginHorizontal: 10, alignItems: 'center'}}>
-                                <Text>{key.nickname}</Text> 
-                                <Text style={{fontSize: 8}}>{key.department}</Text>
-                            </View>
-            
-                            <View style={{marginHorizontal: 12, alignItems: 'center'}}>
-                                <Text>{key.ticket_name}</Text> 
-                                <View style={styles.carpool_pointvar}/>
-                            </View>
+                    <TouchableOpacity onPress={() => pressTicket()}>
+                        <View style={styles.ticket_container}> 
+                            <View style={styles.ticket_info}>
+                                <View style={{marginHorizontal: 10, alignItems: 'center'}}>
+                                    <Text>{key.nickname}</Text> 
+                                    <Text style={{fontSize: 8}}>{key.department}</Text>
+                                </View>
                 
-                            <View style={{marginHorizontal: 30, alignItems: 'center'}}>
-                                <Text>{key.depart_area}</Text>
-                                <Text style={{fontSize: 8}}>09:40</Text>
+                                <View style={{marginHorizontal: 12, alignItems: 'center'}}>
+                                    <Text>{key.ticket_name}</Text> 
+                                    <View style={styles.carpool_pointvar}/>
+                                </View>
+                    
+                                <View style={{marginHorizontal: 30, alignItems: 'center'}}>
+                                    <Text>{key.depart_area}</Text>
+                                    <Text style={{fontSize: 8}}>09:40</Text>
+                                </View>
+                            </View>
+                            <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
+                                <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
                             </View>
                         </View>
-                        <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
-                            <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                        </View>
-                    </View>
+                    </TouchableOpacity>
                     
                 ))
             );
@@ -271,29 +279,31 @@ export default function Main({ navigation }) { // 정보 메인 부분
         if (userDoc.CarpoolCount > 0) {
             return (
                 userDoc.TaxiTicket.slice(0).reverse().map(key => (
+                    <TouchableOpacity
+                        onPress={() => pressTicket()}
+                    >
+                        <View style={styles.ticket_container}>
+                            <View style={styles.ticket_info}>
+                                <View style={{marginHorizontal: 10, alignItems: 'center'}}>
+                                    <Text>{key.nickname}</Text> 
+                                    <Text style={{fontSize: 8}}>{key.department}</Text>
+                                </View>
                     
-                    <View style={styles.ticket_container}>
-                        <View style={styles.ticket_info}>
-                            <View style={{marginHorizontal: 10, alignItems: 'center'}}>
-                                <Text>{key.nickname}</Text> 
-                                <Text style={{fontSize: 8}}>{key.department}</Text>
+                                <View style={{marginHorizontal: 12, alignItems: 'center'}}>
+                                    <Text>{key.ticket_name}</Text> 
+                                    <View style={styles.taxi_pointvar}/>
+                                </View>
+                    
+                                <View style={{marginHorizontal :30, alignItems: 'center'}}>
+                                    <Text>{key.depart_area}</Text>
+                                    <Text style={{fontSize: 8}}>09:40</Text>
+                                </View>
                             </View>
-                
-                            <View style={{marginHorizontal: 12, alignItems: 'center'}}>
-                                <Text>{key.ticket_name}</Text> 
-                                <View style={styles.taxi_pointvar}/>
-                            </View>
-                
-                            <View style={{marginHorizontal :30, alignItems: 'center'}}>
-                                <Text>{key.depart_area}</Text>
-                                <Text style={{fontSize: 8}}>09:40</Text>
+                            <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
+                                <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
                             </View>
                         </View>
-                        <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
-                            <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                        </View>
-                    </View>
-                    
+                    </TouchableOpacity>
                 ))
             );
         }
@@ -313,11 +323,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 
                 
                     <View style={{width:100, alignItems: 'center'}}>
-                        <Text style={{fontSize: 20}}>{startInputText}</Text>
+                        <Text style={{fontSize: 20}}>{startInputText === '' ? '출발지' : startInputText}</Text>
                     </View>
                     <Fontisto  style={{transform:[{ rotate: '90deg'}],}}name="plane" size={24} color="black" />
                     <View style={{width:100, alignItems:'center'}}>
-                        <Text style={{fontSize: 20}}>{endInputText}</Text>
+                        <Text style={{fontSize: 20}}>{endInputText === '' ? '도착지' :  endInputText}</Text>
                     </View>
                 
             </View>
@@ -326,9 +336,12 @@ export default function Main({ navigation }) { // 정보 메인 부분
 
         <View style={styles.carpool}>
             <ScrollView horizontal={true}>
+                
                 <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
                     {showCarpoolTicket()}
                 </View>
+                
+
             </ScrollView>
             <ScrollView horizontal={true}>
                 <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
@@ -369,6 +382,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
             showTaxiTicket = {showTaxiTicket}
         />
         {console.log("Main 출발지 : ", startInputText)}
+
+        <TicketBottomSheet  
+            ticketModalVisible={ticketModalVisible}
+            setTicketModalVisible={setTicketModalVisible}
+        />
     </View>
   );
 }
