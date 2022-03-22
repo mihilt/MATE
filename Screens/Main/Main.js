@@ -52,13 +52,18 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // 티켓 클릭 할시 state
     const [ ticketModalVisible, setTicketModalVisible ] = useState(false);
 
+    // 티켓 삭제 구현 할때 사용 한다.
+    const [ data, setData ] = useState();
+
     const pressButton = () => {
         setModalVisible(true);
     };
 
     // 티켓을 클릭하면 모달창으로 상세 정보 보여주제 한다.
-    const pressTicket = () => {
+    const pressTicket = (key) => {
         setTicketModalVisible(true);
+        //console.log("티켓 누름 Key : ", key);
+        setData(key);
     }
     
     /*
@@ -86,6 +91,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     let carpoolCount = 0;
     let taxiCount = 0;
 
+    const index = 0;
     // Database Read 부분
     const Read = ()  => {
         // Reading Doc
@@ -140,7 +146,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docCarpoolData.CarpoolTicket[0].departure_time = "09:30";
                     docCarpoolData.CarpoolTicket[0].day = "2022/02/22";
                     docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
-                    docCarpoolData.CarpoolTicket[0].recruitment_count += 1;
+                    docCarpoolData.CarpoolTicket[0].recruitment_count = 1;
                     
     
                     setDoc(myDoc, {CarpoolCount : carpoolCount, CarpoolTicket : arrayUnion(docCarpoolData.CarpoolTicket[0]) }, {merge: true})
@@ -161,7 +167,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docTaxiData.TaxiTicket[0].departure_time = "09:30";
                     docTaxiData.TaxiTicket[0].day = "2022/02/22";
                     docTaxiData.TaxiTicket[0].carpool_id = 2000 + taxiCount;
-                    docTaxiData.TaxiTicket[0].recruitment_count += 1;
+                    docTaxiData.TaxiTicket[0].recruitment_count = 1;
     
                     setDoc(myDoc, {TaxiCount : taxiCount, TaxiTicket : arrayUnion(docTaxiData.TaxiTicket[0]) }, {merge: true})
                     .then(() => {
@@ -186,7 +192,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docCarpoolData.CarpoolTicket[0].departure_time = "09:30";
                     docCarpoolData.CarpoolTicket[0].day = "2022/02/22";
                     docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
-                    docCarpoolData.CarpoolTicket[0].recruitment_count += 1;
+                    docCarpoolData.CarpoolTicket[0].recruitment_count = 1;
                     
     
                     updateDoc(myDoc, {"CarpoolTicket" : arrayUnion(docCarpoolData.CarpoolTicket[0]), "CarpoolCount" : carpoolCount }, {merge : true })
@@ -207,7 +213,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docTaxiData.TaxiTicket[0].departure_time = "09:30";
                     docTaxiData.TaxiTicket[0].day = "2022/02/22";
                     docTaxiData.TaxiTicket[0].carpool_id = 2000 + taxiCount;
-                    docTaxiData.TaxiTicket[0].recruitment_count += 1;
+                    docTaxiData.TaxiTicket[0].recruitment_count = 1;
     
                     updateDoc(myDoc, { "TaxiTicket" : arrayUnion(docTaxiData.TaxiTicket[0]), "TaxiCount" : taxiCount }, {merge : true})
                     .then(() => {
@@ -245,8 +251,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
         if (userDoc.CarpoolCount > 0) {
             return (
                 userDoc.CarpoolTicket.slice(0).reverse().map(key => (
-                    
-                    <TouchableOpacity onPress={() => pressTicket()}>
+                    <TouchableOpacity onPress={() => pressTicket(key)}>
                         <View style={styles.ticket_container}> 
                             <View style={styles.ticket_info}>
                                 <View style={{marginHorizontal: 10, alignItems: 'center'}}>
@@ -264,8 +269,9 @@ export default function Main({ navigation }) { // 정보 메인 부분
                                     <Text style={{fontSize: 8}}>09:40</Text>
                                 </View>
                             </View>
-                            <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
+                            <View style={{flexDirection: "row", justifyContent: 'center', alignItems: 'center'}}>
                                 <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
+                                <View style={{backgroundColor:'#315EFF', width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: '#FFFFFF'}}>{key.recruitment_count}/4</Text></View>
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -276,11 +282,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
     }
 
     const showTaxiTicket = () => {
-        if (userDoc.CarpoolCount > 0) {
+        if (userDoc.TaxiCount > 0) {
             return (
                 userDoc.TaxiTicket.slice(0).reverse().map(key => (
                     <TouchableOpacity
-                        onPress={() => pressTicket()}
+                        onPress={() => pressTicket(key)}
                     >
                         <View style={styles.ticket_container}>
                             <View style={styles.ticket_info}>
@@ -386,6 +392,15 @@ export default function Main({ navigation }) { // 정보 메인 부분
         <TicketBottomSheet  
             ticketModalVisible={ticketModalVisible}
             setTicketModalVisible={setTicketModalVisible}
+            userDoc={userDoc}
+            setUserDoc={setUserDoc}
+            data={data}
+            setData={setData}
+            showCarpoolTicket={showCarpoolTicket}
+            showTaxiTicket={showTaxiTicket}
+            Read={Read}
+            carpoolCount={carpoolCount}
+            UserInfo={UserInfo}
         />
     </View>
   );
