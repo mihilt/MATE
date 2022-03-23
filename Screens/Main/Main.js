@@ -305,9 +305,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
                                     <Text style={{fontSize: 8}}>09:40</Text>
                                 </View>
                             </View>
-                            <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
+                            <View style={{flexDirection: "row", justifyContent: 'center', alignItems: 'center'}}>
                                 <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
+                                <View style={{backgroundColor:'#315EFF', width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: '#FFFFFF'}}>{key.recruitment_count}/4</Text></View>
                             </View>
+                            
                         </View>
                     </TouchableOpacity>
                 ))

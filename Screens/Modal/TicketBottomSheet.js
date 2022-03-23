@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { db } from '../../Database/DatabaseConfig/firebase';
-import { doc, updateDoc, FieldValue, arrayRemove, serverTimestamp, arrayUnion } from 'firebase/firestore';
+import { doc, updateDoc, FieldValue, arrayRemove, serverTimestamp, arrayUnion, setDoc } from 'firebase/firestore';
 import {
     View,
     StyleSheet,
@@ -115,13 +115,38 @@ const TicketBottomSheet = (props) => {
     const addRecruitment = () => {
         if ((data.ticket_name === '카풀') && (UserInfo.UserInfo[0].nickname != data.nickname)) {
             const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
-            console.log('ticket : ', data);
-            data.recruitment_count += 1;
             
-            updateDoc(myDoc, {CarpoolTicket : arrayUnion(data)});
-            alert('탑승인원 추가 하였습니다.');
-            Read();
-            showCarpoolTicket();
+            //console.log('ticket : ', data);
+            if (data.recruitment_count < 4) {
+                
+                updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
+                data.recruitment_count += 1;
+            
+                updateDoc(myDoc, {CarpoolTicket : arrayUnion(data)});
+                alert('탑승인원 추가 하였습니다.');
+                Read();
+                showCarpoolTicket();
+            } else {
+                alert('탑승인원 초과 했습니다.');
+            }
+            
+        }
+        else if ((data.ticket_name === '택시') && (UserInfo.UserInfo[0].nickname != data.nickname)) {
+            const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
+            
+            //console.log('ticket : ', data);
+            if (data.recruitment_count < 4) {
+
+                updateDoc(myDoc, { TaxiTicket : arrayRemove(data) });
+                data.recruitment_count += 1;
+            
+                updateDoc(myDoc, {TaxiTicket : arrayUnion(data)});
+                alert('탑승인원 추가 하였습니다.');
+                Read();
+                showCarpoolTicket();
+            } else {
+                alert('탑승인원 초과 했습니다.');
+            }
         }
     }
 
