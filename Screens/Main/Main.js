@@ -1,6 +1,6 @@
 // 모듈 불러오는 부분
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, TextInput, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, RefreshControl } from "react-native";
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -46,14 +46,14 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // database state 영역
     // firebase 문서로 부터 데이터를 읽으면 userDoc state에 선언 할려고 한다.
     const [ userDoc, setUserDoc ] = useState([]);
-
     // '+'아이콘 티켓생성 state
     const [ modalVisible, setModalVisible ] = useState(false);
     // 티켓 클릭 할시 state
     const [ ticketModalVisible, setTicketModalVisible ] = useState(false);
-
     // 티켓 삭제 구현 할때 사용 한다.
     const [ data, setData ] = useState();
+    // 옆으로 당긴면 refresh true 아니면 false
+    const [ refresh, setRefresh ] = useState(false); 
 
     const pressButton = () => {
         setModalVisible(true);
@@ -228,22 +228,17 @@ export default function Main({ navigation }) { // 정보 메인 부분
         }
     }
 
-    const all_select = () => { // 전체 선택을 눌렀을 때 호출
-        setAllSelect(true);
-        setCarpoolSelect(false);
-        setTaxiSelect(false);
-    };
+    // runningRefresh 옆으로 당기면 refresh state를 true로 아니면 false
+    const runningRefresh = () => {
+        setRefresh(true);
 
-    const carpool_select = () => { // 카풀 선택 추후 최적화 할 예정 (delay 문제 생김)
-        setAllSelect(false);
-        setCarpoolSelect(true); 
-        setTaxiSelect(false)
-    };
-    const taxi_select = () => { // 택시 선택
-        setAllSelect(false);
-        setCarpoolSelect(false);
-        setTaxiSelect(true)
-    };
+        setTimeout(() => {
+            Read();
+            showCarpoolTicket();
+            showTaxiTicket();
+            setRefresh(false);
+        }, 4000);
+    }
     
     // 티켓을 보여주는 부분(Ticket UI)
     function showCarpoolTicket() {
@@ -343,18 +338,17 @@ export default function Main({ navigation }) { // 정보 메인 부분
         </View>
 
         <View style={styles.carpool}>
-            <ScrollView horizontal={true}>
-                
-                <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
-                    {showCarpoolTicket()}
-                </View>
-                
-
-            </ScrollView>
-            <ScrollView horizontal={true}>
-                <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
-                    {showTaxiTicket()}
-                </View>
+            <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={() => runningRefresh()}/>}>
+                <ScrollView style={{marginTop:15, marginBottom: 20}} horizontal={true}>
+                    <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
+                        {showCarpoolTicket()}
+                    </View>
+                </ScrollView>
+                <ScrollView horizontal={true}>
+                    <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
+                        {showTaxiTicket()}
+                    </View>
+                </ScrollView>
             </ScrollView>
         </View>
 
