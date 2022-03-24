@@ -1,0 +1,8 @@
+npm install react-native-select-dropdown
+npm install react-native-elements
+npm install @react-navigation/stack
+npm install @react-navigation/native
+npm install firebase@9.6.7 (버전!!!)
+npm install reanimated-bottom-sheet
+npm install react-native-reanimated react-native-gesture-handler
+npm i react-native-onboarding-swiper
