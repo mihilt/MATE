@@ -22,6 +22,10 @@ const TicketBottomSheet = (props) => {
     // 자기가 만든 티켓을 삭제할때 사용할 state이다.
     const [ deleted, setDeleted ] = useState(false);
 
+    // 수정 할때 사용할 state 출발지, 도착지
+    const [arrivalText, setArrivalText] = useState('');
+    const [departText, setDepartText] = useState('');
+
     const screenHeight = Dimensions.get("screen").height;
     const panY = useRef(new Animated.Value(screenHeight)).current;
     const translateY = panY.interpolate({
@@ -150,6 +154,85 @@ const TicketBottomSheet = (props) => {
         }
     }
 
+    // 출발지, 도착지수정 실행 하는 함수
+    const setArrivalUpdate = (btn_id) => {
+        // btn_id : 1 경운대학교, btn_id : 2 인동, btn_id : 3 옥계
+        if (btn_id === 1) {
+            setArrivalText('경운대학교');
+        } else if (btn_id === 2) {
+            setArrivalText('인동');
+        } else if (btn_id === 3) {
+            setArrivalText('옥계');
+        }
+    }
+
+    const setDepartUpdate = (btn_id) => {
+        // btn_id : 1 경운대학교, btn_id : 2 인동, btn_id : 3 옥계
+        if (btn_id === 1) {
+            setDepartText('경운대학교');
+        } else if (btn_id === 2) {
+            setDepartText('인동');
+        } else if (btn_id === 3) {
+            setDepartText('옥계');
+        }
+    }
+
+    const setUpdate = () => {
+        if ((data.ticket_name === '카풀') && (UserInfo.UserInfo[0].nickname === data.nickname)) {
+            const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
+            
+            //console.log('ticket : ', data);
+            updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
+            data.arrival_area = arrivalText;
+            data.depart_area = departText;
+            updateDoc(myDoc, {CarpoolTicket : arrayUnion(data)});
+            alert('수정 하였습니다.');
+            Read();
+            showCarpoolTicket();
+        }
+        else if ((data.ticket_name === '택시') && (UserInfo.UserInfo[0].nickname === data.nickname)) {
+            const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
+            
+            updateDoc(myDoc, { TaxiTicket : arrayRemove(data) });
+            data.arrival_area = arrivalText;
+            data.depart_area = departText;
+            updateDoc(myDoc, {TaxiTicket : arrayUnion(data)});
+            alert('수정 하였습니다.');
+            Read();
+            showTaxiTicket();
+        }
+
+    }
+
+    // 수정 모드 : 수정을 출발지, 도착지만 수정 하겠다.
+    const updateTextDisplay = () => {
+    
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+                <Text style={{fontSize: 22}}>수정 하기</Text>
+                <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
+                    <Text style={{marginRight: 15, marginLeft: 25}}>출발지 선택</Text>
+                    <Fontisto name="arrow-right-l" size={24} color="black" />
+                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginLeft: 10, marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setArrivalUpdate(1)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>경운대학교</Text></TouchableOpacity>
+                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setArrivalUpdate(2)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>인동</Text></TouchableOpacity>
+                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setArrivalUpdate(3)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>옥계</Text></TouchableOpacity>
+
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
+                    <Text style={{marginRight: 10, }}>도착지 선택</Text>
+                    <Fontisto name="arrow-right-l" size={24} color="black" />
+                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginLeft: 10, marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setDepartUpdate(1)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>경운대학교</Text></TouchableOpacity>
+                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setDepartUpdate(2)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>인동</Text></TouchableOpacity>
+                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setDepartUpdate(3)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>옥계</Text></TouchableOpacity>
+                </View>
+                <View style={{marginTop: 20, backgroundColor: '#315EFF', padding: 10, paddingHorizontal: 20, borderRadius: 13}}>
+                    <TouchableOpacity onPress={() => setUpdate()}><Text style={{fontSize: 20, color: '#FFFFFF'}}>수정</Text></TouchableOpacity>
+                </View>
+            </View>
+             
+        );    
+    }
+
     return (
         <Modal
             visible={ticketModalVisible}
@@ -167,14 +250,23 @@ const TicketBottomSheet = (props) => {
                     style={{...styles.bottomSheetContainer, transform: [{ translateY: translateY }]}}
                     {...panResponders.panHandlers}
                 >
+                    <View style={{flex: 0.45, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <Text style={{fontSize: 22, marginLeft: 150}}>티켓 정보</Text>
+                        <View style={{marginRight: 20}}>
+                            <TouchableOpacity onPress={ticketDelete}>
+                                <View>
+                                    {(deleted) ? <Fontisto name="trash" size={24} color="black" />: null}
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+                        <Text style={{fontSize: 15, marginRight: 10}}>탑승 하기</Text>
+                        <Fontisto style={{marginRight: 20}} name="arrow-right-l" size={24} color="black" />
+                        <TouchableOpacity onPress={addRecruitment}><Fontisto style={{marginRight: 120}} name="car" size={35} color="black" /></TouchableOpacity>
+                    </View>
                     <View>
-                        <Text>티켓 정보</Text>
-                        <TouchableOpacity onPress={addRecruitment}><Text>탑승 하기</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={ticketDelete}>
-                            <View>
-                                {(deleted) ? <Fontisto name="trash" size={24} color="black" />: null}
-                            </View>
-                        </TouchableOpacity>
+                        {(deleted) ? updateTextDisplay() : null}
                     </View>
 
                 </Animated.View>
@@ -194,8 +286,8 @@ const styles = StyleSheet.create({
     },
     bottomSheetContainer: {
         height: 300,
-        justifyContent: "center",
-        alignItems: "center",
+        // justifyContent: "center",
+        // alignItems: "center",
         backgroundColor: 'white',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,

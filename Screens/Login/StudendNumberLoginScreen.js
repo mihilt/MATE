@@ -27,7 +27,7 @@ const StudendNumberLoginScreen = ({navigation}) => {
 
     // 회원정보 기본데이터를 UserInfoDefaultData 변수로 선언 (로그인 성공하면 학번, 학과, 이름 값을 넣을 예정 (티켓 생성 할때 유용 할것 같다,))
     const UserInfoDefaultData = UserInfo.UserInfo[0];
-
+    console.log('회원정보 확인 : ', UserInfoDefaultData);
     // firebase db 회원정보 불러오기, 로그인 기능 포함
     /*
     async function  Read() {
@@ -70,9 +70,11 @@ const StudendNumberLoginScreen = ({navigation}) => {
       //Read();
       console.log("화원정보 수 : ", UserInfo.userInfoDatas.length)
       console.log(studentNumber);
+      console.log(password)
       let signIn = false;
 
       for (let i = 0; i < UserInfo.userInfoDatas.length; i++) {
+        console.log(UserInfo.userInfoDatas[i].student_number);
         if (UserInfo.userInfoDatas[i].student_number === studentNumber && UserInfo.userInfoDatas[i].password === password) {
           
           // 로그인 성공
@@ -91,6 +93,7 @@ const StudendNumberLoginScreen = ({navigation}) => {
             navigation.navigate("Main");
           }
         }
+        console.log(signIn);
       }
       if (signIn === false) {
         alert("학번 또는 비밀번호 잘못 입력 했습니다.");

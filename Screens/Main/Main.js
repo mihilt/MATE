@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     taxi_pointvar: {
-        backgroundColor: '#90EE90',
+        backgroundColor: '#8bc34a',
         width: 47,
         height: 4.09,
         marginTop: 6.17,

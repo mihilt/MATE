@@ -10,7 +10,7 @@ import { UserInfo } from '../../Database/Data/User/userInfo';
 import { db } from '../../Database/DatabaseConfig/firebase';
 
 // firebase doc 읽기, 생성, 업로드 관련 모듈 불러오기
-import { doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
 
 export default function SignUpScreen({navigation}) {
     
@@ -25,6 +25,43 @@ export default function SignUpScreen({navigation}) {
     // userInfoDoc변수에 UserInfo 기본데이터를 선언한다.
     const userInfoDoc = UserInfo.UserInfo[0];
 
+    let readDoc = {}; // firebase에서 읽어온 데이터를 선언 할 변수이다.
+    
+    let userInfoDatas = [];
+
+    // firebase db 회원정보 불러오기, 로그인 기능 포함
+    async function  Read() {
+    // 회원정보 문서 db 불러오기
+        const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
+    
+        const docSnap =  await getDoc(myDoc);
+    
+        
+        if (docSnap.exists()) {
+            readDoc = docSnap.data();
+            userInfoDatas = readDoc.UserInfo;
+            console.log("회원정보 데이터들 : ", userInfoDatas);
+            UserInfo.userInfoDatas = userInfoDatas;
+            console.log("Read 성공 : ", UserInfo.userInfoDatas);
+            
+        //   for (let i = 0; i < userInfoDatas.length; i++) {
+        //     // 로그인 성공
+        //     if (userInfoDatas[i].student_number === studentNumber && userInfoDatas[i].password === password) {
+        //       SetSignIn(true);
+        //       UserInfoDefaultData.nickname = userInfoDatas[i].nickname;
+        //       UserInfoDefaultData.student_number = userInfoDatas[i].student_number;
+        //       UserInfoDefaultData.department = userInfoDatas[i].department;
+    
+        //       console.log("회원정보 기본데이터 값 : ", UserInfoDefaultData);
+        //     }
+        //   }
+        // }
+    
+        // 보안성 취약 
+    
+        
+        }
+    }
     // 회원가입 버튼 클릭했을때 호출 하는 함수.
     // Firebase UserInfo 문서에 회원정보 기본데이터를 생성할려고 한다.
 
@@ -55,7 +92,7 @@ export default function SignUpScreen({navigation}) {
             SetNickname("");
             SetResidence("");
             SetEmail("");
-
+            Read();
             // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
             navigation.navigate("StudendNumberLoginScreen");
         })
