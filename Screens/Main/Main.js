@@ -1,6 +1,6 @@
 // 모듈 불러오는 부분
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Image } from "react-native";
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +16,6 @@ import { TaxiTicket } from '../../Database/Data/Ticket/taxiData';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
 
-import Animated from 'react-native-reanimated';
 import BottomSheet from '../Modal/BottomSheet';
 import TicketBottomSheet from '../Modal/TicketBottomSheet';
 
@@ -339,6 +338,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
 
         <View style={styles.carpool}>
             <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={() => runningRefresh()}/>}>
+                <ScrollView horizontal={true}>
+                    <Image style={{ marginLeft: 3, width: 120, height: 130, borderRadius: 12}}source={require('../../assets/mate_icon.png')}/>
+                    <Image style={{ marginLeft: 10, width: 120, height: 130, borderRadius: 12}}source={require('../../assets/delivery_icon.png')}/>
+                    <Image style={{ marginLeft: 10, width: 120, height: 130, borderRadius: 12}}source={require('../../assets/ikw_icon.png')}/>
+                </ScrollView>
                 <ScrollView style={{marginTop:15, marginBottom: 20}} horizontal={true}>
                     <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
                         {showCarpoolTicket()}
