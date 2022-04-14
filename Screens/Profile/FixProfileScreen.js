@@ -1,3 +1,4 @@
+// 프로필 수정 화면
 import React, { useState, useEffect }from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput } from 'react-native';
 // 아이콘(원격주소)
@@ -8,23 +9,24 @@ import { db } from '../../Database/DatabaseConfig/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
-import { useIsFocused } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
-export default function ProfileScreen({navigation})  {
 
-    const [text, setText] = useState('');
+export default function FixProfileScreen({navigation})  {
 
-    const isFocused = useIsFocused();
-    
+    const [ text, setText ] = useState('');
+    // Refresh
+    const [ refresh, setRefresh ] = useState(false);
+
     useEffect(() => {
         Read();
-        
     }, []);
 
     useEffect(() => {
         Read();
-        console.log(`status_message 변함 : ${UserInfo.UserInfo[0]}`);
-    }, [isFocused]);
+        console.log(UserInfo.UserInfo[0]);
+    }, [UserInfo.UserInfo[0].status_message]);
+
     // firebase로 불러온 정보를 선언(가리키고자)하고자 한다.
     let readUserDoc;
     // 사용자 티켓들 
@@ -83,7 +85,25 @@ export default function ProfileScreen({navigation})  {
     // 상태메시지 입력 버튼
     const setStatusMessageButton = () => {
         UserInfo.UserInfo[0].status_message = text;
+        console.log(`상태메시지 : ${UserInfo.UserInfo[0].status_message}`);
+        //onRefresh();
+        //navigation.navigate('ProfileScreen');
+        navigation.dispatch( CommonActions.goBack()); 
+
     }
+
+    
+    // 새로고침
+    
+    const wait = timeout => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    };
+    
+    const onRefresh = React.useCallback(() => {
+        console.log(`새로고침 실행`);
+        setRefresh(true);
+        wait(2000).then(() => setRefresh(false));
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -95,9 +115,14 @@ export default function ProfileScreen({navigation})  {
                             <Text style={styles.user_name_text}>{UserInfo.UserInfo[0].nickname}</Text>
                         </View>
                         <View style={{marginVertical: 15, borderBottomWidth: 2}}>
-                            <Text>{UserInfo.UserInfo[0].status_message === '' ? '상태메시지' : UserInfo.UserInfo[0].status_message}</Text>
+                            <TextInput 
+                                value={text}
+                                onChangeText={(value) => {onChangeText(value)}}
+                                placeholder="상태 메세지"
+                            />
                         </View>
-                    
+
+                        
                         <View style={styles.button}>
                             <TouchableOpacity 
                                 style={
@@ -112,9 +137,9 @@ export default function ProfileScreen({navigation})  {
                                         borderWidth: 4,
                                     }
                                 }
-                                onPress={() => {navigation.navigate('FixProfileScreen'); console.log('복귀 하였습니다.')}}
+                                onPress={setStatusMessageButton}
                             >
-                                <Text style={{width: 100, color: "#FFFFFF", fontSize: 14}}>프로필 편집하기</Text>
+                                <Text style={{color: "#FFFFFF", fontSize: 14}}>수정 완료</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity 

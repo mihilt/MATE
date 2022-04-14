@@ -1,5 +1,6 @@
 // 학번로그인 -> 회원가입 버튼 클릭하면 회원가입 페이지 화면으로 넘어간다.
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity} from "react-native";
+import SelectDropdown from 'react-native-select-dropdown'; // dropdown 모듈 불러오기
 import { Input } from 'react-native-elements';
 import React, { useState } from 'react';
 
@@ -11,6 +12,7 @@ import { db } from '../../Database/DatabaseConfig/firebase';
 
 // firebase doc 읽기, 생성, 업로드 관련 모듈 불러오기
 import { doc, setDoc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
+import { TextInput } from "react-native";
 
 export default function SignUpScreen({navigation}) {
     
@@ -20,7 +22,7 @@ export default function SignUpScreen({navigation}) {
     const [ department, SetDepartment ] = useState(""); // 학과
     const [ nickname, SetNickname ] = useState(""); // 성명
     const [ residence, SetResidence ] = useState(""); // 거주지
-    const [ email, SetEmail ] = useState(""); // 계정
+    const [ keyword, setKeyword ] = useState(""); // 키워드
 
     // userInfoDoc변수에 UserInfo 기본데이터를 선언한다.
     const userInfoDoc = UserInfo.UserInfo[0];
@@ -28,6 +30,9 @@ export default function SignUpScreen({navigation}) {
     let readDoc = {}; // firebase에서 읽어온 데이터를 선언 할 변수이다.
     
     let userInfoDatas = [];
+
+    // residenct 거주지 목록들이다. ex) 인동, 옥계, 기숙사
+    const residence_list = [ '인동', '옥계', '기숙사' ];
 
     // firebase db 회원정보 불러오기, 로그인 기능 포함
     async function  Read() {
@@ -70,33 +75,41 @@ export default function SignUpScreen({navigation}) {
         userInfoDoc.student_number = studentNumber; // 학번
         userInfoDoc.department = department; // 학과
         userInfoDoc.grade = grade; // 학년
-        userInfoDoc.email = email; // 계정
         userInfoDoc.residence = residence; // 거주지
         userInfoDoc.password = password; // 비밀번호
+        userInfoDoc.keyword = keyword;
 
         // myDoc 변수는 컬랙션 아디이 경로에 문서 아이디(UserInfo)로 가르킨다.
         // doc(firebase경로, 컬렉션 아이디, 문서 아이디)
         const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
+        if (nickname != "" && studentNumber != "" && department != "" && grade != "" && residence != "" && password != "") {
+            if (password.length >= 8) {
+                setDoc(myDoc, {"UserInfo": arrayUnion(userInfoDoc)}, {merge: true})
+                .then(() => {
+                    // 회원가입 성공 할 경우 실행한다.
+                    alert("Successed Sign Up");
 
-        setDoc(myDoc, {"UserInfo": arrayUnion(userInfoDoc)}, {merge: true})
-        .then(() => {
-            // 회원가입 성공 할 경우 실행한다.
-            alert("Successed Sign Up");
-
-            // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
-            // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
-            SetStudentNumber(""); 
-            SetPassword(0);
-            SetGrade(0);
-            SetDepartment("");
-            SetNickname("");
-            SetResidence("");
-            SetEmail("");
-            Read();
-            // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
-            navigation.navigate("StudendNumberLoginScreen");
-        })
-        .catch((error) => alert(error.messeage));
+                    // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
+                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
+                    SetStudentNumber(""); 
+                    SetPassword(0);
+                    SetGrade(0);
+                    SetDepartment("");
+                    SetNickname("");
+                    SetResidence("");
+                    setKeyword("");
+                    Read();
+                    // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
+                    navigation.navigate("StudendNumberLoginScreen");
+                })
+                .catch((error) => alert(error.messeage));
+            } else {
+                alert("비밀번호 8글자 이상.");
+            }
+            
+        } else {
+            alert("입력을 안한 항목이 있습니다.");
+        }
 
 
     };
@@ -150,21 +163,40 @@ export default function SignUpScreen({navigation}) {
                         value={password}
                         onChangeText={Text => SetPassword(Text)}
                         secureTextEntry //글자를 ***로 변경해줌
+
                     />
-                    
+                    <View>
+                        <Text style={{marginLeft: 10, fontSize: 16, color: 'grey'}}>거주지</Text>
+                        <View style={{marginLeft: 10}}>
+                            <SelectDropdown 
+                                data={residence_list}
+                                defaultButtonText={"거주지 선택하시오.(인동, 옥계, 기숙사)"}
+                                onSelect={(selectedItem, index) => {
+                                    console.log(selectedItem, index);
+                                    SetResidence(selectedItem);
+                                }}
+                                buttonTextAfterSelection={(selectedItem, index) => {
+                                    // text represented after item is selected
+                                    // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                    return selectedItem
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    // text represented for each item in dropdown
+                                    // if data array is an array of objects then return item.property to represent item in dropdown
+                                    return item
+                                }}
+                                buttonStyle={{width: 355}}
+                            />
+                        </View>
+                    </View>
+
+    
                     <Input
-                        placeholder='거주지를 입력해 주세요'
-                        label="거주지"
-                        leftIcon={{ type: 'material', name: 'home'}} 
-                        value={residence}
-                        onChangeText={Text => SetResidence(Text)}
-                    />
-                    <Input
-                        placeholder='계정을 입력해 주세요'
-                        label="계정"
+                        placeholder='키워드를 입력해 주세요'
+                        label="키워드"
                         leftIcon={{ type: 'material', name: 'email'}} 
-                        value={email}
-                        onChangeText={Text => SetEmail(Text)}
+                        value={keyword}
+                        onChangeText={Text => setKeyword(Text)}
                     />
                 </View>
             </ScrollView>

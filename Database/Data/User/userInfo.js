@@ -7,7 +7,8 @@ export const UserInfo = {
             student_number: 0, // 학번
             department: "", // 학과
             residence: "", // 거주지( 예를들어 인동, 옥계, 대구, 기숙사 )
-            email: "", // 유저 계정
+            status_message: "", // 상태메세지
+            keyword: "", // 키워드
         }
     ],
 
