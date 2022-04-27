@@ -15,12 +15,33 @@ export const UserInfo = {
 
         {
             nickname: "", // 성명
-            auth: "", // 카풀인지 택시인지 카풀이면 티켓 생성 09시까지 가능
+            student_number: 0, // 학번
+            department: "", // 학과
+            auth: "캬풀", // 카풀인지 택시인지 카풀이면 티켓 생성 09시까지 가능
+            status_message: "driver", // 상태메세지
         }
     ],
 
-    userInfoDatas : [
-
+    // 프로필 사용
+    Pesinger : [
+        {
+            nickname: "", // 성명
+            student_number: "", // 학번
+            department: "", // 학과
+            status_message: "", // 상태메세지
+            //keyword: "", // 키워드
+            auth: "",
+        },
     ],
+    Driver : [
+        {
+            nickname: "", // 성명
+            student_number: "", // 학번
+            department: "", // 학과
+            status_message: "", // 상태메세지
+            //keyword: "", // 키워드
+            auth: "",
+        },
+    ]
 
 };

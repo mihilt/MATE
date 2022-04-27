@@ -14,6 +14,10 @@ import { db } from '../../Database/DatabaseConfig/firebase';
 import { doc, setDoc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
 import { TextInput } from "react-native";
 
+// 뒤로가기 아이콘
+import { Ionicons } from '@expo/vector-icons'; 
+
+
 export default function SignUpScreen({navigation}) {
     
     // 버튼에서 패신저 클릭하면 성명, 학번, 학과 입력창 나오며, 드라이버 클릭하면 학과 입력창 안나옴. 
@@ -26,11 +30,14 @@ export default function SignUpScreen({navigation}) {
 
     // userInfoDoc변수에 UserInfo 기본데이터를 선언한다.
     const pesingerData = UserInfo.UserInfo[0];
+    const driverData = UserInfo.UserInfo[0];
+    // 프로필 작업
+    const pesinger = UserInfo.Pesinger;
+    const driver = UserInfo.Pesinger;
 
     let readDoc = {}; // firebase에서 읽어온 데이터를 선언 할 변수이다.
     
-    let userInfoDatas = [];
-
+    //let userInfoDatas = [];
     // firebase db 회원정보 불러오기, 로그인 기능 포함
     async function  Read() {
     // 회원정보 문서 db 불러오기
@@ -42,9 +49,8 @@ export default function SignUpScreen({navigation}) {
         if (docSnap.exists()) {
             readDoc = docSnap.data();
             PesingerInfoDatas = readDoc.PesingerInfo;
-            console.log("회원정보 데이터들 : ", PesingerInfoDatas);
-            UserInfo.userInfoDatas = userInfoDatas;
-            console.log("Read 성공 : ", UserInfo.userInfoDatas);
+            // console.log("패신저 데이터들 : ", PesingerInfoDatas);
+            // UserInfo.userInfoDatas = userInfoDatas;
             
         //   for (let i = 0; i < userInfoDatas.length; i++) {
         //     // 로그인 성공
@@ -67,36 +73,80 @@ export default function SignUpScreen({navigation}) {
     // 회원가입 버튼 클릭했을때 호출 하는 함수.
     // Firebase UserInfo 문서에 회원정보 기본데이터를 생성할려고 한다.
 
-    const PesingerInfoCreate = () => {
-        pesingerData.nickname = nickname; // 성명
-        pesingerData.student_number = studentNumber; // 학번
-        pesingerData.department = department; // 학과
+    const UserInfoCreate = () => {
+        // pesingerData.nickname = nickname; // 성명
+        // pesingerData.student_number = studentNumber; // 학번
+        // pesingerData.department = department; // 학과
+        // pesingerData.auth = button; // 드라이버, 패신저
         //pesingerData.keyword = keyword;
 
         // myDoc 변수는 컬랙션 아디이 경로에 문서 아이디(UserInfo)로 가르킨다.
         // doc(firebase경로, 컬렉션 아이디, 문서 아이디)
-        const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
-        if (nickname != "" && studentNumber != "" && department != "") {
-            
-            setDoc(myDoc, {"PesingerInfo": arrayUnion(pesingerData)}, {merge: true})
-            .then(() => {
-                // 회원가입 성공 할 경우 실행한다.
-                alert("Successed Sign Up");
+        if (button === 'driver') {
+            driverData.nickname = nickname; // 성명
+            driverData.student_number = studentNumber; // 학번
+            driverData.department = department; // 학과
+            driverData.auth = button; // 드라이버, 패신저
 
-                // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
-                // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
-                SetStudentNumber(""); 
-                SetDepartment("");
-                SetNickname("");
-                Read();
-                // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
-                navigation.navigate("StudendNumberLoginScreen");
-            })
-            .catch((error) => alert(error.messeage)); 
+            const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
+            if (nickname != "" && studentNumber != "" && department != "") {
+                
+                setDoc(myDoc, {"DriverInfo": arrayUnion(driverData)}, {merge: true})
+                .then(() => {
+                    // 회원가입 성공 할 경우 실행한다.
+                    alert("Successed Sign Up");
+    
+                    // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
+                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
+                    SetStudentNumber(""); 
+                    SetDepartment("");
+                    SetNickname("");
+                    driver[0].name = nickname;
+                    driver[0].student_number = studentNumber;
+                    driver[0].department = department;
+                    driver[0].auth = button;
+                    //console.log('드라이버 : ', driver[0]);
+                    Read();
+                    // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
+                    navigation.navigate("StudendNumberLoginScreen");
+                })
+                .catch((error) => alert(error.messeage)); 
+            } else {
+                alert("입력을 안한 항목이 있습니다.");
+            }
         } else {
-            alert("입력을 안한 항목이 있습니다.");
-        }
+            pesingerData.nickname = nickname; // 성명
+            pesingerData.student_number = studentNumber; // 학번
+            pesingerData.department = department; // 학과
+            pesingerData.auth = button; // 드라이버, 패신저
 
+            const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
+            if (nickname != "" && studentNumber != "" && department != "") {
+                
+                setDoc(myDoc, {"PesingerInfo": arrayUnion(pesingerData)}, {merge: true})
+                .then(() => {
+                    // 회원가입 성공 할 경우 실행한다.
+                    alert("Successed Sign Up");
+    
+                    // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
+                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
+                    SetStudentNumber(""); 
+                    SetDepartment("");
+                    SetNickname("");
+                    pesinger[0].name = nickname;
+                    pesinger[0].student_number = studentNumber;
+                    pesinger[0].department = department;
+                    pesinger[0].auth = button;
+                    //console.log('드라이버 : ', driver[0]);
+                    Read();
+                    // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
+                    navigation.navigate("StudendNumberLoginScreen");
+                })
+                .catch((error) => alert(error.messeage)); 
+            } else {
+                alert("입력을 안한 항목이 있습니다.");
+            }
+        }
     };
 
 
@@ -118,7 +168,7 @@ export default function SignUpScreen({navigation}) {
     const DriverBtn = () => {
         return (
           <Pressable
-            style={[{width: 140, height: 55, borderRadius: 29, justifyContent: 'center', alignItems: 'center', marginRight: 20},
+            style={[{width: 140, height: 55, borderRadius: 29, justifyContent: 'center', alignItems: 'center', marginRight: 10},
               {backgroundColor: DriverColorChagneBtn()},
             ]}
             onPress={() => {
@@ -132,7 +182,7 @@ export default function SignUpScreen({navigation}) {
     const PesingerBtn = () => {
         return (
           <Pressable
-            style={[{width: 140, height: 55, borderRadius: 29, justifyContent: 'center', alignItems: 'center', marginRight: 20},
+            style={[{width: 140, height: 55, borderRadius: 29, justifyContent: 'center', alignItems: 'center', marginLeft: 10},
               {backgroundColor: PesingerColorChangeBtn()},
             ]}
             onPress={() => {
@@ -145,49 +195,57 @@ export default function SignUpScreen({navigation}) {
     };
     return (
         <View style={styles.container}>
+             <TouchableOpacity 
+                onPress={() => navigation.navigate("StudendNumberLoginScreen")}
+            >
+                <View style={{marginTop: '12%', marginLeft:'5%', width: '10%' }}>
+                    <Ionicons name="arrow-back" size={35} color="black" />
+                </View>
+            </TouchableOpacity>
             <View style={styles.header}>
                 <View style={styles.title}>
-                    <Text style={styles.title_text}>MATE 회원가입</Text>
+                    <Text style={styles.title_text}>회원가입</Text>
                 </View>
             </View>
 
-            <ScrollView style={styles.inputContainer}>
-                <View>
-                    <Input
-                        placeholder='성명을 입력해 주세요'
-                        label="성명"
-                        leftIcon={{ type: 'material', name: 'school'}}   //name: 에 알맞는 명령어 입력시 아이콘 변경됨
-                        value={nickname}
-                        onChangeText={Text => SetNickname(Text)}
-                    />
+            <View style={styles.input_container}>
+                
+                <Input
+                    placeholder='이름'
+                    value={nickname}
+                    onChangeText={Text => SetNickname(Text)}
+                    containerStyle={{width: '85%', marginRight: 10}}
+                />
 
-                    <Input
-                        placeholder='학번을 입력해 주세요'
-                        label="학번"
-                        leftIcon={{ type: 'material', name: 'school'}}   //name: 에 알맞는 명령어 입력시 아이콘 변경됨
-                        value={studentNumber}
-                        onChangeText={Text => SetStudentNumber(Text)}
-                    />
-
-                 
-                    <Input placeholder='학과를 입력해 주세요' label="학과" leftIcon={{ type: 'material', name: 'school'}} value={department} onChangeText={Text => SetDepartment(Text)}/>
-
-                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                        {DriverBtn()}
-                        {PesingerBtn()}
-                    </View>
+                <Input
+                    placeholder='학번'
+                    value={studentNumber}
+                    onChangeText={Text => SetStudentNumber(Text)}
+                    containerStyle={{width: '85%', marginRight: 10}}
+                />
+                <Input 
+                    placeholder='학과'
+                    value={department}
+                    onChangeText={Text => SetDepartment(Text)}
+                    containerStyle={{width: '85%', marginRight: 10}}
+                />
+                
+                <View style={styles.select_button_container}>
+                    {DriverBtn()}
+                    {PesingerBtn()}
                 </View>
-            </ScrollView>
+            </View>
+            
 
             <View style={styles.button_container}>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
-                        PesingerInfoCreate();
+                        UserInfoCreate();
                     }}
                 > 
                     <View>
-                        <Text style={{color: '#FFFFFF', fontSize: 24}}>Sign Up</Text>
+                        <Text style={{color: '#FFFFFF', fontSize: 24}}>가입완료</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -202,11 +260,10 @@ const styles = StyleSheet.create(
             
         },
         header: {
-            flex: 0.2,
-            backgroundColor: '#315EFF',
+            flexDirection: 'row', // 중심축 변경
+            flex: 0.25,
             justifyContent: 'center',
             alignItems: 'center',
-            borderBottomLeftRadius: 30,
         },
 
         title: {
@@ -214,14 +271,24 @@ const styles = StyleSheet.create(
         },
 
         title_text: {
-            fontSize: 30,
+            fontSize: 32,
             fontWeight: 'bold',
-            color: '#FFFFFF',
+            color: 'black',
         },
 
-        inputContainer: {
-            flex: 1,
-            marginTop: 10,
+        input_container: {
+            flex: 0.8,
+            justifyContent: 'center',
+            alignItems: 'center',
+            
+        },
+
+        select_button_container: {
+            flex: 0.5,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            
         },
 
         button_container: {
