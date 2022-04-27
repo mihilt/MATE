@@ -1,6 +1,6 @@
 // 모듈 불러오는 부분
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Image, ImageBackground } from "react-native";
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -313,37 +313,57 @@ export default function Main({ navigation }) { // 정보 메인 부분
   return (
     <View style={styles.container}>
         {/*Title 부분 */}
-        <View style={styles.search}>
-            <View style={{justifyContent: 'space-between', flexDirection: 'row',}}>
-                <Text style={styles.text1}>MATE</Text>
-                <View style={{flexDirection: 'row'}}>
-                    <Fontisto style={styles.bell_icon} name="bell" size={24} color="black" />
-                </View>
+        <ImageBackground style={{flex: 0.3, width: '100%', height: 200}} source={require('../../assets/mate_main.jpeg')} imageStyle={{borderBottomLeftRadius: 40}}>
+            <View style={{height: 200, width: 190,justifyContent: 'flex-end', marginLeft: 10, paddingBottom: 20}}>
+                <Text style={{fontSize: '32px', color: '#FFFFFF', fontWeight: 'bold'}}>MATE</Text>
+                <Text style={{fontSize: '13px', color: '#FFFFFF', fontWeight: 'bold'}}>오늘은 어떤 만남을 하시겠어요?</Text>
             </View>
-
-            <View style={{alignItems: 'center', justifyContent: 'space-between', backgroundColor:'#FFFFFF', margin:10, borderRadius: 15, padding: 25, zIndex: 1,flexDirection:'row' }}>
-                
-                
-                    <View style={{width:100, alignItems: 'center'}}>
-                        <Text style={{fontSize: 20}}>{startInputText === '' ? '출발지' : startInputText}</Text>
-                    </View>
-                    <Fontisto  style={{transform:[{ rotate: '90deg'}],}}name="plane" size={24} color="black" />
-                    <View style={{width:100, alignItems:'center'}}>
-                        <Text style={{fontSize: 20}}>{endInputText === '' ? '도착지' :  endInputText}</Text>
-                    </View>
-                
-            </View>
-                
-        </View>
+        </ImageBackground>
 
         <View style={styles.carpool}>
+            
+            <View style={{
+                backgroundColor: '#FFFFFF', 
+                width: 350, marginLeft: 10, 
+                marginBottom: 10, 
+                borderRadius: 15, 
+                shadowColor: '#000',
+                shadowOffset: { width: 1, height: 1 },
+                shadowOpacity: 0.6,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: 'row',
+                alignItems: 'center'}}
+            >
+                <Text style={{fontSize: '23px', padding: 25, color: 'rgba(0, 0, 0, 0.5)'}}>카풀 티켓 생성</Text>
+                <TouchableOpacity onPress={pressButton}>
+                    <Image style={{width: 35, height: 35, marginLeft: 100}} source={require('../../assets/arrow_icon.png')}/>
+                </TouchableOpacity>
+                
+            </View>
+        
+        
+            <View style={{
+                backgroundColor: '#FFFFFF', 
+                width: 350, 
+                marginLeft: 10, 
+                borderRadius: 15,
+                shadowColor: '#000',
+                shadowOffset: { width: 1, height: 1 },
+                shadowOpacity: 0.6,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: 'row',
+                alignItems: 'center'}}
+            >
+                <Text style={{fontSize: '23px', padding: 25, color: 'rgba(0, 0, 0, 0.5)'}}>택시 티켓 생성</Text>
+                <TouchableOpacity onPress={pressButton}>
+                    <Image style={{width: 35, height: 35, marginLeft: 100}} source={require('../../assets/arrow_icon.png')}/>
+                </TouchableOpacity>
+            </View>
+            
             <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={() => runningRefresh()}/>}>
-                <ScrollView horizontal={true}>
-                    <Image style={{ marginLeft: 3, width: 120, height: 130, borderRadius: 12}}source={require('../../assets/mate_icon.png')}/>
-                    <Image style={{ marginLeft: 10, width: 120, height: 130, borderRadius: 12}}source={require('../../assets/delivery_icon.png')}/>
-                    <Image style={{ marginLeft: 10, width: 120, height: 130, borderRadius: 12}}source={require('../../assets/ikw_icon.png')}/>
-                </ScrollView>
-                <ScrollView style={{marginTop:15, marginBottom: 20}} horizontal={true}>
+                <ScrollView style={{marginTop:15, marginBottom: 4}} horizontal={true}>
                     <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
                         {showCarpoolTicket()}
                     </View>
@@ -424,9 +444,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.35,
     },
     carpool: {
-        flex: 0.7,
+        flex: 0.75,
         backgroundColor: '#E5E5E5',
-        marginTop: 14,
     },
     footer: {
         flex: 0.1,

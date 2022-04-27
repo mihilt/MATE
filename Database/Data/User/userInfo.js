@@ -1,14 +1,21 @@
 // 회원정보 가본 데아터 구성
 export const UserInfo = {
     UserInfo : [
+        // 0 인덱스는 패신저
+        // 1 인덱스는 드라이버
+
         {
             nickname: "", // 성명
-            grade: "", // 학년
             student_number: 0, // 학번
             department: "", // 학과
-            residence: "", // 거주지( 예를들어 인동, 옥계, 대구, 기숙사 )
             status_message: "", // 상태메세지
-            keyword: "", // 키워드
+            //keyword: "", // 키워드
+            auth: "pesinger",
+        },
+
+        {
+            nickname: "", // 성명
+            auth: "", // 카풀인지 택시인지 카풀이면 티켓 생성 09시까지 가능
         }
     ],
 

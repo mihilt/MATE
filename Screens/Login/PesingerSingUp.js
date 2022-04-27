@@ -170,7 +170,7 @@ export default function SignUpScreen({navigation}) {
                     />
 
                  
-                    <Input placeholder='학과를 입력해 주세요' label="학과" leftIcon={{ type: 'material', name: 'school'}} value={department} onChangeText={Text => SetDepartment(Text)}/>
+                    {button === 'pesinger' ? <Input placeholder='학과를 입력해 주세요' label="학과" leftIcon={{ type: 'material', name: 'school'}} value={department} onChangeText={Text => SetDepartment(Text)}/> : null}
 
                     <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                         {DriverBtn()}

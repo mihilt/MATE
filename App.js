@@ -8,7 +8,6 @@ import StudendNumberLoginScreen from './Screens/Login/StudendNumberLoginScreen';
 import SignUpScreen from "./Screens/Login/SignUpScreen"; // 회원가입 페이지
 import ProfileScreen from "./Screens/Profile/ProfileScreen"; // 프로필 화면 페이지
 import FixProfileScreen from "./Screens/Profile/FixProfileScreen";
-
 const Stack = createStackNavigator();
 
 export default class App extends React.Component {
