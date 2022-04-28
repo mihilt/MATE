@@ -42,6 +42,15 @@ export const UserInfo = {
             //keyword: "", // 키워드
             auth: "",
         },
-    ]
+    ],
+
+    // 로그인 할 때 사용
+    Pesinger_login : [
+
+    ],
+
+    Driver_login : [
+
+    ],
 
 };

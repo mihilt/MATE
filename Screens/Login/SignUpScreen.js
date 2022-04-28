@@ -35,6 +35,10 @@ export default function SignUpScreen({navigation}) {
     const pesinger = UserInfo.Pesinger;
     const driver = UserInfo.Pesinger;
 
+    // 로그인
+    const Driver_login = UserInfo.Driver_login; // 드라이버
+    const Pesinger_login = UserInfo.Pesinger_login; // 패신저
+
     let readDoc = {}; // firebase에서 읽어온 데이터를 선언 할 변수이다.
     
     //let userInfoDatas = [];
@@ -44,41 +48,26 @@ export default function SignUpScreen({navigation}) {
         const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
     
         const docSnap =  await getDoc(myDoc);
-    
-        
+
         if (docSnap.exists()) {
             readDoc = docSnap.data();
-            PesingerInfoDatas = readDoc.PesingerInfo;
-            // console.log("패신저 데이터들 : ", PesingerInfoDatas);
-            // UserInfo.userInfoDatas = userInfoDatas;
+            //console.log('드라이버 회원정보 : ', readDoc.DriverInfo);
             
-        //   for (let i = 0; i < userInfoDatas.length; i++) {
-        //     // 로그인 성공
-        //     if (userInfoDatas[i].student_number === studentNumber && userInfoDatas[i].password === password) {
-        //       SetSignIn(true);
-        //       UserInfoDefaultData.nickname = userInfoDatas[i].nickname;
-        //       UserInfoDefaultData.student_number = userInfoDatas[i].student_number;
-        //       UserInfoDefaultData.department = userInfoDatas[i].department;
-    
-        //       console.log("회원정보 기본데이터 값 : ", UserInfoDefaultData);
-        //     }
-        //   }
-        // }
-    
-        // 보안성 취약 
-    
-        
+            // 드라이버
+            for (let i = 0; i < readDoc.DriverInfo.length; i++) {
+              Driver_login.push(readDoc.DriverInfo[i]);
+            }
+            // 패신저
+            for (let i = 0; i < readDoc.PesingerInfo.length; i++) {
+              Pesinger_login.push(readDoc.PesingerInfo[i]);
+            }
+            
         }
     }
     // 회원가입 버튼 클릭했을때 호출 하는 함수.
     // Firebase UserInfo 문서에 회원정보 기본데이터를 생성할려고 한다.
 
     const UserInfoCreate = () => {
-        // pesingerData.nickname = nickname; // 성명
-        // pesingerData.student_number = studentNumber; // 학번
-        // pesingerData.department = department; // 학과
-        // pesingerData.auth = button; // 드라이버, 패신저
-        //pesingerData.keyword = keyword;
 
         // myDoc 변수는 컬랙션 아디이 경로에 문서 아이디(UserInfo)로 가르킨다.
         // doc(firebase경로, 컬렉션 아이디, 문서 아이디)
