@@ -40,7 +40,11 @@ export const UserInfo = {
             department: "", // 학과
             status_message: "", // 상태메세지
             //keyword: "", // 키워드
+            recruitment_count: 0,
             auth: "",
+            open_chat: "",
+            open_chat_password: "",
+            
         },
     ],
 

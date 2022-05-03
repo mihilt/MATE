@@ -12,7 +12,8 @@ import {
     PanResponder,
     TouchableOpacity,
 } from 'react-native';
-import { CarpoolTicket } from '../../Database/Data/Ticket/carpoolData';
+
+import { UserInfo } from'../../Database/Data/User/userInfo';
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
 
@@ -264,6 +265,10 @@ const TicketBottomSheet = (props) => {
                         <Text style={{fontSize: 15, marginRight: 10}}>탑승 하기</Text>
                         <Fontisto style={{marginRight: 20}} name="arrow-right-l" size={24} color="black" />
                         <TouchableOpacity onPress={addRecruitment}><Fontisto style={{marginRight: 120}} name="car" size={35} color="black" /></TouchableOpacity>
+                    </View>
+                    <View>
+                        <Text style={{fontSize: 15, marginRight: 10}}>오픈 채팅방 이름 : {UserInfo.Driver[0].open_chat}</Text>
+                        <Text style={{fontSize: 15, marginRight: 10}}>오픈 채팅방 비밀번호 : {UserInfo.Driver[0].open_chat_password}</Text>
                     </View>
                     <View>
                         {(deleted) ? updateTextDisplay() : null}

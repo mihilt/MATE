@@ -1,9 +1,11 @@
-// 모듈 불러오는 부분
+
+// 모듈 불러오는 부분, 현재 수정중
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Image, ImageBackground } from "react-native";
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons'; 
 import SelectDropdown from 'react-native-select-dropdown'; // dropdown 모듈 불러오기
 // DB관련
 // firebase db를 불러올려고 한다.
@@ -26,7 +28,6 @@ const localList = ["", "인동"] // 선택 할 수 있는 지역
 // 기본 데이터 선언
 // docData : 카풀데이터이며 빈데이터로 구성 되어있다. 
 const docCarpoolData = CarpoolTicket; 
-const docTaxiData = TaxiTicket;
 
 // 회원정보 데이터 (아직 데이터 설계 안되어 있음.)
 //const userDocData = UserInfo;
@@ -54,8 +55,9 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // 옆으로 당긴면 refresh true 아니면 false
     const [ refresh, setRefresh ] = useState(false); 
 
-    const pressButton = () => {
+    const CarpoolCreateButton = () => {
         setModalVisible(true);
+        setTicket('카풀');
     };
 
     // 티켓을 클릭하면 모달창으로 상세 정보 보여주제 한다.
@@ -88,7 +90,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
     const sheetRef = React.useRef(null);
 
     let carpoolCount = 0;
-    let taxiCount = 0;
 
     const index = 0;
     // Database Read 부분
@@ -97,8 +98,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
         // doc(firebase 경로, "컬랙션 이름", "문서 이름")
         // myDoc 변수는 firebase CarpoolTicketDocument 문서로 가르켜 준다.
 
-        const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
-        //const userInfoDoc = doc(db, "CollectionNameCarpoolTicket", "UserInfo");
+        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
 
         getDoc(myDoc)
         .then((snapshot) => {
@@ -109,7 +109,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
             setUserDoc(snapshot.data()); // snapshot.data() 호출 되면 CloudDB에 있는 데이터들을 객체로 반환해준다.(console.log(snapshot.data()))
             console.log(snapshot.data());
             carpoolCount = userDoc.CarpoolCount;
-            taxiCount = userDoc.TaxiCount;
             
         }
           else {
@@ -126,51 +125,31 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // 티켓 생성
     const Create = () => {
         if (startInputText != null && endInputText != null) {
-            const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
+            const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
 
             // 티켓이 아무것도 없을경우 실행
             // userDoc 변수는 firebase 문서의 데이터로 가르키고 있다.
            
             // 카풀, 택시 둘중 하나가 선택일 경우 그중 하나를 티켓이름으로 정한다.
-            console.log("카풀 : ", userDoc.CarpoolCount);
+            //console.log("카풀 : ", userDoc.CarpoolCount);
             if (userDoc.CarpoolCount === 0) {
-                
+                console.log(ticket);
                 if (ticket === '카풀') {
                     carpoolCount = userDoc.CarpoolCount + 1;
                     docCarpoolData.CarpoolTicket[0].ticket_name = "카풀";
-                    docCarpoolData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; 
-                    docCarpoolData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department; 
+                    docCarpoolData.CarpoolTicket[0].nickname = UserInfo.Driver[0].nickname; 
+                    docCarpoolData.CarpoolTicket[0].department = UserInfo.Driver[0].department; 
                     docCarpoolData.CarpoolTicket[0].arrival_area = startInputText; // 출발지
                     docCarpoolData.CarpoolTicket[0].depart_area = endInputText; // 도착지
-                    docCarpoolData.CarpoolTicket[0].departure_time = "09:30";
-                    docCarpoolData.CarpoolTicket[0].day = "2022/02/22";
+                    docCarpoolData.CarpoolTicket[0].departure_time = "30분";
+                    docCarpoolData.CarpoolTicket[0].day = "2022/05/03";
                     docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
-                    docCarpoolData.CarpoolTicket[0].recruitment_count = 1;
+                    docCarpoolData.CarpoolTicket[0].recruitment_count = UserInfo.Driver[0].recruitment_count; // 패신저(탑슨자) 모집인원 1~4명 모집
+                    docCarpoolData.CarpoolTicket[0].pesinger_count = 0; // 패신저 탑승할때 마다 1 카운트 됨.
                     
     
                     setDoc(myDoc, {CarpoolCount : carpoolCount, CarpoolTicket : arrayUnion(docCarpoolData.CarpoolTicket[0]) }, {merge: true})
                     .then(() => {
-                        Read();
-                    })
-                    .catch((error) => {
-                        alert(error.messeage);
-                    });
-                }
-                else if (ticket === '택시') {
-                    taxiCount = userDoc.TaxiCount + 1;
-                    docTaxiData.TaxiTicket[0].ticket_name = "택시";
-                    docTaxiData.TaxiTicket[0].nickname = UserInfo.UserInfo[0].nickname;
-                    docTaxiData.TaxiTicket[0].department = UserInfo.UserInfo[0].department;
-                    docTaxiData.TaxiTicket[0].arrival_area = startInputText; // 출발지
-                    docTaxiData.TaxiTicket[0].depart_area = endInputText; // 도착지
-                    docTaxiData.TaxiTicket[0].departure_time = "09:30";
-                    docTaxiData.TaxiTicket[0].day = "2022/02/22";
-                    docTaxiData.TaxiTicket[0].carpool_id = 2000 + taxiCount;
-                    docTaxiData.TaxiTicket[0].recruitment_count = 1;
-    
-                    setDoc(myDoc, {TaxiCount : taxiCount, TaxiTicket : arrayUnion(docTaxiData.TaxiTicket[0]) }, {merge: true})
-                    .then(() => {
-                        alert("Successed Make a Ticket");
                         Read();
                     })
                     .catch((error) => {
@@ -184,14 +163,14 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 if (ticket === '카풀') {
                     carpoolCount = userDoc.CarpoolCount + 1;
                     docCarpoolData.CarpoolTicket[0].ticket_name = "카풀";
-                    docCarpoolData.CarpoolTicket[0].nickname = UserInfo.UserInfo[0].nickname; 
-                    docCarpoolData.CarpoolTicket[0].department = UserInfo.UserInfo[0].department; 
+                    docCarpoolData.CarpoolTicket[0].nickname = UserInfo.Driver[0].nickname; 
+                    docCarpoolData.CarpoolTicket[0].department = UserInfo.Driver[0].department; 
                     docCarpoolData.CarpoolTicket[0].arrival_area = startInputText; // 출발지
                     docCarpoolData.CarpoolTicket[0].depart_area = endInputText; // 도착지
-                    docCarpoolData.CarpoolTicket[0].departure_time = "09:30";
-                    docCarpoolData.CarpoolTicket[0].day = "2022/02/22";
+                    docCarpoolData.CarpoolTicket[0].departure_time = "30분";
+                    docCarpoolData.CarpoolTicket[0].day = "2022/05/03";
                     docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
-                    docCarpoolData.CarpoolTicket[0].recruitment_count = 1;
+                    docCarpoolData.CarpoolTicket[0].recruitment_count = UserInfo.Driver[0].recruitment_count;
                     
     
                     updateDoc(myDoc, {"CarpoolTicket" : arrayUnion(docCarpoolData.CarpoolTicket[0]), "CarpoolCount" : carpoolCount }, {merge : true })
@@ -202,28 +181,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                         alert(error.messeage);
                     });
                 }
-                else if (ticket === '택시') {
-                    taxiCount = userDoc.TaxiCount + 1;
-                    docTaxiData.TaxiTicket[0].ticket_name = "택시";
-                    docTaxiData.TaxiTicket[0].nickname = UserInfo.UserInfo[0].nickname;
-                    docTaxiData.TaxiTicket[0].department = UserInfo.UserInfo[0].department;
-                    docTaxiData.TaxiTicket[0].arrival_area = startInputText; // 출발지
-                    docTaxiData.TaxiTicket[0].depart_area = endInputText; // 도착지
-                    docTaxiData.TaxiTicket[0].departure_time = "09:30";
-                    docTaxiData.TaxiTicket[0].day = "2022/02/22";
-                    docTaxiData.TaxiTicket[0].carpool_id = 2000 + taxiCount;
-                    docTaxiData.TaxiTicket[0].recruitment_count = 1;
-    
-                    updateDoc(myDoc, { "TaxiTicket" : arrayUnion(docTaxiData.TaxiTicket[0]), "TaxiCount" : taxiCount }, {merge : true})
-                    .then(() => {
-                        Read();
-                    })
-                    .catch((error) => {
-                        alert(error.messeage);
-                    });
-                }
             }
-
         }
     }
 
@@ -240,6 +198,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     }
     
     // 티켓을 보여주는 부분(Ticket UI)
+
     function showCarpoolTicket() {
 
         if (userDoc.CarpoolCount > 0) {
@@ -247,25 +206,27 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 userDoc.CarpoolTicket.slice(0).reverse().map(key => (
                     <TouchableOpacity onPress={() => pressTicket(key)}>
                         <View style={styles.ticket_container}> 
+                            
                             <View style={styles.ticket_info}>
-                                <View style={{marginHorizontal: 10, alignItems: 'center'}}>
-                                    <Text>{key.nickname}</Text> 
-                                    <Text style={{fontSize: 8}}>{key.department}</Text>
+                                <View>
+                                    <Text style={{color: '#B9696D', fontWeight: 'bold'}}>{key.arrival_area}</Text>
+                                    <Text style={{color: '#B9696D', fontWeight: 'bold'}}>{key.arrival_time}</Text>
                                 </View>
-                
-                                <View style={{marginHorizontal: 12, alignItems: 'center'}}>
-                                    <Text>{key.ticket_name}</Text> 
-                                    <View style={styles.carpool_pointvar}/>
-                                </View>
-                    
-                                <View style={{marginHorizontal: 30, alignItems: 'center'}}>
-                                    <Text>{key.depart_area}</Text>
-                                    <Text style={{fontSize: 8}}>09:40</Text>
+                                <Feather name="arrow-right-circle"  size={20} color="black" /> 
+                                <View>
+                                    <Text style={{color: '#B9696D', fontWeight: 'bold'}}>{key.depart_area}</Text>
+                                    <Text style={{color: '#B9696D', fontWeight: 'bold'}}>{key.departure_time}</Text>
                                 </View>
                             </View>
-                            <View style={{flexDirection: "row", justifyContent: 'center', alignItems: 'center'}}>
-                                <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                                <View style={{backgroundColor:'#315EFF', width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: '#FFFFFF'}}>{key.recruitment_count}/4</Text></View>
+
+
+                            <View style={{flexDirection: "row", justifyContent:'space-around', marginTop: '10%'}}>
+                                <View> 
+                                    <Text style={{fontSize: 16, fontWeight: 'bold', color: 'black'}}>{key.nickname}</Text>
+                                    <Text style={{fontSize: 15, color: 'black'}}>{key.department}</Text>
+                                </View>
+                                <View style={{backgroundColor:'#315EFF',  width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: 'white'}}>{key.pesinger_count}/{key.recruitment_count}</Text></View>
+                           
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -274,7 +235,42 @@ export default function Main({ navigation }) { // 정보 메인 부분
             );
         }
     }
+/*
+    function showCarpoolTicket() {
 
+        if (userDoc.CarpoolCount > 0) {
+            return (
+                userDoc.CarpoolTicket.slice(0).reverse().map(key => (
+                    <TouchableOpacity onPress={() => pressTicket(key)}>
+                        <View style={styles.ticket_container}> 
+                            <View style={styles.ticket_info}>
+                                <Fontisto name="bookmark-alt" size={24} color="#315EFF" />
+                                <View style={{alignItems: 'center'}}>
+                                    <Text>{key.arrival_area}</Text> 
+                                    <Text style={{fontSize: 8}}>09:00</Text>
+                                </View>
+                
+                                <View style={{alignItems: 'center'}}>
+                                    <Feather name="arrow-right-circle" size={24} color="black" />
+                                </View>
+                    
+                                <View style={{alignItems: 'center'}}>
+                                    <Text>{key.depart_area}</Text>
+                                    <Text style={{fontSize: 8}}>09:40</Text>
+                                </View>
+                            </View>
+                            <View style={{flexDirection: "row", justifyContent: 'center', alignItems: 'center'}}>
+                                
+                                <View style={{backgroundColor:'#315EFF', width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: 'black'}}>{key.recruitment_count}/4</Text></View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    
+                ))
+            );
+        }
+    }
+*/
     const showTaxiTicket = () => {
         if (userDoc.TaxiCount > 0) {
             return (
@@ -284,14 +280,14 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     >
                         <View style={styles.ticket_container}>
                             <View style={styles.ticket_info}>
+                                <Fontisto name="bookmark-alt" size={24} color="#EEC800" />
                                 <View style={{marginHorizontal: 10, alignItems: 'center'}}>
                                     <Text>{key.nickname}</Text> 
                                     <Text style={{fontSize: 8}}>{key.department}</Text>
                                 </View>
                     
                                 <View style={{marginHorizontal: 12, alignItems: 'center'}}>
-                                    <Text>{key.ticket_name}</Text> 
-                                    <View style={styles.taxi_pointvar}/>
+                                    <Feather name="arrow-right-circle" size={24} color="black" />
                                 </View>
                     
                                 <View style={{marginHorizontal :30, alignItems: 'center'}}>
@@ -300,8 +296,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                                 </View>
                             </View>
                             <View style={{flexDirection: "row", justifyContent: 'center', alignItems: 'center'}}>
-                                <Image style={styles.info_car_img} source={require('../../car-icon-vector.jpg')}/>
-                                <View style={{backgroundColor:'#315EFF', width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: '#FFFFFF'}}>{key.recruitment_count}/4</Text></View>
+                                <View style={{backgroundColor:'#315EFF', width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: 'black'}}>{key.recruitment_count}/4</Text></View>
                             </View>
                             
                         </View>
@@ -313,82 +308,47 @@ export default function Main({ navigation }) { // 정보 메인 부분
   return (
     <View style={styles.container}>
         {/*Title 부분 */}
-        <ImageBackground style={{flex: 0.3, width: '100%', height: 200}} source={require('../../assets/mate_main.jpeg')} imageStyle={{borderBottomLeftRadius: 40}}>
+        <ImageBackground style={{}} source={require('../../assets/mate_main.jpeg')} imageStyle={{borderBottomLeftRadius: 40}}>
             <View style={{height: 200, width: 190,justifyContent: 'flex-end', marginLeft: 10, paddingBottom: 20}}>
-                <Text style={{fontSize: '32px', color: '#FFFFFF', fontWeight: 'bold'}}>MATE</Text>
-                <Text style={{fontSize: '13px', color: '#FFFFFF', fontWeight: 'bold'}}>오늘은 어떤 만남을 하시겠어요?</Text>
+                <Text style={{fontSize: 32, color: 'white', fontWeight: 'bold'}}>MATE</Text>
+                <Text style={{fontSize: 13, color: 'white', fontWeight: 'bold'}}>오늘은 어떤 만남을 하시겠어요?</Text>
             </View>
         </ImageBackground>
 
-        <View style={styles.carpool}>
-            
-            <View style={{
-                backgroundColor: '#FFFFFF', 
-                width: 350, marginLeft: 10, 
-                marginBottom: 10, 
-                borderRadius: 15, 
-                shadowColor: '#000',
-                shadowOffset: { width: 1, height: 1 },
-                shadowOpacity: 0.6,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: 'row',
-                alignItems: 'center'}}
-            >
-                <Text style={{fontSize: '23px', padding: 25, color: 'rgba(0, 0, 0, 0.5)'}}>카풀 티켓 생성</Text>
-                <TouchableOpacity onPress={pressButton}>
-                    <Image style={{width: 35, height: 35, marginLeft: 100}} source={require('../../assets/arrow_icon.png')}/>
-                </TouchableOpacity>
-                
+        <View style={styles.ticket_create}>
+            <View style={[styles.ticket_button]}>
+                <Text style={{fontSize: 22, color: 'rgba(0, 0, 0, 0.6)', backgroundColor: 'white'  }}>카풀 티켓 생성</Text>
+                <View style={{}}>
+                    <TouchableOpacity 
+                        onPress={CarpoolCreateButton}
+                    >
+                        <Feather name="arrow-right-circle" size={24} color="#315EFF" stlye={{}} />  
+                    </TouchableOpacity>
+                </View>
             </View>
         
-        
-            <View style={{
-                backgroundColor: '#FFFFFF', 
-                width: 350, 
-                marginLeft: 10, 
-                borderRadius: 15,
-                shadowColor: '#000',
-                shadowOffset: { width: 1, height: 1 },
-                shadowOpacity: 0.6,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: 'row',
-                alignItems: 'center'}}
-            >
-                <Text style={{fontSize: '23px', padding: 25, color: 'rgba(0, 0, 0, 0.5)'}}>택시 티켓 생성</Text>
-                <TouchableOpacity onPress={pressButton}>
-                    <Image style={{width: 35, height: 35, marginLeft: 100}} source={require('../../assets/arrow_icon.png')}/>
-                </TouchableOpacity>
-            </View>
-            
+        </View>
+
+        <View style={{flex: 0.9, alignItems: 'center', backgroundColor: 'white'}}>
             <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={() => runningRefresh()}/>}>
-                <ScrollView style={{marginTop:15, marginBottom: 4}} horizontal={true}>
-                    <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
+                <ScrollView style={{}} showsVerticalScrollIndicator ={true}>
+                    <View style={{justifyContent: 'center'}}>
                         {showCarpoolTicket()}
                     </View>
                 </ScrollView>
-                <ScrollView horizontal={true}>
-                    <View style={{alignItems: "center", justifyContent: 'center', flexDirection: "row"}}>
-                        {showTaxiTicket()}
-                    </View>
-                </ScrollView>
-            </ScrollView>
+            </ScrollView>               
         </View>
 
+        
+       
         <View style={styles.footer}>
-            <Fontisto name="comment" size={24} color="black" style={styles.messege_icon}/>
             
-            <Fontisto name="home" size={24} color="black" style={styles.home_icon}/>
+            <Fontisto  name="home" size={24} color="black" />
             
-            <TouchableOpacity onPress={pressButton} >
-                <Fontisto name="plus-a" size={24} color="black" style={styles.plus_icon}/>
-            </TouchableOpacity>
-            
-            <Fontisto name="map" size={24} color="black" style={styles.save_icon}/>
+            <Fontisto  name="map" size={24} color="black" />
             
             <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
-                <Ionicons name="person-outline" size={24} color="black" style={styles.profile_icon}/>
+                <Ionicons  name="person-outline" size={24} color="black" />
             </TouchableOpacity>
             
         </View>
@@ -428,70 +388,63 @@ export default function Main({ navigation }) { // 정보 메인 부분
  
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#E5E5E5',
+        flex:1,
+
     },
-    search: {
-        flex: 0.3,
-        backgroundColor: '#315EFF',
-        borderBottomLeftRadius: 40,
-        zIndex: 2,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 4,
-            height: 0
-        },
-        shadowOpacity: 0.35,
-    },
-    carpool: {
-        flex: 0.75,
-        backgroundColor: '#E5E5E5',
+    
+    ticket_create: {
+        flex : 0.15,
+        justifyContent : 'center',
+        backgroundColor: 'white',
+        alignItems: 'center',
+
+
     },
     footer: {
-        flex: 0.1,
+        flex: 0.15,
         flexDirection: 'row',
-        backgroundColor: "white",
+        backgroundColor: '#E5E5E5',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
     
     },
+    ticket_button: {
+        flex: 0.8,
+        width : '80%',
+        backgroundColor: 'white',
+
+        borderRadius: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 0 },
+        elevation: 9,
+    },
+
     text1: {
         marginLeft: 15,
         fontSize: 24,
         color: '#315EFF',        
         fontWeight: 'bold',
         marginTop: 47,
-        color: '#FFFFFF',
+        color: 'black',
     },
     map_icon: {
         fontSize: 24,
         marginTop: 47,
-        color: '#FFFFFF',
+        color: 'black',
         justifyContent: 'space-between',
         marginRight: 20,
     },
     bell_icon: {
         fontSize: 24,
         marginTop: 47,
-        color: '#FFFFFF',
+        color: 'black',
         justifyContent: 'space-between',
         marginRight: 42,
     },
-    messege_icon: {
-        marginLeft: 32,
-    },
-    home_icon: {
-        
-    },
-    plus_icon: {
-        
-    },
-    save_icon: {
-    },
-    profile_icon: {
-        marginRight: 29,
-        
-    },
+    
     text_input_container: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -502,16 +455,14 @@ const styles = StyleSheet.create({
     input_start: {
         width: 137.5,
         height: 33,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'black',
         paddingLeft: 10,
         fontSize: 16,
         marginLeft: 18,
         marginTop: 13.5,
         borderRadius: 8,
     },
-    selection_container: {
-        
-    },
+   
     selection_text: {
         flexDirection: 'row',
         width: 345,
@@ -541,7 +492,7 @@ const styles = StyleSheet.create({
     carpool_text: {
         paddingHorizontal: 30.3,
         paddingVertical: 10.3,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'black',
         marginBottom: 14,
         justifyContent: 'space-between',
         borderWidth: 1,
@@ -633,16 +584,23 @@ const styles = StyleSheet.create({
         
     },
     ticket_container: {
-        backgroundColor: "#FFFFFF", 
-        width: 340, 
-        marginLeft: 8, 
-        borderWidth: 1, 
+        backgroundColor: 'white',
+        width: 330,
+        height: 150,
         borderRadius: 15,
+        elevation: 10,
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 2, height: 2 },
+
+
     },
     ticket_info: {
         flexDirection: 'row',
-        margin: 5,
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        marginTop: 15,
+        justifyContent: 'space-around',
+
+
+
     },
 });
+

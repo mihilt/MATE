@@ -7,13 +7,20 @@ import {
     Animated,
     TouchableWithoutFeedback,
     Dimensions,
-    PanResponder
+    PanResponder,
+    TouchableOpacity
 } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FontAwesome } from '@expo/vector-icons'; 
+import { Input } from 'react-native-elements';
+import { UserInfo } from'../../Database/Data/User/userInfo';
+import { CarpoolTicket } from'../../Database/Data/Ticket/carpoolData';
 
 const BottomSheet = (props) => {
     const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read, showCarpoolTicket, showTaxiTicket} = props;
     //const [ button, setButton ] = useState(0);
+    
+    const [ arrivaltime, setArrivalTime ] = useState("");
+    const [ departtime, setDepartTime ] = useState("");
 
     const screenHeight = Dimensions.get("screen").height;
     const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -68,42 +75,46 @@ const BottomSheet = (props) => {
 
     const setStartLocalSelect = () => {
         if (button === 1) {
-            setStartInputText('경운대학교');
-            console.log('modal console : ', startInputText);
+            setStartInputText('인동');
+            console.log('modal console 출발지: ', startInputText);
             console.log(button);
         }
         else if (button === 2) {
-            setStartInputText('인동');
-            console.log('modal console : ', startInputText);
+            setStartInputText('옥계');
+            console.log('modal console 출발지: ', startInputText);
             console.log(button);
         }
         else if (button === 3) {
-            setStartInputText('옥계');
-            console.log('modal console : ', startInputText);
+            setStartInputText('본관');
+            console.log('modal console 출발지: ', startInputText);
             console.log(button);
         }
         else if (button === 4) {
-            setTicket('카풀');
-        }
-        else if (button === 5) {
-            setTicket('택시');
+            setStartInputText('항공관');
+            console.log('modal console 출발지: ', startInputText);
+            console.log(button);
         }
     }
 
     const setEndLocalSelect = () => {
         if (button === 1) {
-            setEndInputText('경운대학교');
-            console.log('modal console : ', startInputText);
+            setEndInputText('인동');
+            console.log('modal console 도착지: ', endInputText);
             console.log(button);
         }
         else if (button === 2) {
-            setEndInputText('인동');
-            console.log('modal console : ', startInputText);
+            setEndInputText('옥계');
+            console.log('modal console 도착지: ', endInputText);
             console.log(button);
         }
-        else {
-            setEndInputText('옥계');
-            console.log('modal console : ', startInputText);
+        else if (button === 3) {
+            setEndInputText('본관');
+            console.log('modal console 도착지: ', endInputText);
+            console.log(button);
+        }
+        else if (button === 4) {
+            setEndInputText('항공관');
+            console.log('modal console 도착지: ', endInputText);
             console.log(button);
         }
     }
@@ -128,34 +139,109 @@ const BottomSheet = (props) => {
                     style={{...styles.bottomSheetContainer, transform: [{ translateY: translateY }]}}
                     {...panResponders.panHandlers}
                 >
-                    <View style={{flexDirection: 'column', paddingBottom: 5, marginTop: 20}}>
-                        <View style={{marginBottom: 10, marginLeft: 55}}><Text>출발지 선택</Text></View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems:'center',}}>
-                            <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10}}><Text style={{color: 'white'}}>경운대학교</Text></TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10}}><Text style={{color: 'white'}}>인동</Text></TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>옥계</Text></TouchableOpacity>
+                    <View style={{backgroundColor:'white', marginTop: 10, borderRadius: 30, flex: 0.19,}}>
+                        
+                        <View>
+                            <View style={{marginTop: 10, marginRight: 60, flexDirection : 'row', justifyContent:'space-between', alignItems: 'center', height: '40%'}}>
+                            <FontAwesome style={{backgroundColor: 'white',marginLeft: 20,}} name="circle" size={15} color="#587DFF" />
+                            <Text>출발지</Text>
+                            <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>인동</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>옥계</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>본관</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>항공관</Text>
+                            </TouchableOpacity>
+                        </View>
 
                         </View>
-                        <View style={{marginVertical: 10, marginLeft: 55}}><Text>도착지 선택</Text></View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems:'center' }}>
-                            <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>경운대학교</Text></TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>인동</Text></TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginVertical: 5}}><Text style={{color: 'white'}}>옥계</Text></TouchableOpacity>
+                            <View style={{ marginRight: 60, flexDirection : 'row', justifyContent:'space-between', alignItems: 'center', height: '20%' }}>
+                            <FontAwesome style={{backgroundColor: 'white',marginLeft: 20,}} name="circle" size={15} color="#587DFF" />
+                            <Text>도착지</Text>
+                            <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>인동</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>옥계</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>본관</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { button = 4; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: 'black'}}>항공관</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+
+                    <View style={{backgroundColor: 'white', flex:0.6, justifyContent : 'space-evenly'}}>
+
+                        <View style={{backgroundColor: 'white', height: '30%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginRight: 35,}}>
+                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                                <Text>모집인원</Text>
+                            </View> 
+
+                           <TouchableOpacity 
+                                onPress={() => UserInfo.Driver[0].recruitment_count = 1}
+                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black'}}>1</Text>
+                            </TouchableOpacity>
+
+                           <TouchableOpacity 
+                                onPress={() => UserInfo.Driver[0].recruitment_count = 2}
+                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black'}}>2</Text>
+                            </TouchableOpacity>
+
+                           <TouchableOpacity 
+                                onPress={() => UserInfo.Driver[0].recruitment_count = 3}
+                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black'}}>3</Text>
+                            </TouchableOpacity>
+
+                           <TouchableOpacity 
+                                onPress={() => UserInfo.Driver[0].recruitment_count = 4}
+                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black',}}>4</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{height: '30%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor :"rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                                <Text>출발시간</Text>
+                            </View> 
+                            <Input 
+                                containerStyle={{width: '65%', }} 
+                                value={CarpoolTicket.CarpoolTicket[0].arrival_time}
+                                onChangeText={(text) => setArrivalTime(CarpoolTicket.CarpoolTicket[0].arrival_time = text)}
+                            />
+                        </View>
+
+                        <View style={{height: '30%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                                <Text>오픈채팅</Text>
+                            </View> 
+                            <Input 
+                                containerStyle={{width: '65%', }}
+                                onChangeText={(text) => UserInfo.Driver[0].open_chat = text} 
+                            />    
+                        </View>
+
+                        <View style={{backgroundColor: 'white', height: '30%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                            
+                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                                <Text>비밀번호</Text>
+                            </View> 
+                            <Input 
+                                containerStyle={{width: '65%', }}
+                                onChangeText={(text) => UserInfo.Driver[0].open_chat_password = text}
+                            />
                         </View>
                     </View>
 
-                    <View style={{flexDirection: 'column', marginTop: 5}}>
-                    <View style={{marginVertical: 10, marginLeft: 55}}><Text>서비스 선택</Text></View>
-                        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                            <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={{backgroundColor: '#315EFF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginRight: 65}}><Text style={{color: 'white'}}>카풀</Text></TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 5; setStartLocalSelect();}} style={{backgroundColor: '#8bc34a', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginRight: 85}}><Text style={{color: 'white'}}>택시</Text></TouchableOpacity>
-                        </View>
-                    </View>
-
-                    <View style={{ marginTop: 5}}>
-                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                            <TouchableOpacity onPress={() => { button = 4; Create(); closeModal(); alert("티켓 생성 하였습니다.");}} style={{backgroundColor: '#315EFF', paddingHorizontal: 40, paddingVertical: 10, borderRadius: 10, marginTop: 20, marginLeft: 40}}><Text style={{color: 'white'}}>확인</Text></TouchableOpacity>
-                        </View>
+                    <View style={{flex:0.2, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
+                        <TouchableOpacity onPress={() => { Create(); closeModal(); alert("티켓 생성 하였습니다.");}} style={{backgroundColor: 'white', borderRadius: 10, borderWidth: 2, borderColor: 'black', width: 337, height: 60, alignItems :'center', justifyContent: 'center' }}><Text style={{color: 'black'}}>생성하기</Text></TouchableOpacity>
                     </View>
 
                 </Animated.View>
@@ -167,18 +253,21 @@ const BottomSheet = (props) => {
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        justifyContent: "flex-end",
-        backgroundColor: "rgba(0, 0, 0, 0.4)"
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        
+        
     },
     background: {
         flex: 1,
+
     },
     bottomSheetContainer: {
-        height: 350,
+        height: '60%',
+        width: '100%',
         backgroundColor: 'white',
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-    
+        justifyContent : 'space-around',
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
         
     }
 })

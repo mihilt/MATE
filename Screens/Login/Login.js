@@ -1,6 +1,5 @@
 import React, { useEffect }from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 // firebase db 경로 불러오기
 import { db } from '../../Database/DatabaseConfig/firebase';
 // firebase db read 모듈 불러오기
