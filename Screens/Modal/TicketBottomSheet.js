@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { db } from '../../Database/DatabaseConfig/firebase';
-import { doc, updateDoc, FieldValue, arrayRemove, serverTimestamp, arrayUnion, setDoc } from 'firebase/firestore';
+import { doc, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
 import {
     View,
     StyleSheet,
@@ -22,8 +22,27 @@ import { Touchable } from 'react-native';
 
 const TicketBottomSheet = (props) => {
 
-    const { ticketModalVisible, setTicketModalVisible, userDoc, setUserDoc, data, setData, showCarpoolTicket, showTaxiTicket, Read, carpoolCount, UserInfo } = props;
+
+    const { ticketModalVisible, setTicketModalVisible, userDoc, data, setData,showCarpoolTicket, showTaxiTicket, Read, carpoolCount, UserInfo } = props;
     // 자기가 만든 티켓을 삭제할때 사용할 state이다.
+
+    let default_data = {
+        "arrival_area": "", // 출발지
+        "carpool_id": 1000, // 카풀아이디
+        "day": "2022/05/03", // 일자
+        "depart_area": "", // 출발지
+        "department": "", // 학과,
+        "arrival_time": "",
+        "departure_time": "30분", // 도착시간
+        "nickname": "", // 성명
+        "recruitment_count": 0, // 모집인원 0~4명
+        "pesinger_count": 0,
+        "ticket_name": "카풀", // 티켓 카풀
+        "open_chat": "",
+        "open_chat_password": "",
+        "pesinger_info": [],
+    };
+
     const [ deleted, setDeleted ] = useState(false);
     // 오픈채팅 보여줄지
     const [ openChat, setOpenChat ] = useState(false);
@@ -53,8 +72,8 @@ const TicketBottomSheet = (props) => {
 
     console.log('Ticket생성 모달 Data 출력 : ', data);
     console.log('Ticket생성 모달 Driver 출력 : ', UserInfo.Pesinger[0]);
-    
     const ShowOpenChat = () => {
+       
         console.log('showOpenChat 호출');
         if (data.ticket_name === '카풀' && UserInfo.Driver[0].nickname === data.nickname) {
             setOpenChat(true);
@@ -151,27 +170,81 @@ const TicketBottomSheet = (props) => {
 
     // 탑승하기 버튼 클릭하면 탑승자 추가 된다.
     const addRecruitment = () => {
-        if ((data.ticket_name === '카풀') && (UserInfo.Pesinger[0].auth === 'pesinger')) {
-            const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
-            
-            console.log(UserInfo.Pesinger[0].student_number);
-            for (let i = 0; i < data.recruitment_count; i++) {
-                if (data.pesinger_info[i] === UserInfo.Pesinger[0].student_number) {
-                    alert('탑승 한적 있습니다.');
-                    return;
-                } 
-            }
-            if (data.pesinger_count <= data.recruitment_count) {
-                updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
-                data.pesinger_count += 1;
-                data.pesinger_info.push(UserInfo.Pesinger[0].student_number);
-                updateDoc(myDoc, { CarpoolTicket : arrayUnion(data)});
-                alert('탑승인원 추가 하였습니다.');
-                Read();
-                showCarpoolTicket();
+        
+        if (data === undefined) {
+            if ((defult_data.ticket_name === '카풀') && (UserInfo.Pesinger[0].auth === 'pesinger')) {
+                const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+                
+                console.log(UserInfo.Pesinger[0].student_number);
+
+                for (let i = 0; i < default_data.recruitment_count; i++) {
+                    if (default_data.pesinger_info[i] === UserInfo.Pesinger[0].student_number) {
+                        alert('탑승 한적 있습니다.');
+                        return;
+                    } 
+                }
+                if (default_data.pesinger_count < default_data.recruitment_count) {
+                    updateDoc(myDoc, { CarpoolTicket : arrayRemove(default_Pdata) });
+                    default_data.pesinger_count += 1;
+                    default_data.pesinger_info.push(UserInfo.Pesinger[0].student_number);
+                    updateDoc(myDoc, { CarpoolTicket : arrayUnion(default_data)});
+                    alert('탑승인원 추가 하였습니다.');
+                    Read();
+                    showCarpoolTicket();
+                }
+            } else {
+                alert('탑승인원 초과 했습니다.');
             }
         } else {
-            alert('탑승인원 초과 했습니다.');
+            if ((data.ticket_name === '카풀') && (UserInfo.Pesinger[0].auth === 'pesinger')) {
+                const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+                
+                if (data.pesinger_count >= data.recruitment_count) {
+                    alert('탑승인원 초과 했습니다.')
+                }
+                for (let i = 0; i < data.recruitment_count; i++) {
+                    if (data.pesinger_info[i] === UserInfo.Pesinger[0].student_number) {
+                        alert('탑승 한적 있습니다.');
+                        return;
+                    } 
+                }
+                if (data.pesinger_count < data.recruitment_count) {
+                    updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
+                    data.pesinger_count += 1;
+                    data.pesinger_info.push(UserInfo.Pesinger[0].student_number);
+                    updateDoc(myDoc, { CarpoolTicket : arrayUnion(data)});
+                    alert('탑승인원 추가 하였습니다.');
+                    Read();
+                    showCarpoolTicket();
+                } else {
+
+                }
+            } else if ((data.nickname != UserInfo.Driver[0].nickname) && (UserInfo.Driver[0].auth === 'driver')) {
+                const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+            
+                if (data.pesinger_count >= data.recruitment_count) {
+                    alert('탑승인원 초과 했습니다.')
+                }
+                for (let i = 0; i < data.recruitment_count; i++) {
+                    if (data.pesinger_info[i] === UserInfo.Driver[0].student_number) {
+                        alert('탑승 한적 있습니다.');
+                        return;
+                    } 
+                }
+                if (data.pesinger_count < data.recruitment_count) {
+                    updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
+                    data.pesinger_count += 1;
+                    data.pesinger_info.push(UserInfo.Driver[0].student_number);
+                    updateDoc(myDoc, { CarpoolTicket : arrayUnion(data)});
+                    alert('탑승인원 추가 하였습니다.');
+                    Read();
+                    showCarpoolTicket();
+                }
+            } else {
+                if (data.nickname === UserInfo.Driver[0].nickname) {
+                    alert('자신 만든 티켓입니다.');
+                }
+            }
         }
     }
 
@@ -199,6 +272,7 @@ const TicketBottomSheet = (props) => {
     }
 
     const setUpdate = () => {
+        
         if ((data.ticket_name === '카풀') && (UserInfo.UserInfo[0].nickname === data.nickname)) {
             const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
             
@@ -254,6 +328,323 @@ const TicketBottomSheet = (props) => {
         );    
     }
 
+    const RecruitmentCountOneColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 1) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        } else {
+            if (data.recruitment_count != 1) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        }
+    }
+    const RecruitmentCountTwoColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 2) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        } else {
+            if (data.recruitment_count != 2) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        }
+    }
+    const RecruitmentCountThreeColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 3) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        } else {
+            if (data.recruitment_count != 3) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        }
+    }
+    const RecruitmentCountFourColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 4) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        } else {
+            if (data.recruitment_count != 4) {
+                return (
+                    {
+                        backgroundColor: '#C4C4C4',
+                        padding: '2%', 
+                        paddingHorizontal: '4.5%', 
+                        borderRadius: 20
+                    }
+                )
+            } else {
+                return (
+                    {
+                        backgroundColor: '#315EFF',
+                        padding: '2%',
+                        paddingHorizontal: '4.5%',
+                        borderRadius: 20
+                    }
+                )
+            }
+        }
+    }
+
+    const RecruitmentCountTextOneColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 1) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        } else {
+            if (data.recruitment_count != 1) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        }
+    }
+
+
+    const RecruitmentCountTextTwoColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 2) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        } else {
+            if (data.recruitment_count != 2) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        }
+    }
+
+    const RecruitmentCountTextThreeColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 3) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        } else {
+            if (data.recruitment_count != 3) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        }
+    }
+
+    const RecruitmentCountTextFourColor = () => {
+        if (data === undefined) {
+            if (default_data.recruitment_count != 4) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        } else {
+            if (data.recruitment_count != 4) {
+                return (
+                    {
+                        color: 'gray',
+                        fontWeight: 'bold'
+                    }
+                );
+            } else {
+                return (
+                    {
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                    }
+                );
+            }
+        }
+    }
     return (
         <Modal
             visible={ticketModalVisible}
@@ -281,7 +672,7 @@ const TicketBottomSheet = (props) => {
                                     </View>
                                     <View style={styles.arrival_area_container}>
                                         <View style={styles.arrival_area}>
-                                            <Text style={data.arrival_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data.arrival_area}</Text>
+                                            <Text style={default_data.arrival_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data === undefined ? default_data.arrival_area : data.arrival_area}</Text>
                                         </View>
                                     </View>
                                 </View>
@@ -293,7 +684,7 @@ const TicketBottomSheet = (props) => {
                                 </View>
                                 <View style={styles.depart_area_container}>
                                     <View style={styles.depart_area}>
-                                        <Text style={data.depart_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data.depart_area}</Text>
+                                        <Text style={default_data.depart_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data === undefined ? default_data.depart_area : data.depart_area}</Text>
                                     </View>
                                 </View>                            
                             </View>
@@ -302,17 +693,17 @@ const TicketBottomSheet = (props) => {
                                     <Text style={styles.recruitment_count_text}>인원</Text>
                                 </View>
                                 <View style={styles.recruitment_count}>
-                                    <View style={data.recruitment_count != 1 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 1 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>1</Text>
+                                    <View style={RecruitmentCountOneColor()}>
+                                        <Text style={RecruitmentCountTextOneColor()}>1</Text>
                                     </View>
-                                    <View style={data.recruitment_count != 2 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 2 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>2</Text>
+                                    <View style={RecruitmentCountTwoColor()}>
+                                        <Text style={RecruitmentCountTextTwoColor()}>2</Text>
                                     </View>
-                                    <View style={data.recruitment_count != 3 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 3 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>3</Text>
+                                    <View style={RecruitmentCountThreeColor()}>
+                                        <Text style={RecruitmentCountTextThreeColor()}>3</Text>
                                     </View>
-                                    <View style={data.recruitment_count != 4 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 4 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>4</Text>
+                                    <View style={RecruitmentCountFourColor()}>
+                                        <Text style={RecruitmentCountTextFourColor()}>4</Text>
                                     </View>                                                            
                                 </View>
                             </View>
@@ -322,7 +713,7 @@ const TicketBottomSheet = (props) => {
                                         <Text style={{fontWeight: 'bold'}}>출발 시간</Text>
                                     </View>
                                     <View style={styles.arrival_time_container}>
-                                        <Text>{data.arrival_time}</Text>
+                                        <Text>{data === undefined ? default_data.arrival_time : data.arrival_time}</Text>
                                     </View>
                                 </View>
                     
@@ -331,14 +722,14 @@ const TicketBottomSheet = (props) => {
                                         <Text style={{fontWeight: 'bold'}}>예상 소요시간</Text>
                                     </View>
                                     <View style={styles.estimated_time_conatainer}>
-                                        <Text>{data.departure_time}</Text>
+                                        <Text>{data === undefined ? default_data.departure_time : data.departure_time}</Text>
                                     </View>
                                 </View>
                             </View>
                             <View style={styles.driver_info_container}>
                                 <View style={{marginLeft: '2%'}}>
-                                    <Text style={{marginBottom: '10%', marginTop: '10%'}}>{data.nickname}</Text>
-                                    <Text>{data.department}</Text>
+                                    <Text style={{marginBottom: '10%', marginTop: '10%'}}>{data === undefined ? default_data.nickname : data.nickname}</Text>
+                                    <Text>{data === undefined ? default_data.department : data.department}</Text>
                                 </View>
                                 <View style={styles.driver_charater}>
                                     <Text>조용히 갈게요</Text>

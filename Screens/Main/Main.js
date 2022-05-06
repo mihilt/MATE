@@ -56,10 +56,12 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // 옆으로 당긴면 refresh true 아니면 false
     const [ refresh, setRefresh ] = useState(false); 
 
+    
     const CarpoolCreateButton = () => {
         setModalVisible(true);
         setTicket('카풀');
     };
+
 
     // 티켓을 클릭하면 모달창으로 상세 정보 보여주제 한다.
     const pressTicket = (key) => {
@@ -208,7 +210,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 userDoc.CarpoolTicket.slice(0).reverse().map(key => (
                     <TouchableOpacity onPress={() => pressTicket(key)}>
                         <View style={styles.ticket_container}> 
-                            
                             <View style={styles.ticket_info}>
                                 <View>
                                     <Text style={{color: '#B9696D', fontWeight: 'bold'}}>{key.arrival_area}</Text>
@@ -376,14 +377,12 @@ export default function Main({ navigation }) { // 정보 메인 부분
             showTaxiTicket = {showTaxiTicket}
         />
         {console.log("Main 출발지 : ", startInputText)}
-
         <TicketBottomSheet  
             ticketModalVisible={ticketModalVisible}
             setTicketModalVisible={setTicketModalVisible}
             userDoc={userDoc}
             setUserDoc={setUserDoc}
             data={data}
-            setData={setData}
             showCarpoolTicket={showCarpoolTicket}
             showTaxiTicket={showTaxiTicket}
             Read={Read}
