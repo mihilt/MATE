@@ -12,6 +12,9 @@ const CarpoolTicket = {
             "recruitment_count": 0, // 모집인원 0~4명
             "pesinger_count": 0,
             "ticket_name": "카풀", // 티켓 카풀
+            "open_chat": "",
+            "open_chat_password": "",
+            "pesinger_info": [],
         },
     ],
 };

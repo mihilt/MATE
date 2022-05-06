@@ -46,6 +46,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // database state 영역
     // firebase 문서로 부터 데이터를 읽으면 userDoc state에 선언 할려고 한다.
     const [ userDoc, setUserDoc ] = useState([]);
+    const [ userInfoDoc, setUserInfoDoc ] = useState([]);
     // '+'아이콘 티켓생성 state
     const [ modalVisible, setModalVisible ] = useState(false);
     // 티켓 클릭 할시 state
@@ -117,15 +118,16 @@ export default function Main({ navigation }) { // 정보 메인 부분
         })
         .catch((error) => {
           alert(error.message);
-          console.log(myDoc);
+
         });
-    
+
     };
 
     // 티켓 생성
     const Create = () => {
         if (startInputText != null && endInputText != null) {
             const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+            const myDoc2 = doc(db, "CollectionNameCarpoolTicket", "UserInfo");
 
             // 티켓이 아무것도 없을경우 실행
             // userDoc 변수는 firebase 문서의 데이터로 가르키고 있다.
@@ -320,7 +322,13 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 <Text style={{fontSize: 22, color: 'rgba(0, 0, 0, 0.6)', backgroundColor: 'white'  }}>카풀 티켓 생성</Text>
                 <View style={{}}>
                     <TouchableOpacity 
-                        onPress={CarpoolCreateButton}
+                        onPress={() => {
+                            if (UserInfo.Pesinger[0].auth === 'pesinger') {
+                                alert('패신저는 생성 못합니다.');
+                            } else {
+                                CarpoolCreateButton();
+                            }
+                        }}
                     >
                         <Feather name="arrow-right-circle" size={24} color="#315EFF" stlye={{}} />  
                     </TouchableOpacity>

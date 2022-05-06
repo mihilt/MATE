@@ -13,12 +13,9 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import { FontAwesome } from '@expo/vector-icons'; 
 import { UserInfo } from'../../Database/Data/User/userInfo';
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
-import { getPendingResultAsync } from 'expo-image-picker';
-import { Touchable } from 'react-native';
 
 const TicketBottomSheet = (props) => {
 
@@ -271,87 +268,26 @@ const TicketBottomSheet = (props) => {
                     style={{...styles.bottomSheetContainer, transform: [{ translateY: translateY }]}}
                     {...panResponders.panHandlers}
                 >
-                    <View style={styles.container}>
-                        <View>
-                            <View style={styles.start_local_container}>
-                                <View style={styles.start_local}>
-                                    <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
-                                    <View style={styles.start_text_container}>
-                                        <Text style={styles.start_text}>출발지</Text>
-                                    </View>
-                                    <View style={styles.arrival_area_container}>
-                                        <View style={styles.arrival_area}>
-                                            <Text style={data.arrival_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data.arrival_area}</Text>
-                                        </View>
-                                    </View>
+                    <View style={{flex: 0.45, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <Text style={{fontSize: 22, marginLeft: 150}}>티켓 정보</Text>
+                        <View style={{marginRight: 20}}>
+                            <TouchableOpacity onPress={ticketDelete}>
+                                <View>
+                                    {(deleted) ? <Fontisto name="trash" size={24} color="black" />: null}
                                 </View>
-                            </View>
-                            <View style={styles.end_local}>
-                                <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
-                                <View style={styles.end_text_container}>
-                                    <Text style={styles.start_text}>도착지</Text>
-                                </View>
-                                <View style={styles.depart_area_container}>
-                                    <View style={styles.depart_area}>
-                                        <Text style={data.depart_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data.depart_area}</Text>
-                                    </View>
-                                </View>                            
-                            </View>
-                            <View style={styles.recruitment_count_container}>
-                                <View style={styles.recruitment_count_text_container}>
-                                    <Text style={styles.recruitment_count_text}>인원</Text>
-                                </View>
-                                <View style={styles.recruitment_count}>
-                                    <View style={data.recruitment_count != 1 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 1 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>1</Text>
-                                    </View>
-                                    <View style={data.recruitment_count != 2 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 2 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>2</Text>
-                                    </View>
-                                    <View style={data.recruitment_count != 3 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 3 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>3</Text>
-                                    </View>
-                                    <View style={data.recruitment_count != 4 ? {backgroundColor: '#C4C4C4', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20} : {backgroundColor: '#315EFF', padding: '2%', paddingHorizontal: '4.5%', borderRadius: 20}}>
-                                        <Text style={data.recruitment_count != 4 ? {color: 'gray', fontWeight: 'bold'} : {color: '#FFFFFF', fontWeight: 'bold'}}>4</Text>
-                                    </View>                                                            
-                                </View>
-                            </View>
-                            <View style={styles.time_container}>
-                                <View style={{flexDirection: 'row'}}>
-                                    <View style={styles.arrival_time_text}>
-                                        <Text style={{fontWeight: 'bold'}}>출발 시간</Text>
-                                    </View>
-                                    <View style={styles.arrival_time_container}>
-                                        <Text>{data.arrival_time}</Text>
-                                    </View>
-                                </View>
-                    
-                                <View style={{flexDirection: 'row', marginTop: '5%'}}>
-                                    <View style={styles.estimated_time_text}>
-                                        <Text style={{fontWeight: 'bold'}}>예상 소요시간</Text>
-                                    </View>
-                                    <View style={styles.estimated_time_conatainer}>
-                                        <Text>{data.departure_time}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={styles.driver_info_container}>
-                                <View style={{marginLeft: '2%'}}>
-                                    <Text style={{marginBottom: '10%', marginTop: '10%'}}>{data.nickname}</Text>
-                                    <Text>{data.department}</Text>
-                                </View>
-                                <View style={styles.driver_charater}>
-                                    <Text>조용히 갈게요</Text>
-                                </View>
-                            </View>
-                            <View style={styles.recruitment_button_container}>
-                                <View style={styles.button_container}>
-                                    <TouchableOpacity onPress={addRecruitment} style={{width: '100%', alignItems: 'center'}}>
-                                        <Text style={{fontWeight: 'bold'}}>탑승하기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                            </TouchableOpacity>
                         </View>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+                        <Text style={{fontSize: 15, marginRight: 10}}>탑승 하기</Text>
+                        <Fontisto style={{marginRight: 20}} name="arrow-right-l" size={24} color="black" />
+                        <TouchableOpacity onPress={addRecruitment}><Fontisto style={{marginRight: 120}} name="car" size={35} color="black" /></TouchableOpacity>
+                    </View>
+                    <View>
+                        {ShowOpenChat}
+                    </View>
+                    <View>
+                        {(deleted) ? updateTextDisplay() : null}
                     </View>
                 </Animated.View>
             </View>
@@ -369,154 +305,14 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     bottomSheetContainer: {
-        height: '60%',
+        height: 300,
         // justifyContent: "center",
         // alignItems: "center",
         backgroundColor: 'white',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,   
-    },
-    start_local_container: {
-        marginTop: '4%'
-    },
-    start_local: {
-        flexDirection: 'row',
-        marginLeft: '4%',
-        width: '90%',
-        borderBottomWidth: 2,
-        borderColor: '#C4C4C44F',
-        padding: '2%',
-        alignItems: 'center',
-    },
-    end_local: {
-        flexDirection: 'row',
-        marginLeft: '4%',
-        width: '90%',
-        borderBottomWidth: 2,
-        borderColor: '#C4C4C44F',
-        padding: '2%',
-        alignItems: 'center'
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    
         
-    },
-    start_text_container: {
-        marginHorizontal: '2%',
-    },
-    start_text: {
-        fontSize: 13,
-        fontWeight: 'bold',
-    },
-    end_text_container: {
-        marginHorizontal: '2%',
-    },
-    end_text: {
-        fontSize: 13,
-        fontWeight: 'bold',
-    },
-    arrival_area_container: {
-
-    },
-    arrival_area: {
-        backgroundColor: '#315EFF',
-        borderRadius: 15,
-    },
-
-    depart_area_container: {
-
-    },
-    depart_area: {
-        backgroundColor: '#315EFF',
-        borderRadius: 15,
-    },
-    recruitment_count_container: {
-        marginLeft: '4%',
-        width: '90%',
-        padding: '2%',
-        paddingTop: '5%',
-        flexDirection: 'row',
-    },
-    recruitment_count_text_container: {
-        backgroundColor: '#C4C4C4',
-        borderRadius: 15,
-        width: '20%', 
-        height: 30, 
-        justifyContent: 'center', 
-        alignItems: 'center'
-    },
-    recruitment_count_text: {
-        fontWeight: 'bold',
-    },
-    recruitment_count: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-        width: '65%',
-        
-    },
-    time_container: {
-        marginLeft: '4%',
-        width: '90%',
-        padding: '2%',
-        paddingTop: '5%',
-        paddingBottom: '5%',
-    },
-    arrival_time_text: {
-        backgroundColor: '#C4C4C4',
-        width: '20%',
-        height: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 15
-    },
-    arrival_time_container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '60%',
-        marginLeft: '20.1%',
-        borderBottomWidth: 2,
-        borderColor: '#C4C4C44F'
-    },
-    estimated_time_text: {
-        backgroundColor: '#C4C4C4',
-        width: '25%',
-        height: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 15
-    },
-    estimated_time_conatainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '60%',
-        marginLeft: '15.1%',
-        borderBottomWidth: 2,
-        borderColor: '#C4C4C44F'
-    },
-    driver_info_container: {
-        marginLeft: '4%',
-        width: '90%',
-        paddingVertical: '8%',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    driver_charater: {
-        backgroundColor: '#C4C4C4',
-        marginLeft: '32%',
-        padding: '2%',
-        borderRadius: 15
-    },
-    recruitment_button_container: {
-
-        marginLeft: '4%',
-        width: '90%',
-        alignItems: 'center',
-    },
-    button_container: {
-        backgroundColor: '#FFFFFF',
-        width: '70%', height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderRadius: 10
     }
 })
 

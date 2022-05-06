@@ -42,8 +42,6 @@ export const UserInfo = {
             //keyword: "", // 키워드
             recruitment_count: 0,
             auth: "",
-            open_chat: "",
-            open_chat_password: "",
             
         },
     ],

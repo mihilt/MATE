@@ -224,7 +224,7 @@ const BottomSheet = (props) => {
                             </View> 
                             <Input 
                                 containerStyle={{width: '65%', }}
-                                onChangeText={(text) => UserInfo.Driver[0].open_chat = text} 
+                                onChangeText={(text) => CarpoolTicket.CarpoolTicket[0].open_chat = text} 
                             />    
                         </View>
 
@@ -235,7 +235,7 @@ const BottomSheet = (props) => {
                             </View> 
                             <Input 
                                 containerStyle={{width: '65%', }}
-                                onChangeText={(text) => UserInfo.Driver[0].open_chat_password = text}
+                                onChangeText={(text) => CarpoolTicket.CarpoolTicket[0].open_chat_password = text}
                             />
                         </View>
                     </View>
