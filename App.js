@@ -7,6 +7,7 @@ import LoginScreen from './Screens/Login/LoginScreen'; // 학번로그인 일경
 import SignUpScreen from "./Screens/Login/SignUpScreen"; // 회원가입 페이지
 import ProfileScreen from "./Screens/Profile/ProfileScreen"; // 프로필 화면 페이지
 import FixProfileScreen from "./Screens/Profile/FixProfileScreen";
+import TicketScreen from "./Screens/Ticket/TicketScreen";
 
 const Stack = createStackNavigator();
 
@@ -28,6 +29,7 @@ export default class App extends React.Component {
               <Stack.Screen name="Main" component={Main} />
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
               <Stack.Screen name="FixProfileScreen" component={FixProfileScreen} />
+              <Stack.Screen name="TicketScreen" component={TicketScreen} />
               
             </Stack.Navigator>
           </NavigationContainer>

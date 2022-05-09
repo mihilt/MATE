@@ -7,6 +7,8 @@ import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons'; 
 import SelectDropdown from 'react-native-select-dropdown'; // dropdown 모듈 불러오기
+import { FontAwesome } from '@expo/vector-icons';
+
 // DB관련
 // firebase db를 불러올려고 한다.
 import { db } from '../../Database/DatabaseConfig/firebase';
@@ -228,7 +230,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                                     <Text style={{fontSize: 16, fontWeight: 'bold', color: 'black'}}>{key.nickname}</Text>
                                     <Text style={{fontSize: 15, color: 'black'}}>{key.department}</Text>
                                 </View>
-                                <View style={{backgroundColor:'#315EFF',  width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: 'white'}}>{key.pesinger_count}/{key.recruitment_count}</Text></View>
+                                <View style={{  backgroundColor:'#315EFF',  width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: 'white'}}>{key.pesinger_count}/{key.recruitment_count}</Text></View>
                            
                             </View>
                         </View>
@@ -284,8 +286,8 @@ export default function Main({ navigation }) { // 정보 메인 부분
                         <View style={styles.ticket_container}>
                             <View style={styles.ticket_info}>
                                 <Fontisto name="bookmark-alt" size={24} color="#EEC800" />
-                                <View style={{marginHorizontal: 10, alignItems: 'center'}}>
-                                    <Text>{key.nickname}</Text> 
+                                <View style={{ marginHorizontal: 10, alignItems: 'center'}}>
+                                    <Text >{key.nickname}</Text> 
                                     <Text style={{fontSize: 8}}>{key.department}</Text>
                                 </View>
                     
@@ -317,7 +319,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                 <Text style={{fontSize: 13, color: 'white', fontWeight: 'bold'}}>오늘은 어떤 만남을 하시겠어요?</Text>
             </View>
         </ImageBackground>
-
+        
         <View style={styles.ticket_create}>
             <View style={[styles.ticket_button]}>
                 <Text style={{fontSize: 22, color: 'rgba(0, 0, 0, 0.6)', backgroundColor: 'white'  }}>카풀 티켓 생성</Text>
@@ -341,7 +343,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
         <View style={{flex: 0.9, alignItems: 'center', backgroundColor: 'white'}}>
             <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={() => runningRefresh()}/>}>
                 <ScrollView style={{}} showsVerticalScrollIndicator ={true}>
-                    <View style={{justifyContent: 'center'}}>
+                    <View style={{}}>
                         {showCarpoolTicket()}
                     </View>
                 </ScrollView>
@@ -351,13 +353,22 @@ export default function Main({ navigation }) { // 정보 메인 부분
         
        
         <View style={styles.footer}>
+            <View style={{paddingHorizontal: 30}}>
+                <Ionicons name="home" size={24} color="black" />
+            </View>
             
-            <Fontisto  name="home" size={24} color="black" />
+            <TouchableOpacity
+                style={{paddingHorizontal: 30}}
+                onPress={() => navigation.navigate("TicketScreen")}
+            >
+                <Ionicons name="card-outline" size={30} color="black" />
+            </TouchableOpacity>
             
-            <Fontisto  name="map" size={24} color="black" />
-            
-            <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
-                <Ionicons  name="person-outline" size={24} color="black" />
+            <TouchableOpacity 
+                style={{paddingHorizontal: 30}}
+                onPress={() => navigation.navigate("ProfileScreen")}
+            >
+                <FontAwesome name="user-circle-o" size={24} color="black" />
             </TouchableOpacity>
             
         </View>
@@ -408,9 +419,10 @@ const styles = StyleSheet.create({
 
     },
     footer: {
-        flex: 0.15,
+        height: 80,
         flexDirection: 'row',
-        backgroundColor: '#E5E5E5',
+        backgroundColor: 'white',
+        borderWidth: 0.3,
         alignItems: 'center',
         justifyContent: 'space-around',
     
@@ -522,7 +534,8 @@ const styles = StyleSheet.create({
         resizeMode: 'stretch', 
         width: 33.8, 
         height: 35.2, 
-        borderRadius: 25, 
+        borderRadius: 25,
+
         
     },
     info_text_container: {
@@ -588,6 +601,7 @@ const styles = StyleSheet.create({
         marginTop: 11,
         marginLeft: 25,
         marginRight: 20,
+
         
     },
     ticket_container: {
@@ -598,6 +612,7 @@ const styles = StyleSheet.create({
         elevation: 10,
         shadowOpacity: 0.3,
         shadowOffset: { width: 2, height: 2 },
+        margin: 5,
 
 
     },
@@ -605,7 +620,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 15,
         justifyContent: 'space-around',
-
 
 
     },

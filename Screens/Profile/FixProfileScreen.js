@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput 
 // 아이콘(원격주소)
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 //firebase
 import { db } from '../../Database/DatabaseConfig/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -87,6 +88,14 @@ export default function FixProfileScreen({navigation})  {
         wait(2000).then(() => setRefresh(false));
     }, []);
 
+    const ShowName = () => {
+        if (UserInfo.Driver[0].auth != "") {
+            return UserInfo.Driver[0].nickname;
+        } else {
+            return UserInfo.Pesinger[0].nickname;
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={{width: '100%' , height: 200 , backgroundColor: '#315EFF', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
@@ -97,7 +106,7 @@ export default function FixProfileScreen({navigation})  {
                     <View style={styles.header}>
 
                            
-                        <Text style={styles.user_name_text}>박해준</Text>
+                        <Text style={styles.user_name_text}>{ShowName()}</Text>
                         <View style={{borderRadius: 10, width: '70%', height: '10%', marginTop : 10, justifyContent:'center', alignItems: 'center', backgroundColor: 'rgba(196, 196, 196, 0.31)'}}>
                             <TextInput 
                                 value={text}
@@ -136,17 +145,15 @@ export default function FixProfileScreen({navigation})  {
 
         
             <View style={styles.footer}>
+                <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+                    <Ionicons name="home-outline" size={24} color="white" />
+                </TouchableOpacity>
+                    
+                <Ionicons name="card-outline" size={30} color="black" />
                 
-                    
-                    <TouchableOpacity onPress={() => navigation.navigate("Main")}>
-                        <Fontisto name="home" size={24} color="black" style={styles.home_icon}/>
-                    </TouchableOpacity>
-                    
-                    <Fontisto  name="map" size={24} color="black" />
-                    
-                    <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
-                        <Ionicons name="person-outline" size={24} color="black" style={styles.profile_icon}/>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
+                    <FontAwesome name="user-circle-o" size={24} color="black" />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -207,7 +214,7 @@ const styles = StyleSheet.create( {
             
         },
         footer: {
-            height: '9%',
+            flex: 0.152,
             flexDirection: 'row',
             justifyContent: 'space-around',
             alignItems: 'center',

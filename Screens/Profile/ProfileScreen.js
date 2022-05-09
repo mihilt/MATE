@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput 
 // 아이콘(원격주소)
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 //firebase
 import { db } from '../../Database/DatabaseConfig/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -53,25 +54,7 @@ export default function ProfileScreen({navigation})  {
     const ShowTickets = () => {
         return(
             [
-            <View style={styles.ticket}>
-                <View>
-                    {() => Read()}
-                </View>
-                <View style={{flexDirection:'row', padding: 10, borderBottomWidth: 2, borderColor: "#F0F0F0"}}>
-                    <Text style={{marginLeft: 18, fontSize: 16,}}>Order No238562312</Text>
-                    <Text style={{marginLeft: 20, fontSize: 13, color: "#909090"}}>2022/03/01</Text>
-                </View>
 
-                <View style={{flexDirection: 'row', marginTop: 5}}>
-                    <Text style={{marginLeft: 30, fontSize: 13,}}>Quantity: 03</Text>
-                    <Text style={{marginLeft: 36, fontSize: 13,}}>Total Amount: $150</Text>
-                </View>
-
-                <View style={{flexDirection: 'row', marginTop: 35}}>
-                    <Text style={{marginLeft: 30, fontSize: 13,}}>Detail</Text>
-                    <Text style={{marginLeft: 130, fontSize: 13,}}>Processing</Text>
-                </View>
-            </View>
             ]
         );
     }
@@ -85,118 +68,109 @@ export default function ProfileScreen({navigation})  {
         UserInfo.UserInfo[0].status_message = text;
     }
 
+    const ShowName = () => {
+        if (UserInfo.Driver[0].auth != "") {
+            return UserInfo.Driver[0].nickname;
+        } else {
+            return UserInfo.Pesinger[0].nickname;
+        }
+    };
+
     return (
+     
         <View style={styles.container}>
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <View style={{backgroundColor: 'white', width: '90%', height: '85%', borderRadius: 15}}>
-                    <View style={styles.header}>
-                        <View style={styles.profile_info}>
-                            <Image style={{ marginLeft: 3, width: 150, height: 140, borderRadius: 200, borderColor: 'black', borderWidth: 2}}source={require('../../assets/mate_icon.png')}/>  
-                            <Text style={styles.user_name_text}>{UserInfo.UserInfo[0].nickname}</Text>
-                        </View>
-                        <View style={{marginVertical: 15, borderBottomWidth: 2}}>
-                            <Text>{UserInfo.UserInfo[0].status_message === '' ? '상태메시지' : UserInfo.UserInfo[0].status_message}</Text>
-                        </View>
-                    
-                        <View style={styles.button}>
-                            <TouchableOpacity 
-                                style={
-                                    {
-                                        backgroundColor: "#151515", 
-                                        paddingHorizontal: 110,
-                                        paddingVertical: 10,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        marginBottom: 10,
-                                        borderRadius: 8,
-                                        borderWidth: 4,
-                                    }
-                                }
-                                onPress={() => {navigation.navigate('FixProfileScreen'); console.log('복귀 하였습니다.')}}
-                            >
-                                <Text style={{width: 100, color: "#FFFFFF", fontSize: 14}}>프로필 편집하기</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity 
-                                style={
-                                    {
-                                        backgroundColor: "#FFFFFF",
-                                        paddingHorizontal: 130,
-                                        paddingVertical: 10,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        borderRadius: 8,
-                                        borderWidth: 4,
-                                    }
-                                }
-                            >
-                                <Text>MESSAGE</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.center}>
-                        <ScrollView>
-                            {ShowTickets()}
-                            <View style={styles.ticket}>
-                                <View style={{flexDirection:'row', padding: 10, borderBottomWidth: 2, borderColor: "#F0F0F0"}}>
-                                        <Text style={{marginLeft: 18, fontSize: 16,}}>Order No238562312</Text>
-                                        <Text style={{marginLeft: 20, fontSize: 13, color: "#909090"}}>2022/03/01</Text>
-                                </View>
-
-                                <View style={{flexDirection: 'row', marginTop: 5}}>
-                                    <Text style={{marginLeft: 30, fontSize: 13,}}>Quantity: 03</Text>
-                                    <Text style={{marginLeft: 36, fontSize: 13,}}>Total Amount: $150</Text>
-                                </View>
-
-                                <View style={{flexDirection: 'row', marginTop: 35}}>
-                                    <Text style={{marginLeft: 30, fontSize: 13,}}>Detail</Text>
-                                    <Text style={{marginLeft: 130, fontSize: 13,}}>Processing</Text>
-                                </View>
-                            </View>
-                                
-                        </ScrollView>
-                    </View>
-                </View>
+            <View style={{width: '100%' , height: 200 , backgroundColor: '#315EFF', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{bottom: 30, fontSize: 25, fontWeight: 'bold', color: 'white' }}>프로필</Text>
+                <Image style={{position:'absolute', top: 90, width: 150, height: 150, borderRadius: 150/2, borderColor: 'white', borderWidth: 5, }}source={require('../../assets/mate_icon.png')}/>  
             </View>
+            
+            
+            <View style={styles.header}>
+                
+                <Text style={styles.user_name_text}>{ShowName()}</Text>
+                <View style={{borderRadius: 10, width: '70%', height: '10%', marginTop : 10, justifyContent:'center', alignItems: 'center', backgroundColor: 'rgba(196, 196, 196, 0.31)'}}>
+                    <Text>{UserInfo.UserInfo[0].status_message === '' ? '소개' : UserInfo.UserInfo[0].status_message}</Text>
+                </View>
+
+                
+                    
+                    <View style={styles.button}>
+
+                        <View style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', borderRadius: 10,  width: '80%', height: '50%', justifyContent: 'center', alignItems: 'center'}}>
+                            <Text>활동 내역</Text>
+                        </View>
+                        <TouchableOpacity 
+                            style={
+                                {
+                                    backgroundColor: 'rgba(196, 196, 196, 0.31)', 
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: 100,
+                                    height: '10%',
+                                    borderRadius: 10,
+                                    
+                                 }
+                            }
+                            onPress={() => {navigation.navigate('FixProfileScreen'); console.log('복귀 하였습니다.')}}
+                            >
+                            <Text style={{color: "black", fontSize: 14,}}>프로필 편집하기</Text>
+                            
+                        </TouchableOpacity>
+            </View>
+
+
+        </View>
             <View style={styles.footer}>
-                    <Fontisto name="comment" size={24} color="black" style={styles.messege_icon}/>
                     
-                    <TouchableOpacity onPress={() => navigation.navigate("Main")}>
-                        <Fontisto name="home" size={24} color="black" style={styles.home_icon}/>
+                    <TouchableOpacity 
+                        style={{paddingHorizontal: 30}}
+                        onPress={() => navigation.navigate("Main")}
+                    >
+                        <Ionicons name="home-outline" size={24} color="black" />
                     </TouchableOpacity>
                     
-                    <TouchableOpacity>
-                        <Fontisto name="plus-a" size={24} color="black" style={styles.plus_icon}/>
+                    <TouchableOpacity 
+                        style={{paddingHorizontal: 30}}
+                        onPress={() => navigation.navigate("TicketScreen")}
+                    >
+                        <Ionicons name="card-outline" size={30} color="black" />
                     </TouchableOpacity>
-                    
-                    <Fontisto name="bookmark" size={24} color="black" style={styles.save_icon}/>
-                    
-                    <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
-                        <Ionicons name="person-outline" size={24} color="black" style={styles.profile_icon}/>
-                    </TouchableOpacity>
+
+                    <View
+                        style={{paddingHorizontal: 30}}
+                        onPress={() => navigation.navigate("ProfileScreen")}
+                        
+                    >
+                        <FontAwesome name="user-circle-o" size={24} color="black" />
+                    </View>
             </View>
         </View>
+
     );
 }
 
 const styles = StyleSheet.create( {
         container: {
             flex: 1,
-            backgroundColor: "#315EFF",
+            backgroundColor: 'white',
         },
         header: {
-            flex: 2.9,
-            justifyContent: 'center',
+            flex: 1,
             alignItems: 'center',
+            top: 40,
+            backgroundColor: 'white',
+
         },
         center: {
-            flex: 2,
+            flex: 1,
             backgroundColor: '#739BE1',
             marginBottom: 25,
             marginHorizontal: 20,
             borderRadius: 15,
         },
         profile_info: {
+            flex:1,
+
             justifyContent: 'center',
             alignItems: 'center',
         },
@@ -209,15 +183,21 @@ const styles = StyleSheet.create( {
             marginLeft: 10
         },
         user_name_text: {
-            fontSize: 36,
-            marginTop: 32,
+            fontSize: 30,
+            marginTop: 10,
             color: 'black',
+
         },
         button: {
-            marginTop: 10,
+            flex: 0.9,
+            width: '90%',
+            alignItems:'center',
+            justifyContent: 'space-evenly',
+
         },
         ticket: {
             backgroundColor: '#FFFFFF',
+
             marginTop: 20,
             paddingVertical: 20,
             marginLeft:15,
@@ -226,24 +206,18 @@ const styles = StyleSheet.create( {
             
         },
         footer: {
-            flex: 0.1,
+            height: 80,
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
             alignItems: 'center',
-            backgroundColor: "#FFFFFF",
+            borderWidth: 0.3,
+
+
         },
 
         messege_icon: {
             marginLeft: 32,
         },
-        home_icon: {
-        },
-        plus_icon: {
-        },
-        save_icon: {
-        },
-        profile_icon: {
-            marginRight: 29,
-        },
+        
     }
 );
