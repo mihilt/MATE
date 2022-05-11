@@ -21,7 +21,9 @@ const BottomSheet = (props) => {
     
     const [ arrivaltime, setArrivalTime ] = useState("");
     const [ departtime, setDepartTime ] = useState("");
-
+    const [ startInputSelect, setStartInputSelect ] = useState([false, false, false, false]); // (인동, 옥계, 본관, 항공관)
+    const [ endInputSelect, setEndInputSelect ] = useState([false, false, false, false]); // (인동, 옥계, 본관, 항공관)
+    const [ rescruitmentButton, setRescruitmentButton ] = useState([false, false, false, false]);
     const screenHeight = Dimensions.get("screen").height;
     const panY = useRef(new Animated.Value(screenHeight)).current;
     const translateY = panY.interpolate({
@@ -70,27 +72,39 @@ const BottomSheet = (props) => {
             Read();
             showCarpoolTicket();
             showTaxiTicket();
+            setStartInputText("");
+            setEndInputText("");
+            setStartInputSelect([false, false, false, false]);
+            setEndInputSelect([false, false, false, false]);
+            setRescruitmentButton([false, false, false, false]);
+            setArrivalTime("");
+            setDepartTime("");
+           
         })
     }
 
     const setStartLocalSelect = () => {
         if (button === 1) {
             setStartInputText('인동');
+            setStartInputSelect([true, false, false, false]);
             console.log('modal console 출발지: ', startInputText);
             console.log(button);
         }
         else if (button === 2) {
             setStartInputText('옥계');
+            setStartInputSelect([false, true, false, false]);
             console.log('modal console 출발지: ', startInputText);
             console.log(button);
         }
         else if (button === 3) {
             setStartInputText('본관');
+            setStartInputSelect([false, false, true, false]);
             console.log('modal console 출발지: ', startInputText);
             console.log(button);
         }
         else if (button === 4) {
             setStartInputText('항공관');
+            setStartInputSelect([false, false, false, true]);
             console.log('modal console 출발지: ', startInputText);
             console.log(button);
         }
@@ -99,25 +113,343 @@ const BottomSheet = (props) => {
     const setEndLocalSelect = () => {
         if (button === 1) {
             setEndInputText('인동');
+            setEndInputSelect([true, false, false, false]);
             console.log('modal console 도착지: ', endInputText);
             console.log(button);
         }
         else if (button === 2) {
             setEndInputText('옥계');
+            setEndInputSelect([false, true, false, false]);
             console.log('modal console 도착지: ', endInputText);
             console.log(button);
         }
         else if (button === 3) {
             setEndInputText('본관');
+            setEndInputSelect([false, false, true, false]);
             console.log('modal console 도착지: ', endInputText);
             console.log(button);
         }
         else if (button === 4) {
             setEndInputText('항공관');
+            setEndInputSelect([false, false, false, true]);
             console.log('modal console 도착지: ', endInputText);
             console.log(button);
         }
     }
+
+
+    const StartInputButtonOneColor = () => {
+        if (startInputSelect[0] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+    
+    const StartInputButtonTwoColor = () => {
+        if (startInputSelect[1] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+
+    const StartInputButtonThreeColor = () => {
+        if (startInputSelect[2] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+
+    const StartInputButtonFourColor = () => {
+        if (startInputSelect[3] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+
+    const EndInputButtonOneColor = () => {
+        if (endInputSelect[0] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+    
+    const EndInputButtonTwoColor = () => {
+        if (endInputSelect[1] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+
+    const EndInputButtonThreeColor = () => {
+        if (endInputSelect[2] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+
+    const EndInputButtonFourColor = () => {
+        if (endInputSelect[3] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    width: 81, 
+                    height: 27, 
+                    borderRadius: 30, 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                }
+            );
+        }
+    }
+
+    const RecruitmentButtonOneColor = () => {
+        if (rescruitmentButton[0] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        }
+    }
+
+    const RecruitmentButtonTwoColor = () => {
+        if (rescruitmentButton[1] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        }
+    }
+
+    const RecruitmentButtonThreeColor = () => {
+        if (rescruitmentButton[2] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        }
+    }
+
+    const RecruitmentButtonFourColor = () => {
+        if (rescruitmentButton[3] === true) {
+            return (
+                {
+                    backgroundColor: '#315EFF',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        } else {
+            return (
+                {
+                    backgroundColor: 'rgba(196, 196, 196, 0.31)',
+                    borderRadius: 30,
+                    width: 30,
+                    height: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            );
+        }
+    }
+
 
     const loacte = ['경운대학교', '인동', '옥계']; // 지역 선택 목록들
     let button = 0;
@@ -145,17 +477,17 @@ const BottomSheet = (props) => {
                             <View style={{marginTop: 10, marginRight: 60, flexDirection : 'row', justifyContent:'space-between', alignItems: 'center', height: '40%'}}>
                             <FontAwesome style={{backgroundColor: 'white',marginLeft: 20,}} name="circle" size={15} color="#587DFF" />
                             <Text>출발지</Text>
-                            <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>인동</Text>
+                            <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={StartInputButtonOneColor()}>
+                                <Text style={startInputSelect[0] ? {color: 'white'} : {color: 'black'}}>인동</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>옥계</Text>
+                            <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={StartInputButtonTwoColor()}>
+                                <Text style={startInputSelect[1] ? {color: 'white'} : {color: 'black'}}>옥계</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>본관</Text>
+                            <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={StartInputButtonThreeColor()}>
+                                <Text style={startInputSelect[2] ? {color: 'white'} : {color: 'black'}}>본관</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>항공관</Text>
+                            <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={StartInputButtonFourColor()}>
+                                <Text style={startInputSelect[3] ? {color: 'white'} : {color: 'black'}}>항공관</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -163,17 +495,17 @@ const BottomSheet = (props) => {
                             <View style={{ marginRight: 60, flexDirection : 'row', justifyContent:'space-between', alignItems: 'center', height: '20%' }}>
                             <FontAwesome style={{backgroundColor: 'white',marginLeft: 20,}} name="circle" size={15} color="#587DFF" />
                             <Text>도착지</Text>
-                            <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>인동</Text>
+                            <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={EndInputButtonOneColor()}>
+                                <Text style={endInputSelect[0] ? {color: 'white'} : {color: 'black'}}>인동</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>옥계</Text>
+                            <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={EndInputButtonTwoColor()}>
+                                <Text style={endInputSelect[1] ? {color: 'white'} : {color: 'black'}}>옥계</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>본관</Text>
+                            <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={EndInputButtonThreeColor()}>
+                                <Text style={endInputSelect[2] ? {color: 'white'} : {color: 'black'}}>본관</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 4; setEndLocalSelect();}} style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', width: 81, height: 27, borderRadius: 30, justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: 'black'}}>항공관</Text>
+                            <TouchableOpacity onPress={() => { button = 4; setEndLocalSelect();}} style={EndInputButtonFourColor()}>
+                                <Text style={endInputSelect[3] ? {color: 'white'} : {color: 'black'}}>항공관</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -187,23 +519,39 @@ const BottomSheet = (props) => {
                             </View> 
 
                            <TouchableOpacity 
-                                onPress={() => UserInfo.Driver[0].recruitment_count = 1}
-                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black'}}>1</Text>
+                                onPress={() => {
+                                            UserInfo.Driver[0].recruitment_count = 1;
+                                            setRescruitmentButton([true, false, false, false]);
+                                        }
+                                    }
+                                style={RecruitmentButtonOneColor()}><Text style={rescruitmentButton[0] ? {color: 'white'} : {color: 'black'}}>1</Text>
                             </TouchableOpacity>
 
                            <TouchableOpacity 
-                                onPress={() => UserInfo.Driver[0].recruitment_count = 2}
-                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black'}}>2</Text>
+                                onPress={() => {
+                                            UserInfo.Driver[0].recruitment_count = 2;
+                                            setRescruitmentButton([false, true, false, false]);
+                                        }
+                                    }
+                                style={RecruitmentButtonTwoColor()}><Text style={rescruitmentButton[1] ? {color: 'white'} : {color: 'black'}}>2</Text>
                             </TouchableOpacity>
 
                            <TouchableOpacity 
-                                onPress={() => UserInfo.Driver[0].recruitment_count = 3}
-                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black'}}>3</Text>
+                                onPress={() => {
+                                        UserInfo.Driver[0].recruitment_count = 3;
+                                        setRescruitmentButton([false, false, true, false]);
+                                    }
+                                }
+                                style={RecruitmentButtonThreeColor()}><Text style={rescruitmentButton[2] ? {color: 'white'} : {color: 'black'}}>3</Text>
                             </TouchableOpacity>
 
                            <TouchableOpacity 
-                                onPress={() => UserInfo.Driver[0].recruitment_count = 4}
-                                style= {{backgroundColor: "rgba(196, 196, 196, 0.31)", borderRadius: 30, width: 30, height: 30, justifyContent: 'center', alignItems: 'center'}}><Text style={{color : 'black',}}>4</Text>
+                                onPress={() => {
+                                        UserInfo.Driver[0].recruitment_count = 4;
+                                        setRescruitmentButton([false, false, false, true]);
+                                    }
+                                }
+                                style={RecruitmentButtonFourColor()}><Text style={rescruitmentButton[3] ? {color: 'white'} : {color: 'black'}}>4</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -213,7 +561,7 @@ const BottomSheet = (props) => {
                             </View> 
                             <Input 
                                 containerStyle={{width: '65%', }} 
-                                value={CarpoolTicket.CarpoolTicket[0].arrival_time}
+                                value={arrivaltime}
                                 onChangeText={(text) => setArrivalTime(CarpoolTicket.CarpoolTicket[0].arrival_time = text)}
                             />
                         </View>

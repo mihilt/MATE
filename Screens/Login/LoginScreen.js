@@ -10,8 +10,10 @@ import { doc, getDoc, getDocFromCache } from 'firebase/firestore';
 // 회원정보 기본데이터 틀(기반) 불러오기
 import { UserInfo } from '../../Database/Data/User/userInfo';
 
+
 const LoginScreen = ({navigation}) => {
     const [ studentNumber, SetStudentNumber ] = useState(''); // 학번
+    const [ studentName, SetStudentName ] = useState(''); // 성명
 
     // 회원정보 기본데이터를 UserInfoDefaultData 변수로 선언 (로그인 성공하면 학번, 학과, 이름 값을 넣을 예정 (티켓 생성 할때 유용 할것 같다,))
     const DriverProfile = UserInfo.Driver[0];
@@ -57,7 +59,7 @@ const LoginScreen = ({navigation}) => {
 
       for (let i = 0; i < UserInfo.Driver_login.length; i++) {
         console.log(UserInfo.Driver_login[i].student_number);
-        if (UserInfo.Driver_login[i].student_number === studentNumber) {
+        if (UserInfo.Driver_login[i].student_number === studentNumber && UserInfo.Driver_login[i].nickname === studentName) {
           
           // 로그인 성공
           DriverProfile.nickname = UserInfo.Driver_login[i].nickname;
@@ -74,7 +76,7 @@ const LoginScreen = ({navigation}) => {
       }
       for (let i = 0; i < UserInfo.Pesinger_login.length; i++) {
         console.log(UserInfo.Pesinger_login[i].student_number);
-        if (UserInfo.Pesinger_login[i].student_number === studentNumber) {
+        if (UserInfo.Pesinger_login[i].student_number === studentNumber && UserInfo.Pesinger_login[i].nickname === studentName) {
           
           // 로그인 성공
           PesingerProfile.nickname = UserInfo.Pesinger_login[i].nickname;
@@ -106,6 +108,13 @@ const LoginScreen = ({navigation}) => {
           value={studentNumber}
           containerStyle={{width: '85%', marginRight: 10}}
           onChangeText={Text => SetStudentNumber(Text)}
+        />
+        <Input
+          placeholder='성명'
+          leftIcon={{ type: 'material'}}   //name: 에 알맞는 명령어 입력시 아이콘 변경됨
+          value={studentName}
+          containerStyle={{width: '85%', marginRight: 10}}
+          onChangeText={Text => SetStudentName(Text)}
         />
       </View>
       <View style={styles.button_container}>

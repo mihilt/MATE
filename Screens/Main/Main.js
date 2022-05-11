@@ -200,7 +200,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             showCarpoolTicket();
             showTaxiTicket();
             setRefresh(false);
-        }, 4000);
+        }, 500);
     }
     
     // 티켓을 보여주는 부분(Ticket UI)

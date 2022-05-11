@@ -9,8 +9,9 @@ export const UserInfo = {
             student_number: 0, // 학번
             department: "", // 학과
             status_message: "", // 상태메세지
-            //keyword: "", // 키워드
+            kakao_id: "", // 카카오아이디
             auth: "pesinger",
+            
         },
 
         {
@@ -19,6 +20,7 @@ export const UserInfo = {
             department: "", // 학과
             auth: "캬풀", // 카풀인지 택시인지 카풀이면 티켓 생성 09시까지 가능
             status_message: "driver", // 상태메세지
+            kakao_id: "" // 카카오아이디
         }
     ],
 
@@ -31,6 +33,7 @@ export const UserInfo = {
             status_message: "", // 상태메세지
             //keyword: "", // 키워드
             auth: "",
+            kakao_id: "" // 카카오아이디
         },
     ],
     Driver : [
@@ -42,6 +45,7 @@ export const UserInfo = {
             //keyword: "", // 키워드
             recruitment_count: 0,
             auth: "",
+            kakao_id: "" // 카카오아이디
             
         },
     ],

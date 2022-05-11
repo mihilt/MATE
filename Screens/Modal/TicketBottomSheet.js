@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     bottomSheetContainer: {
-        height: '60%',
+        height: 500,
         // justifyContent: "center",
         // alignItems: "center",
         backgroundColor: 'white',
