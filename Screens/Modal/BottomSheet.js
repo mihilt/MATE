@@ -19,13 +19,17 @@ const BottomSheet = (props) => {
     const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read, showCarpoolTicket, showTaxiTicket} = props;
     //const [ button, setButton ] = useState(0);
     
+    const [ studentNumber, SetStudentNumber ] = useState("");
     const [ arrivaltime, setArrivalTime ] = useState("");
     const [ departtime, setDepartTime ] = useState("");
     const [ startInputSelect, setStartInputSelect ] = useState([false, false, false, false]); // (인동, 옥계, 본관, 항공관)
     const [ endInputSelect, setEndInputSelect ] = useState([false, false, false, false]); // (인동, 옥계, 본관, 항공관)
     const [ rescruitmentButton, setRescruitmentButton ] = useState([false, false, false, false]);
+    
     const screenHeight = Dimensions.get("screen").height;
+    
     const panY = useRef(new Animated.Value(screenHeight)).current;
+    
     const translateY = panY.interpolate({
         inputRange: [-1, 0, 1],
         outputRange: [0, 0, 1],
@@ -79,7 +83,7 @@ const BottomSheet = (props) => {
             setRescruitmentButton([false, false, false, false]);
             setArrivalTime("");
             setDepartTime("");
-           
+            SetStudentNumber("");
         })
     }
 
@@ -589,7 +593,26 @@ const BottomSheet = (props) => {
                     </View>
 
                     <View style={{flex:0.2, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
-                        <TouchableOpacity onPress={() => { Create(); closeModal(); alert("티켓 생성 하였습니다.");}} style={{backgroundColor: 'white', borderRadius: 10, borderWidth: 2, borderColor: 'black', width: 337, height: 60, alignItems :'center', justifyContent: 'center' }}><Text style={{color: 'black'}}>생성하기</Text></TouchableOpacity>
+                        <TouchableOpacity 
+                            onPress={() => { 
+                                if (startInputText != "" && endInputText != "" && arrivaltime != "" && CarpoolTicket.CarpoolTicket[0].open_chat_password != "" && CarpoolTicket.CarpoolTicket[0].open_chat != "") {
+                                    
+                                    Create();
+                                    console.log('학번:', studentNumber);
+                                    CarpoolTicket.CarpoolTicket[0].student_number = UserInfo.Driver[0].student_number;
+                                    closeModal();
+                                    alert("티켓 생성 하였습니다.");
+                                } else {
+                                    alert("입력 항목 작성 안한 부분 있습니다.");
+                                }
+                            }} 
+                            style={
+                                {
+                                    backgroundColor: 'white', borderRadius: 10, borderWidth: 2, borderColor: 'black', width: 337, height: 60, alignItems :'center', justifyContent: 'center' 
+                                }
+                            }>
+                                <Text style={{color: 'black'}}>생성하기</Text>
+                        </TouchableOpacity>
                     </View>
 
                 </Animated.View>

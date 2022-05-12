@@ -4,9 +4,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput 
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 //firebase
 import { db } from '../../Database/DatabaseConfig/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayRemove } from 'firebase/firestore';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
 import { useIsFocused } from '@react-navigation/native';
@@ -14,6 +15,7 @@ import { useIsFocused } from '@react-navigation/native';
 export default function ProfileScreen({navigation})  {
 
     const [text, setText] = useState('');
+    const [ deleted, setDeleted ] = useState(false);
 
     const isFocused = useIsFocused();
     
@@ -59,6 +61,34 @@ export default function ProfileScreen({navigation})  {
         );
     }
 
+    const DeleteAccount = () => {
+        if (UserInfo.Driver[0].auth === 'driver') {
+            const myDoc = doc(db, "CollectionNameCarpoolTicket", "UserInfo");
+
+            console.log('드라이버 회원탈퇴 정보 : ', UserInfo.Driver[0]);
+            updateDoc(myDoc, {DriverInfo: arrayRemove(UserInfo.Driver[0])});
+            
+            alert('회원탈퇴 완료 되었습니다.');
+            setDeleted(true);
+
+            navigation.navigate("StudendNumberLoginScreen")
+        }
+        else if (UserInfo.Pesinger[0].auth === 'pesinger') {
+            console.log('패신저 회원탈퇴 정보 : ', UserInfo.Pesinger[0]);
+            const myDoc = doc(db, "CollectionNameCarpoolTicket", "UserInfo");
+           
+            updateDoc(myDoc, {PesingerInfo : arrayRemove(UserInfo.Pesinger[0])});
+           
+            alert('회원탈퇴 완료 되었습니다.');
+            setDeleted(true)
+
+            navigation.navigate("StudendNumberLoginScreen")
+        }
+        else {
+            alert('회원탈퇴 실패 하였습니다.');
+        }
+    }
+
     // 상태메시지 입력창 
     const onChangeText = (value) => {
         setText(value);
@@ -85,64 +115,67 @@ export default function ProfileScreen({navigation})  {
             </View>
             
             
-            <View style={styles.header}>
-                
+            <View style={styles.body}>
+
                 <Text style={styles.user_name_text}>{ShowName()}</Text>
-                <View style={{borderRadius: 10, width: '70%', height: '10%', marginTop : 10, justifyContent:'center', alignItems: 'center', backgroundColor: 'rgba(196, 196, 196, 0.31)'}}>
-                    <Text>{UserInfo.UserInfo[0].status_message === '' ? '소개' : UserInfo.UserInfo[0].status_message}</Text>
-                </View>
 
-                
-                    
-                    <View style={styles.button}>
+                 <View style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', borderRadius: 10,  width: '100%', height: '50%', justifyContent: 'center', alignItems: 'center'}}>
+                    <Text>티켓 설명</Text>
+                </View> 
 
-                        <View style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', borderRadius: 10,  width: '80%', height: '50%', justifyContent: 'center', alignItems: 'center'}}>
-                            <Text>활동 내역</Text>
-                        </View>
-                        <TouchableOpacity 
-                            style={
-                                {
-                                    backgroundColor: 'rgba(196, 196, 196, 0.31)', 
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: 100,
-                                    height: '10%',
-                                    borderRadius: 10,
-                                    
-                                 }
-                            }
-                            onPress={() => {navigation.navigate('FixProfileScreen'); console.log('복귀 하였습니다.')}}
-                            >
-                            <Text style={{color: "black", fontSize: 14,}}>프로필 편집하기</Text>
-                            
-                        </TouchableOpacity>
-            </View>
+                <TouchableOpacity style = {styles.button}
+                    onPress={() => {
+                        navigation.navigate("StudendNumberLoginScreen")
+                        if (UserInfo.Driver[0].auth === 'driver') {
+                            UserInfo.Driver[0] = {
+                                nickname: "", // 성명
+                                student_number: "", // 학번
+                                department: "", // 학과
+                                status_message: "", // 상태메세지
+                                //keyword: "", // 키워드
+                                recruitment_count: 0,
+                                auth: "",
+                                kakao_id: "" // 카카오아이디
+                                
+                            };
+                        } else {
+                            UserInfo.Pesinger[0] = {
+                                nickname: "", // 성명
+                                student_number: "", // 학번
+                                department: "", // 학과
+                                status_message: "", // 상태메세지
+                                //keyword: "", // 키워드
+                                recruitment_count: 0,
+                                auth: "",
+                                kakao_id: "" // 카카오아이디
+                                
+                            };
+                        }
+                    }}>
+                    <Text style = {styles.button_text}>로그아웃</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    onPress={() => DeleteAccount()}
+                    style = {styles.button}>
+                    <Text  style = {styles.button_text}>회원탈퇴</Text>
+                </TouchableOpacity>        
 
 
         </View>
             <View style={styles.footer}>
                     
-                    <TouchableOpacity 
-                        style={{paddingHorizontal: 30}}
-                        onPress={() => navigation.navigate("Main")}
-                    >
-                        <Ionicons name="home-outline" size={24} color="black" />
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                        style={{paddingHorizontal: 30}}
-                        onPress={() => navigation.navigate("TicketScreen")}
-                    >
-                        <Ionicons name="card-outline" size={30} color="black" />
+                    <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+                    <Ionicons name="home-outline" size={24} color="black" />
                     </TouchableOpacity>
 
-                    <View
-                        style={{paddingHorizontal: 30}}
-                        onPress={() => navigation.navigate("ProfileScreen")}
-                        
-                    >
+                    <TouchableOpacity onPress={() => navigation.navigate("TicKetScreen")}>
+                        <Ionicons name="card-outline" size={24} color="black" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
                         <FontAwesome name="user-circle-o" size={24} color="black" />
-                    </View>
+                    </TouchableOpacity>
             </View>
         </View>
 
@@ -154,11 +187,12 @@ const styles = StyleSheet.create( {
             flex: 1,
             backgroundColor: 'white',
         },
-        header: {
+        body: {
             flex: 1,
             alignItems: 'center',
-            top: 40,
-            backgroundColor: 'white',
+            margin: 40,
+
+
 
         },
         center: {
@@ -170,7 +204,6 @@ const styles = StyleSheet.create( {
         },
         profile_info: {
             flex:1,
-
             justifyContent: 'center',
             alignItems: 'center',
         },
@@ -187,17 +220,30 @@ const styles = StyleSheet.create( {
             marginTop: 10,
             color: 'black',
 
-        },
-        button: {
-            flex: 0.9,
-            width: '90%',
-            alignItems:'center',
-            justifyContent: 'space-evenly',
 
         },
+
+        button: {
+            width: 300,
+            height: 40,
+            borderWidth: 0.5,
+            borderRadius: 4,
+            margin: 3,
+            top: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(196, 196, 196, 0.2)'
+            
+        },
+     
+        button_text: {
+            color: 'black',
+            fontWeight: 'bold',
+
+        },
+
         ticket: {
             backgroundColor: '#FFFFFF',
-
             marginTop: 20,
             paddingVertical: 20,
             marginLeft:15,
@@ -215,9 +261,6 @@ const styles = StyleSheet.create( {
 
         },
 
-        messege_icon: {
-            marginLeft: 32,
-        },
         
     }
 );

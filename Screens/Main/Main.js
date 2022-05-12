@@ -152,7 +152,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
                     docCarpoolData.CarpoolTicket[0].recruitment_count = UserInfo.Driver[0].recruitment_count; // 패신저(탑슨자) 모집인원 1~4명 모집
                     docCarpoolData.CarpoolTicket[0].pesinger_count = 0; // 패신저 탑승할때 마다 1 카운트 됨.
-                    
+                    docCarpoolData.CarpoolTicket[0].student_number = UserInfo.Driver[0].student_number;
     
                     setDoc(myDoc, {CarpoolCount : carpoolCount, CarpoolTicket : arrayUnion(docCarpoolData.CarpoolTicket[0]) }, {merge: true})
                     .then(() => {

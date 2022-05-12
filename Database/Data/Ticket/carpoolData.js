@@ -15,6 +15,7 @@ const CarpoolTicket = {
             "open_chat": "",
             "open_chat_password": "",
             "pesinger_info": [],
+            "student_number": "",
         },
     ],
 };

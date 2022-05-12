@@ -87,12 +87,12 @@ export default function SignUpScreen({navigation}) {
             if (nickname != "" && studentNumber.length === 9 && department != "") {
                 console.log('패신저 : ', Pesinger_login);
                 for (let i = 0; i < Driver_login.length; i++) {
-                    if ((studentNumber === Driver_login[i].student_number) && (nickname === Driver_login[i].nickname)) {
+                    if ((studentNumber === Driver_login[i].student_number)) {
                         alert('회원가입 하신적 있습니다.');
                         return ;
                     }
                 }for (let i = 0; i < Pesinger_login.length; i++) {
-                    if ((studentNumber === Pesinger_login[i].student_number) && (nickname === Pesinger_login[i].nickname)) {
+                    if ((studentNumber === Pesinger_login[i].student_number)) {
                         alert('회원가입 하신적 있습니다.');
                         return ;
                     }
@@ -103,18 +103,20 @@ export default function SignUpScreen({navigation}) {
                     alert("Successed Sign Up");
     
                     // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
-                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
-                    SetStudentNumber(""); 
-                    SetDepartment("");
-                    SetNickname("");
-                    setKakaoId("");
-
-                    driver[0].name = nickname;
+                
+                    driver[0].nickname = nickname;
                     driver[0].student_number = studentNumber;
                     driver[0].department = department;
                     driver[0].auth = button;
                     driver[0].kakao_id = kakaoId;
                     //console.log('드라이버 : ', driver[0]);
+
+                      // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
+                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
+                    SetStudentNumber(""); 
+                    SetDepartment("");
+                    SetNickname("");
+                
                     Read();
                     // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
                     navigation.navigate("StudendNumberLoginScreen");
@@ -134,12 +136,12 @@ export default function SignUpScreen({navigation}) {
             if (nickname != "" && studentNumber.length === 9 && department != "" ) {
                 
                 for (let i = 0; i < Driver_login.length; i++) {
-                    if ((studentNumber === Driver_login[i].student_number) && (nickname === Driver_login[i].nickname)) {
+                    if ((studentNumber === Driver_login[i].student_number)) {
                         alert('회원가입 하신적 있습니다.');
                         return ;
                     }
                 }for (let i = 0; i < Pesinger_login.length; i++) {
-                    if ((studentNumber === Pesinger_login[i].student_number) && (nickname === Pesinger_login[i].nickname)) {
+                    if ((studentNumber === Pesinger_login[i].student_number)) {
                         alert('회원가입 하신적 있습니다.');
                         return ;
                     }
@@ -151,19 +153,19 @@ export default function SignUpScreen({navigation}) {
                     // 회원가입 성공 할 경우 실행한다.
                     alert("Successed Sign Up");
     
-                    // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
-                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
-                    SetStudentNumber(""); 
-                    SetDepartment("");
-                    SetNickname("");
-                    setKakaoId("");
                     
-                    pesinger[0].name = nickname;
+                    pesinger[0].nickname = nickname;
                     pesinger[0].student_number = studentNumber;
                     pesinger[0].department = department;
                     pesinger[0].auth = button;
                     pesinger[0].kakao_id = kakaoId;
                     //console.log('드라이버 : ', driver[0]);
+                      // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
+                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
+                    SetStudentNumber(""); 
+                    SetDepartment("");
+                    SetNickname("");
+
                     Read();
                     // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
                     navigation.navigate("StudendNumberLoginScreen");

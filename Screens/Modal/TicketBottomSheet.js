@@ -171,23 +171,17 @@ const TicketBottomSheet = (props) => {
     // 탑승하기 버튼 클릭하면 탑승자 추가 된다.
     const addRecruitment = () => {
         
-        if (data === undefined) {
+        if (data === undefined && data.pesinger_info === null) {
             if ((defult_data.ticket_name === '카풀') && (UserInfo.Pesinger[0].auth === 'pesinger')) {
                 const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
                 
                 console.log(UserInfo.Pesinger[0].student_number);
 
-                for (let i = 0; i < default_data.recruitment_count; i++) {
-                    if (default_data.pesinger_info[i] === UserInfo.Pesinger[0].student_number) {
-                        alert('탑승 한적 있습니다.');
-                        return;
-                    } 
-                }
                 if (default_data.pesinger_count < default_data.recruitment_count) {
                     updateDoc(myDoc, { CarpoolTicket : arrayRemove(default_Pdata) });
                     default_data.pesinger_count += 1;
-                    default_data.pesinger_info.push(UserInfo.Pesinger[0].student_number);
-                    updateDoc(myDoc, { CarpoolTicket : arrayUnion(default_data)});
+                    default_data.pesinger_info.push({ student_number : UserInfo.Pesinger[0].student_number, nickname : UserInfo.Pesinger[0].nickname});
+                    updateDoc(myDoc, { CarpoolTicket : arrayUnion(default_data) });
                     alert('탑승인원 추가 하였습니다.');
                     Read();
                     showCarpoolTicket();
@@ -202,8 +196,9 @@ const TicketBottomSheet = (props) => {
                 if (data.pesinger_count >= data.recruitment_count) {
                     alert('탑승인원 초과 했습니다.')
                 }
-                for (let i = 0; i < data.recruitment_count; i++) {
-                    if (data.pesinger_info[i] === UserInfo.Pesinger[0].student_number) {
+
+                for (let i = 0; i < data.pesinger_count; i++) {
+                    if (data.pesinger_info[i].student_number === UserInfo.Pesinger[0].student_number) {
                         alert('탑승 한적 있습니다.');
                         return;
                     } 
@@ -211,7 +206,7 @@ const TicketBottomSheet = (props) => {
                 if (data.pesinger_count < data.recruitment_count) {
                     updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
                     data.pesinger_count += 1;
-                    data.pesinger_info.push(UserInfo.Pesinger[0].student_number);
+                    data.pesinger_info.push({ student_number : UserInfo.Pesinger[0].student_number, nickname : UserInfo.Pesinger[0].nickname});
                     updateDoc(myDoc, { CarpoolTicket : arrayUnion(data)});
                     alert('탑승인원 추가 하였습니다.');
                     Read();
@@ -225,8 +220,8 @@ const TicketBottomSheet = (props) => {
                 if (data.pesinger_count >= data.recruitment_count) {
                     alert('탑승인원 초과 했습니다.')
                 }
-                for (let i = 0; i < data.recruitment_count; i++) {
-                    if (data.pesinger_info[i] === UserInfo.Driver[0].student_number) {
+                for (let i = 0; i < data.pesinger_count; i++) {
+                    if (data.pesinger_info[i].student_number === UserInfo.Driver[0].student_number) {
                         alert('탑승 한적 있습니다.');
                         return;
                     } 
@@ -234,7 +229,7 @@ const TicketBottomSheet = (props) => {
                 if (data.pesinger_count < data.recruitment_count) {
                     updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
                     data.pesinger_count += 1;
-                    data.pesinger_info.push(UserInfo.Driver[0].student_number);
+                    data.pesinger_info.push({ student_number : UserInfo.Driver[0].student_number, nickname : UserInfo.Driver[0].nickname});
                     updateDoc(myDoc, { CarpoolTicket : arrayUnion(data)});
                     alert('탑승인원 추가 하였습니다.');
                     Read();
@@ -298,36 +293,19 @@ const TicketBottomSheet = (props) => {
         }
 
     }
-
+/*
     // 수정 모드 : 수정을 출발지, 도착지만 수정 하겠다.
-    const updateTextDisplay = () => {
+    const UpdateTextDisplay = () => {
     
+        if (data.)
         return (
             <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
                 <Text style={{fontSize: 22}}>수정 하기</Text>
-                <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
-                    <Text style={{marginRight: 15, marginLeft: 25}}>출발지 선택</Text>
-                    <Fontisto name="arrow-right-l" size={24} color="black" />
-                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginLeft: 10, marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setArrivalUpdate(1)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>경운대학교</Text></TouchableOpacity>
-                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setArrivalUpdate(2)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>인동</Text></TouchableOpacity>
-                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setArrivalUpdate(3)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>옥계</Text></TouchableOpacity>
-
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
-                    <Text style={{marginRight: 10, }}>도착지 선택</Text>
-                    <Fontisto name="arrow-right-l" size={24} color="black" />
-                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginLeft: 10, marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setDepartUpdate(1)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>경운대학교</Text></TouchableOpacity>
-                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setDepartUpdate(2)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>인동</Text></TouchableOpacity>
-                    <TouchableOpacity style={{backgroundColor: '#315EFF', marginRight: 10, padding: 5, borderRadius: 10}}onPress={() => setDepartUpdate(3)}><Text style={{marginHorizontal: 10, color: '#FFFFFF'}}>옥계</Text></TouchableOpacity>
-                </View>
-                <View style={{marginTop: 20, backgroundColor: '#315EFF', padding: 10, paddingHorizontal: 20, borderRadius: 13}}>
-                    <TouchableOpacity onPress={() => setUpdate()}><Text style={{fontSize: 20, color: '#FFFFFF'}}>수정</Text></TouchableOpacity>
-                </View>
             </View>
              
         );    
     }
-
+*/
     const RecruitmentCountOneColor = () => {
         if (data === undefined) {
             if (default_data.recruitment_count != 1) {

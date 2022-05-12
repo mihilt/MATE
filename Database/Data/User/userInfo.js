@@ -31,7 +31,6 @@ export const UserInfo = {
             student_number: "", // 학번
             department: "", // 학과
             status_message: "", // 상태메세지
-            //keyword: "", // 키워드
             auth: "",
             kakao_id: "" // 카카오아이디
         },
@@ -42,8 +41,6 @@ export const UserInfo = {
             student_number: "", // 학번
             department: "", // 학과
             status_message: "", // 상태메세지
-            //keyword: "", // 키워드
-            recruitment_count: 0,
             auth: "",
             kakao_id: "" // 카카오아이디
             
