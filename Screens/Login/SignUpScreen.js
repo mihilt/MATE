@@ -14,6 +14,9 @@ import { doc, setDoc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
 
 // 뒤로가기 아이콘
 import { Ionicons } from '@expo/vector-icons'; 
+import { KeyboardAvoidingView } from "react-native";
+import { TouchableWithoutFeedback } from "react-native";
+import { Keyboard } from "react-native";
 
 
 export default function SignUpScreen({navigation}) {
@@ -223,72 +226,81 @@ export default function SignUpScreen({navigation}) {
     };
 
     return (
-        <View style={styles.container}>
-             <TouchableOpacity 
-                onPress={() => navigation.navigate("StudendNumberLoginScreen")}
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "heigh"}
+            style={styles.container}
+        >
+            <TouchableWithoutFeedback
+                onPress={Keyboard.dismiss}
             >
-                <View style={{marginTop: '12%', marginLeft:'5%', width: '10%' }}>
-                    <Ionicons name="arrow-back" size={35} color="black" />
-                </View>
-            </TouchableOpacity>
-            <View style={styles.header}>
-                <View style={styles.title}>
-                    <Text style={styles.title_text}>회원가입</Text>
-                </View>
-            </View>
-
-            <View style={styles.input_container}>
-                
-                <TextInput
-                    style={styles.text_input}
-                    placeholder='이름'
-                    value={nickname}
-                    onChangeText={Text => SetNickname(Text)}
-                    
-                />
-
-                <TextInput
-                    placeholder='학번'
-                    style={styles.text_input}
-                    value={studentNumber}
-                    maxLength={9}
-                    onChangeText={Text => SetStudentNumber(Text)}
-                />
-
-                <TextInput 
-                    placeholder='학과'
-                    style={styles.text_input}
-                    value={department}
-                    onChangeText={Text => SetDepartment(Text)}
-                />
-
-                <TextInput 
-                    placeholder='카카오아이디'
-                    style={styles.text_input}
-                    value={kakaoId}
-                    onChangeText={Text => setKakaoId(Text)}
-                />
-                
-                <View style={styles.select_button_container}>
-                    {DriverBtn()}
-                    {PesingerBtn()}
-                </View>
-            </View>
-            
-
-            <View style={styles.button_container}>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                        UserInfoCreate();
-                    }}
-                > 
-                    <View>
-                        <Text style={{color: '#FFFFFF', fontSize: 24}}>가입완료</Text>
+                <View style={styles.container}>
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate("StudendNumberLoginScreen")}
+                    >
+                        <View style={{marginTop: '12%', marginLeft:'5%', width: '10%' }}>
+                            <Ionicons name="arrow-back" size={35} color="black" />
+                        </View>
+                    </TouchableOpacity>
+                    <View style={styles.header}>
+                        <View style={styles.title}>
+                            <Text style={styles.title_text}>회원가입</Text>
+                        </View>
                     </View>
-                </TouchableOpacity>
-            </View>
-        </View>
+
+                    <View style={styles.input_container}>
+                        
+                        <TextInput
+                            style={styles.text_input}
+                            placeholder='이름'
+                            value={nickname}
+                            onChangeText={Text => SetNickname(Text)}
+                            
+                        />
+
+                        <TextInput
+                            placeholder='학번'
+                            style={styles.text_input}
+                            value={studentNumber}
+                            maxLength={9}
+                            onChangeText={Text => SetStudentNumber(Text)}
+                        />
+
+                        <TextInput 
+                            placeholder='학과'
+                            style={styles.text_input}
+                            value={department}
+                            onChangeText={Text => SetDepartment(Text)}
+                        />
+
+                        <TextInput 
+                            placeholder='카카오아이디'
+                            style={styles.text_input}
+                            value={kakaoId}
+                            onChangeText={Text => setKakaoId(Text)}
+                        />
+                        
+                        <View style={styles.select_button_container}>
+                            {DriverBtn()}
+                            {PesingerBtn()}
+                        </View>
+                    </View>
+                
+
+                    <View style={styles.button_container}>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={() => {
+                                UserInfoCreate();
+                            }}
+                        > 
+                            <View>
+                                <Text style={{color: '#FFFFFF', fontSize: 24}}>가입완료</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -296,7 +308,6 @@ const styles = StyleSheet.create(
     {
         container: {
             flex: 1,
-            
         },
         header: {
             flexDirection: 'row', // 중심축 변경
@@ -305,6 +316,10 @@ const styles = StyleSheet.create(
             alignItems: 'center',
         },
 
+        keyboard_container: {
+            flex: 1,
+            backgroundColor: 'yellow'
+        },
         title: {
 
         },
@@ -316,7 +331,7 @@ const styles = StyleSheet.create(
         },
 
         input_container: {
-            flex: 0.8,
+            flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
             
@@ -331,7 +346,7 @@ const styles = StyleSheet.create(
         },
 
         button_container: {
-            flex: 0.2,
+            flex: 0.8,
             justifyContent: 'center',
             alignItems: 'center',
         },
