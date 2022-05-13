@@ -19,7 +19,6 @@ import { CarpoolTicket } from'../../Database/Data/Ticket/carpoolData';
 import { TaxiTicket } from '../../Database/Data/Ticket/taxiData';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
-
 import BottomSheet from '../Modal/BottomSheet';
 import TicketBottomSheet from '../Modal/TicketBottomSheet';
 
@@ -177,6 +176,8 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     docCarpoolData.CarpoolTicket[0].day = "2022/05/03";
                     docCarpoolData.CarpoolTicket[0].carpool_id = 1000 + carpoolCount;
                     docCarpoolData.CarpoolTicket[0].recruitment_count = UserInfo.Driver[0].recruitment_count;
+                    docCarpoolData.CarpoolTicket[0].pesinger_count = 0; // 패신저 탑승할때 마다 1 카운트 됨.
+                    docCarpoolData.CarpoolTicket[0].student_number = UserInfo.Driver[0].student_number;
                     
     
                     updateDoc(myDoc, {"CarpoolTicket" : arrayUnion(docCarpoolData.CarpoolTicket[0]), "CarpoolCount" : carpoolCount }, {merge : true })
@@ -399,6 +400,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             Read={Read}
             carpoolCount={carpoolCount}
             UserInfo={UserInfo}
+            navigation={navigation}
         />
     </View>
   );

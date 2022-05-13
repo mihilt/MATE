@@ -234,17 +234,16 @@ export default function SignUpScreen({navigation}) {
                 onPress={Keyboard.dismiss}
             >
                 <View style={styles.container}>
-                    <TouchableOpacity 
-                        onPress={() => navigation.navigate("StudendNumberLoginScreen")}
-                    >
-                        <View style={{marginTop: '12%', marginLeft:'5%', width: '10%' }}>
-                            <Ionicons name="arrow-back" size={35} color="black" />
-                        </View>
-                    </TouchableOpacity>
+                    
                     <View style={styles.header}>
-                        <View style={styles.title}>
+                        <TouchableOpacity
+                            style={{right: 160 }}
+                            onPress={() => navigation.navigate("StudendNumberLoginScreen")}
+                        >
+                                <Ionicons  name="arrow-back" size={35} color="black" />
+                    
+                        </TouchableOpacity> 
                             <Text style={styles.title_text}>회원가입</Text>
-                        </View>
                     </View>
 
                     <View style={styles.input_container}>
@@ -278,11 +277,11 @@ export default function SignUpScreen({navigation}) {
                             value={kakaoId}
                             onChangeText={Text => setKakaoId(Text)}
                         />
-                        
-                        <View style={styles.select_button_container}>
+                    </View>
+                      
+                     <View style={styles.select_button_container}>
                             {DriverBtn()}
                             {PesingerBtn()}
-                        </View>
                     </View>
                 
 
@@ -308,12 +307,15 @@ const styles = StyleSheet.create(
     {
         container: {
             flex: 1,
+
         },
         header: {
             flexDirection: 'row', // 중심축 변경
-            flex: 0.25,
+            flex: 0.4,
             justifyContent: 'center',
             alignItems: 'center',
+            
+
         },
 
         keyboard_container: {
@@ -328,27 +330,34 @@ const styles = StyleSheet.create(
             fontSize: 32,
             fontWeight: 'bold',
             color: 'black',
+            alignSelf: 'flex-end',
+            position: 'absolute',
+
         },
 
         input_container: {
-            flex: 1,
-            justifyContent: 'center',
+            flex: 1.5,
+            justifyContent: 'space-around',
             alignItems: 'center',
+
             
         },
 
         select_button_container: {
-            flex: 0.5,
+            flex: 0.7,
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            
+
         },
 
         button_container: {
-            flex: 0.8,
+            flex: 0.45,
             justifyContent: 'center',
             alignItems: 'center',
+
+
+            
         },
         button: {
             backgroundColor: '#315EFF',
@@ -357,10 +366,12 @@ const styles = StyleSheet.create(
             borderRadius: 10,
         },
         text_input: {
-            width: 300,
             fontSize: 20,
             borderBottomWidth: 0.3,
-            marginBottom: 40
+            width: 300,
+            height: 45,
+
+
         }
 
     }

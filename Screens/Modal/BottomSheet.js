@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     Keyboard,
+    Platform,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; 
 import { Input } from 'react-native-elements';
@@ -149,7 +150,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -160,7 +161,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -175,7 +176,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -186,7 +187,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -201,7 +202,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -212,7 +213,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -227,7 +228,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -238,7 +239,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -253,7 +254,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -264,7 +265,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -279,7 +280,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -290,7 +291,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -305,7 +306,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -316,7 +317,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -331,7 +332,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: '#315EFF',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -342,7 +343,7 @@ const BottomSheet = (props) => {
             return (
                 {
                     backgroundColor: 'rgba(196, 196, 196, 0.31)',
-                    width: 81, 
+                    width: 55, 
                     height: 27, 
                     borderRadius: 30, 
                     justifyContent: 'center', 
@@ -464,17 +465,18 @@ const BottomSheet = (props) => {
         <Modal
             visible={modalVisible}
             animationType={"fade"}
-            transparent
+            transparent={true}
             statusBarTranslucent
+
         >
             <View style={styles.overlay}>
                 <TouchableWithoutFeedback
-                    onPress={closeModal}
-                >
+                    onPress={closeModal}>
                     <View style={styles.background}/>
+
                 </TouchableWithoutFeedback>
                 <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "heigh"}
+                    behavior={(Platform.OS === "android" || Platform.OS === "ios") ? "padding" : ""}
                     style={styles.container}
                 >
                     <TouchableWithoutFeedback
@@ -484,11 +486,11 @@ const BottomSheet = (props) => {
                     style={{...styles.bottomSheetContainer, transform: [{ translateY: translateY }]}}
                     {...panResponders.panHandlers}
                     >
-                    <View style={{marginTop: 10, borderRadius: 30, flex: 2,}}>
+                    <View style={{flex: 0.39, justifyContent: 'space-around',}}>
                         
                         <View>
-                            <View style={{marginTop: 10, marginRight: 60, flexDirection : 'row', justifyContent:'space-between', alignItems: 'center', height: '40%', marginBottom:20}}>
-                                <FontAwesome style={{backgroundColor: 'white',marginLeft: 20,}} name="circle" size={15} color="#587DFF" />
+                            <View style={{flexDirection : 'row', justifyContent:'space-evenly', alignItems: 'center' }}>
+                                <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
                                 <Text>출발지</Text>
                                 <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={StartInputButtonOneColor()}>
                                     <Text style={startInputSelect[0] ? {color: 'white'} : {color: 'black'}}>인동</Text>
@@ -506,8 +508,8 @@ const BottomSheet = (props) => {
 
                         </View>
 
-                        <View style={{ marginRight: 60, flexDirection : 'row', justifyContent:'space-between', alignItems: 'center', height: '20%' }}>
-                            <FontAwesome style={{backgroundColor: 'white',marginLeft: 20,}} name="circle" size={15} color="#587DFF" />
+                        <View style={{ flexDirection : 'row', justifyContent:'space-evenly', alignItems: 'center', }}>
+                            <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
                             <Text>도착지</Text>
                             <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={EndInputButtonOneColor()}>
                                 <Text style={endInputSelect[0] ? {color: 'white'} : {color: 'black'}}>인동</Text>
@@ -525,10 +527,10 @@ const BottomSheet = (props) => {
 
                     </View>
 
-                    <View style={{marginTop: 30, flex:5, justifyContent : 'space-evenly',}}>
+                    <View style={{ flex:1, justifyContent : 'space-evenly',}}>
 
                         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginRight: 35,}}>
-                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                            <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>모집인원</Text>
                             </View> 
 
@@ -570,7 +572,7 @@ const BottomSheet = (props) => {
                         </View>
 
                         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor :"rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                            <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor :"rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>출발시간</Text>
                             </View> 
                             <Input 
@@ -581,7 +583,7 @@ const BottomSheet = (props) => {
                         </View>
 
                         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                            <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>오픈채팅</Text>
                             </View> 
                             <Input 
@@ -592,7 +594,7 @@ const BottomSheet = (props) => {
 
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                             
-                            <View style = {{borderRadius: 10, width: 81, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
+                            <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>비밀번호</Text>
                             </View> 
                             <Input 
@@ -602,7 +604,7 @@ const BottomSheet = (props) => {
                         </View>
                     </View>
 
-                    <View style={{flex:2, justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity 
                             onPress={() => { 
                                 if (startInputText != "" && endInputText != "" && arrivaltime != "" && CarpoolTicket.CarpoolTicket[0].open_chat_password != "" && CarpoolTicket.CarpoolTicket[0].open_chat != "") {
@@ -636,24 +638,26 @@ const BottomSheet = (props) => {
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        
+        backgroundColor: "rgba(0 ,0 ,0 , 0.4)"
         
     },
     background: {
         flex: 1,
 
+
     },
     bottomSheetContainer: {
-        flex: 2,
+        flex: 1,
         backgroundColor: 'white',
         justifyContent : 'space-around',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
+
         
     },
     container: {
-        flex: 2,
+        flex: 3,
+
 
     }
 })
