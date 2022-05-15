@@ -11,7 +11,7 @@ import { doc, getDoc } from 'firebase/firestore';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
 
-export default function TicketScreen2({navigation})  {
+export default function TicketDefaultScreen({navigation})  {
  
     /*   
     useEffect(() => {

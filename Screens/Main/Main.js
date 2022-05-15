@@ -56,7 +56,8 @@ export default function Main({ navigation }) { // 정보 메인 부분
     const [ data, setData ] = useState();
     // 옆으로 당긴면 refresh true 아니면 false
     const [ refresh, setRefresh ] = useState(false); 
-
+    // 탑승 리스트페이지 True 일때 보여주기 TicketScreen
+    const [ showTicketScreen, setShowTicketScreen ] = useState(false);
     
     const CarpoolCreateButton = () => {
         setModalVisible(true);
@@ -94,6 +95,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     const sheetRef = React.useRef(null);
 
     let carpoolCount = 0;
+    let ticketInfos;
 
     const index = 0;
     // Database Read 부분
@@ -111,9 +113,28 @@ export default function Main({ navigation }) { // 정보 메인 부분
           if (snapshot.exists) { // DataSnapshop은 데이터가 포함되어있으면 true를 반환 해주며, snapshot.data()
             //console.log(snapshot.data());
             setUserDoc(snapshot.data()); // snapshot.data() 호출 되면 CloudDB에 있는 데이터들을 객체로 반환해준다.(console.log(snapshot.data()))
-            console.log(snapshot.data());
+            ticketInfos = snapshot.data();
             carpoolCount = userDoc.CarpoolCount;
-            
+
+            console.log('userDoc 길이 : ', ticketInfos.CarpoolTicket.length);
+            if (ticketInfos.CarpoolTicket.length != undefined) {
+                for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
+                    if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
+                        if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                            setShowTicketScreen(true);
+                        }
+                    } else {
+                        if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
+                                    && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
+                                        setShowTicketScreen(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
           else {
             alert("No Document");
@@ -278,6 +299,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
     }
 */
     const showTaxiTicket = () => {
+        
         if (userDoc.TaxiCount > 0) {
             return (
                 userDoc.TaxiTicket.slice(0).reverse().map(key => (
@@ -360,7 +382,14 @@ export default function Main({ navigation }) { // 정보 메인 부분
             
             <TouchableOpacity
                 style={{paddingHorizontal: 30}}
-                onPress={() => navigation.navigate("TicketScreen")}
+                onPress={() =>{
+                    if (showTicketScreen != true) {
+                        navigation.navigate("TicketDefaultScreen");
+                    } else {
+                        navigation.navigate("TicketScreen");
+                    }
+                }
+            }
             >
                 <Ionicons name="card-outline" size={30} color="black" />
             </TouchableOpacity>

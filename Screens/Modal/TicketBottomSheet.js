@@ -169,7 +169,7 @@ const TicketBottomSheet = (props) => {
                 if (default_data.pesinger_count < default_data.recruitment_count) {
                     updateDoc(myDoc, { CarpoolTicket : arrayRemove(default_Pdata) });
                     default_data.pesinger_count += 1;
-                    default_data.pesinger_info.push({ student_number : UserInfo.Pesinger[0].student_number, nickname : UserInfo.Pesinger[0].nickname});
+                    default_data.pesinger_info.push({ student_number : UserInfo.Pesinger[0].student_number, nickname : UserInfo.Pesinger[0].nickname, department : UserInfo.Pesinger[0].department});
                     updateDoc(myDoc, { CarpoolTicket : arrayUnion(default_data) });
                     alert('탑승인원 추가 하였습니다.');
                     Read();
@@ -195,7 +195,7 @@ const TicketBottomSheet = (props) => {
                 if (data.pesinger_count < data.recruitment_count) {
                     updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
                     data.pesinger_count += 1;
-                    data.pesinger_info.push({ student_number : UserInfo.Pesinger[0].student_number, nickname : UserInfo.Pesinger[0].nickname});
+                    data.pesinger_info.push({ student_number : UserInfo.Pesinger[0].student_number, nickname : UserInfo.Pesinger[0].nickname, department : UserInfo.Pesinger[0].department});
                     updateDoc(myDoc, { CarpoolTicket : arrayUnion(data)});
                     alert('탑승인원 추가 하였습니다.');
                     Read();
@@ -218,7 +218,7 @@ const TicketBottomSheet = (props) => {
                 if (data.pesinger_count < data.recruitment_count) {
                     updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
                     data.pesinger_count += 1;
-                    data.pesinger_info.push({ student_number : UserInfo.Driver[0].student_number, nickname : UserInfo.Driver[0].nickname});
+                    data.pesinger_info.push({ student_number : UserInfo.Driver[0].student_number, nickname : UserInfo.Driver[0].nickname, department : UserInfo.Driver[0].department});
                     updateDoc(myDoc, { CarpoolTicket : arrayUnion(data)});
                     alert('탑승인원 추가 하였습니다.');
                     Read();

@@ -17,7 +17,7 @@ import {
 import { FontAwesome } from '@expo/vector-icons'; 
 import { Input } from 'react-native-elements';
 import { db } from '../../Database/DatabaseConfig/firebase';
-import { doc, getDoc, setDoc, upDateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc, setDoc, upDateDoc, arrayUnion, updateDoc, arrayRemove } from 'firebase/firestore';
 // 기본 데이터 불러오기 (CarpoolTicket, TexiTicket)
 import { CarpoolTicket } from'../../Database/Data/Ticket/carpoolData';
 import { TaxiTicket } from '../../Database/Data/Ticket/taxiData';
@@ -34,8 +34,12 @@ export default function TicketUpdateScreen({navigation}) {
     const [ rescruitmentButton, setRescruitmentButton ] = useState([false, false, false, false]);
     const [ openChatName, setOpenChatName ] = useState("");
     const [ openChatPassword, setOpenChatPassword ] = useState("");
-
+    const [ startInputText, setStartInputText ] = useState(''); // 출발지점 입력부분 state 값
+    const [ endInputText, setEndInputText ] = useState(''); // 출발지점 입력부분 state 값
+    
     let ticket_infos;
+
+    const docCarpoolData = CarpoolTicket; 
 
     useEffect(() => {
         StartLocalSelectButtonColor();
@@ -494,6 +498,36 @@ export default function TicketUpdateScreen({navigation}) {
         }
     }
 
+    // 수정 버튼 클릭했을때 호출하는 함수
+    const UpdateTicekt = () => {
+       
+        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+        
+        getDoc(myDoc)
+        .then((snapshot) => {
+            ticket_infos = snapshot.data();
+            console.log('티켓 수정 버튼 클릭 : ', ticket_infos)
+            for (let i = 0; i < ticket_infos.CarpoolTicket.length; i++) {
+                if (ticket_infos.CarpoolTicket[i].student_number === UserInfo.Driver[0].student_number && ticket_infos.CarpoolTicket[i].nickname === UserInfo.Driver[0].nickname) {
+                    updateDoc(myDoc, { CarpoolTicket : arrayRemove(ticket_infos.CarpoolTicket[i])});
+                    
+                    ticket_infos.CarpoolTicket[i].arrival_area = startInputText;
+                    ticket_infos.CarpoolTicket[i].depart_area = endInputText;
+                    ticket_infos.CarpoolTicket[i].arrival_time = arrivaltime;
+                    ticket_infos.CarpoolTicket[i].recruitment_count = UserInfo.Driver[0].recruitment_count;
+                    ticket_infos.CarpoolTicket[i].open_chat = openChatName;
+                    ticket_infos.CarpoolTicket[i].open_chat_password = openChatPassword;
+
+                    updateDoc(myDoc, { CarpoolTicket : arrayUnion(ticket_infos.CarpoolTicket[i])});
+                    alert('수정 하였습니다.');
+                    navigation.navigate("Main");
+                }
+            }
+        })
+        .catch((error) => alert(error.message))
+        
+    }
+
     return (
         <KeyboardAvoidingView
             behavior={(Platform.OS === "ios") ? "padding" : "height"}
@@ -506,16 +540,16 @@ export default function TicketUpdateScreen({navigation}) {
                         <View style={{flexDirection : 'row', justifyContent:'space-evenly', alignItems: 'center', bottom: 10}}>
                             <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
                             <Text>출발지</Text>
-                            <TouchableOpacity onPress={() => { button = 1; setStartLocalSelect();}} style={StartInputButtonOneColor()}>
+                            <TouchableOpacity onPress={() => { button = 1; SetStartLocalSelect();}} style={StartInputButtonOneColor()}>
                                 <Text style={startInputSelect[0] ? {color: 'white'} : {color: 'black'}}>인동</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 2; setStartLocalSelect();}} style={StartInputButtonTwoColor()}>
+                            <TouchableOpacity onPress={() => { button = 2; SetStartLocalSelect();}} style={StartInputButtonTwoColor()}>
                                 <Text style={startInputSelect[1] ? {color: 'white'} : {color: 'black'}}>옥계</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 3; setStartLocalSelect();}} style={StartInputButtonThreeColor()}>
+                            <TouchableOpacity onPress={() => { button = 3; SetStartLocalSelect();}} style={StartInputButtonThreeColor()}>
                                 <Text style={startInputSelect[2] ? {color: 'white'} : {color: 'black'}}>본관</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 4; setStartLocalSelect();}} style={StartInputButtonFourColor()}>
+                            <TouchableOpacity onPress={() => { button = 4; SetStartLocalSelect();}} style={StartInputButtonFourColor()}>
                                 <Text style={startInputSelect[3] ? {color: 'white'} : {color: 'black'}}>항공관</Text>
                             </TouchableOpacity>
                         </View>
@@ -523,16 +557,16 @@ export default function TicketUpdateScreen({navigation}) {
                         <View style={{ flexDirection : 'row', justifyContent:'space-evenly', alignItems: 'center', }}>
                             <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
                             <Text>도착지</Text>
-                            <TouchableOpacity onPress={() => { button = 1; setEndLocalSelect();}} style={EndInputButtonOneColor()}>
+                            <TouchableOpacity onPress={() => { button = 1; SetEndLocalSelect();}} style={EndInputButtonOneColor()}>
                                 <Text style={endInputSelect[0] ? {color: 'white'} : {color: 'black'}}>인동</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 2; setEndLocalSelect();}} style={EndInputButtonTwoColor()}>
+                            <TouchableOpacity onPress={() => { button = 2; SetEndLocalSelect();}} style={EndInputButtonTwoColor()}>
                                 <Text style={endInputSelect[1] ? {color: 'white'} : {color: 'black'}}>옥계</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 3; setEndLocalSelect();}} style={EndInputButtonThreeColor()}>
+                            <TouchableOpacity onPress={() => { button = 3; SetEndLocalSelect();}} style={EndInputButtonThreeColor()}>
                                 <Text style={endInputSelect[2] ? {color: 'white'} : {color: 'black'}}>본관</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { button = 4; setEndLocalSelect();}} style={EndInputButtonFourColor()}>
+                            <TouchableOpacity onPress={() => { button = 4; SetEndLocalSelect();}} style={EndInputButtonFourColor()}>
                                 <Text style={endInputSelect[3] ? {color: 'white'} : {color: 'black'}}>항공관</Text>
                             </TouchableOpacity>
                         </View>
@@ -600,7 +634,7 @@ export default function TicketUpdateScreen({navigation}) {
                                 <Input 
                                     containerStyle={{width: '65%', }}
                                     value={openChatName}
-                                    onChangeText={(text) => CarpoolTicket.CarpoolTicket[0].open_chat = text} 
+                                    onChangeText={(text) => setOpenChatName(text)} 
                                 />    
                             </View>
 
@@ -612,7 +646,7 @@ export default function TicketUpdateScreen({navigation}) {
                                 <Input 
                                     containerStyle={{width: '65%', }}
                                     value={openChatPassword}
-                                    onChangeText={(text) => CarpoolTicket.CarpoolTicket[0].open_chat_password = text}
+                                    onChangeText={(text) => setOpenChatPassword(text)}
                                 />
                             </View>
                         </View>
@@ -622,16 +656,8 @@ export default function TicketUpdateScreen({navigation}) {
                         <View style={{flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity 
                                 onPress={() => { 
-                                    if (startInputText != "" && endInputText != "" && arrivaltime != "" && CarpoolTicket.CarpoolTicket[0].open_chat_password != "" && CarpoolTicket.CarpoolTicket[0].open_chat != "") {
-                                        
-                                        Create();
-                                        console.log('학번:', studentNumber);
-                                        CarpoolTicket.CarpoolTicket[0].student_number = UserInfo.Driver[0].student_number;
-                                        closeModal();
-                                        alert("티켓 생성 하였습니다.");
-                                    } else {
-                                        alert("입력 항목 작성 안한 부분 있습니다.");
-                                    }
+                                    UpdateTicekt();
+                                    
                                 }} 
                                 style={
                                     {

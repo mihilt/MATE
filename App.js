@@ -8,9 +8,8 @@ import SignUpScreen from "./Screens/Login/SignUpScreen"; // 회원가입 페이�
 import ProfileScreen from "./Screens/Profile/ProfileScreen"; // 프로필 화면 페이지
 import FixProfileScreen from "./Screens/Profile/FixProfileScreen";
 import TicketScreen from "./Screens/Ticket/TicketScreen";
-import TicketCreatScreen from "./Screens/TicketScreen/TicketCreateScreen";
 import TicketUpdateScreen from "./Screens/TicketScreen/TicketUpdateScreen";
-
+import TicketDefaultScreen from "./Screens/Ticket/TicketDefaultScreen";
 const Stack = createStackNavigator();
 
 export default class App extends React.Component {
@@ -31,8 +30,8 @@ export default class App extends React.Component {
               <Stack.Screen name="Main" component={Main} />
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
               <Stack.Screen name="FixProfileScreen" component={FixProfileScreen} />
+              <Stack.Screen name="TicketDefaultScreen" component={TicketDefaultScreen} />
               <Stack.Screen name="TicketScreen" component={TicketScreen} />
-              <Stack.Screen name="TicketCreateScreen" component={TicketCreatScreen} />
               <Stack.Screen name="TicketUpdateScreen" component={TicketUpdateScreen} />
               
             </Stack.Navigator>
