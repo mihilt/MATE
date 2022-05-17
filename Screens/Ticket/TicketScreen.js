@@ -9,7 +9,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 //firebase
 import { db } from '../../Database/DatabaseConfig/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayRemove, arrayUnion, setDoc } from 'firebase/firestore';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
 import { CarpoolTicket } from '../../Database/Data/Ticket/carpoolData';
@@ -50,7 +50,7 @@ export default function TicketScreen({navigation})  {
    const [ userDoc, setUserDoc ] = useState([]);
 
    // Ticket 테이블 읽어서 저장
-   let ticektInfos;
+   let ticketInfos;
    
    const [ arrivalArea, setArrivalArea ] = useState("");
    const [ departArea, setDepartArea ] = useState("");
@@ -62,6 +62,7 @@ export default function TicketScreen({navigation})  {
    const [ recruitmentFourList, setRescruitmentFourList ] = useState({});
    const [ driverName, setDriverName ] = useState("");
    const [ driverDepartment, setDriverDepartment ] = useState("");
+   const [ recruitmentCancle, setRecruitmentCancle ] = useState({}); // 탑승 취소 할때 사용
 
    //const [nickname, setNickname] = useState("");
    //let recruitmentList;
@@ -80,28 +81,28 @@ export default function TicketScreen({navigation})  {
             if (snapshot.exists) { // DataSnapshop은 데이터가 포함되어있으면 true를 반환 해주며, snapshot.data()
                 //console.log(snapshot.data());
                 setUserDoc(snapshot.data()); // snapshot.data() 호출 되면 CloudDB에 있는 데이터들을 객체로 반환해준다.(console.log(snapshot.data()))
-                ticektInfos = snapshot.data();
+                ticketInfos = snapshot.data();
 
-                if (ticektInfos.CarpoolTicket.length != undefined) {
-                    for (let i = 0; i < ticektInfos.CarpoolTicket.length; i++) {
-                        if (UserInfo.Driver[0].student_number === ticektInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticektInfos.CarpoolTicket[i].nickname) {
-                            setArrivalArea(ticektInfos.CarpoolTicket[i].arrival_area); // 출발지
-                            setDepartArea(ticektInfos.CarpoolTicket[i].depart_area); // 도착지
-                            setOpenChatName(ticektInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
-                            setOpenChatPassword(ticektInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
-                            setDriverName(ticektInfos.CarpoolTicket[i].nickname); // 드라이버 이름
-                            setDriverDepartment(ticektInfos.CarpoolTicket[i].department); // 드라이버 학과
+                if (ticketInfos.CarpoolTicket.length != undefined) {
+                    for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
+                        if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
+                            setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
+                            setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
+                            setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
+                            setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
+                            setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
+                            setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
                         } else {
-                            if (ticektInfos.CarpoolTicket[i].pesinger_count > 0) {
-                                for (let j = 0; j < ticektInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                    if ((ticektInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
-                                        && (ticektInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
-                                            setArrivalArea(ticektInfos.CarpoolTicket[i].arrival_area); // 출발지
-                                            setDepartArea(ticektInfos.CarpoolTicket[i].depart_area); // 도착지
-                                            setOpenChatName(ticektInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
-                                            setOpenChatPassword(ticektInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
-                                            setDriverName(ticektInfos.CarpoolTicket[i].nickname); // 드라이버 이름
-                                            setDriverDepartment(ticektInfos.CarpoolTicket[i].department); // 드라이버 학과
+                            if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
+                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
+                                            setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
+                                            setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
+                                            setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
+                                            setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
+                                            setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
+                                            setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
                                     }
                                 }
                             }
@@ -128,39 +129,39 @@ export default function TicketScreen({navigation})  {
             // You can read what ever document by changing the collection and document path here.
             
             //console.log(snapshot.data());
-            ticektInfos = snapshot.data();
-            if (ticektInfos.CarpoolTicket.length != undefined) {
-                for (let i = 0; i < ticektInfos.CarpoolTicket.length; i++) {
-                    if (UserInfo.Driver[0].student_number === ticektInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticektInfos.CarpoolTicket[i].nickname) {
-                        //setNickname(ticektInfos.CarpoolTicket[i].pesinger_info[0].nickname);
-                        setRescruitmentOneList(ticektInfos.CarpoolTicket[i].pesinger_info[0]);
-                        if (ticektInfos.CarpoolTicket[i].pesinger_count === 2) {
-                            setRescruitmentTwoList(ticektInfos.CarpoolTicket[i].pesinger_info[1]);
-                        } else if (ticektInfos.CarpoolTicket[i].pesinger_count === 3) {
-                            setRescruitmentTwoList(ticektInfos.CarpoolTicket[i].pesinger_info[1]);
-                            setRescruitmentThreeList(ticektInfos.CarpoolTicket[i].pesinger_info[2]);
-                        } else if (ticektInfos.CarpoolTicket[i].pesinger_count === 4) {
-                            setRescruitmentTwoList(ticektInfos.CarpoolTicket[i].pesinger_info[1]);
-                            setRescruitmentThreeList(ticektInfos.CarpoolTicket[i].pesinger_info[2]);
-                            setRescruitmentFourList(ticektInfos.CarpoolTicket[i].pesinger_info[3]);
+            ticketInfos = snapshot.data();
+            if (ticketInfos.CarpoolTicket.length != undefined) {
+                for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
+                    if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
+                        //setNickname(ticketInfos.CarpoolTicket[i].pesinger_info[0].nickname);
+                        setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
+                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
+                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
+                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
+                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
+                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
+                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);
                         }
                         
                         
                     } else {
-                        if (ticektInfos.CarpoolTicket[i].pesinger_count > 0) {
-                            for (let j = 0; j < ticektInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                if ((ticektInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
-                                    && (ticektInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
-                                        setRescruitmentOneList(ticektInfos.CarpoolTicket[i].pesinger_info[0]);
-                                        if (ticektInfos.CarpoolTicket[i].pesinger_count > 1) {
-                                            setRescruitmentTwoList(ticektInfos.CarpoolTicket[i].pesinger_info[1]);
-                                        } else if (ticektInfos.CarpoolTicket[i].pesinger_count === 3) {
-                                            setRescruitmentTwoList(ticektInfos.CarpoolTicket[i].pesinger_info[1]);
-                                            setRescruitmentThreeList(ticektInfos.CarpoolTicket[i].pesinger_info[2]);
-                                        } else if (ticektInfos.CarpoolTicket[i].pesinger_count === 4) {
-                                            setRescruitmentTwoList(ticektInfos.CarpoolTicket[i].pesinger_info[1]);
-                                            setRescruitmentThreeList(ticektInfos.CarpoolTicket[i].pesinger_info[2]);
-                                            setRescruitmentFourList(ticektInfos.CarpoolTicket[i].pesinger_info[3]);
+                        if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
+                                    && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
+                                        setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
+                                        if (ticketInfos.CarpoolTicket[i].pesinger_count > 1) {
+                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
+                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
+                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
+                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
+                                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);
                                         }
                                         
                                 }
@@ -172,6 +173,97 @@ export default function TicketScreen({navigation})  {
             
         })
         .catch((error) => alert(error.message))
+    }
+
+    // 탑승 취소 기능
+    const RecruitmentCancel = () => {
+        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+
+        getDoc(myDoc)
+        .then((snapshot) => {
+            if (snapshot.exists) {
+                ticketInfos = snapshot.data();
+
+                for(let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
+                    if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                        for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                            if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
+                                && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
+                                    setRecruitmentCancle(ticketInfos.CarpoolTicket[i]);
+                                    updateDoc(myDoc, { CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
+                                    ticketInfos.CarpoolTicket[i].pesinger_info = ticketInfos.CarpoolTicket[i].pesinger_info.filter(element => element.student_number != UserInfo.Pesinger[0].student_number);              
+                                    ticketInfos.CarpoolTicket[i].pesinger_count -= 1                                                      
+                                    updateDoc(myDoc, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i]) });
+                                    alert('탐승 취소 하였습니다.');
+                                    navigation.navigate("TicketDefaultScreen");
+                            }
+                        }                                 
+                    }
+                }
+            }
+        })
+    }
+
+    const ShowRecruitmentCancelButton = () => {
+        if (driverName != UserInfo.Driver[0].nickname && driverDepartment != UserInfo.Driver[0].department) {
+            return (
+                    <TouchableOpacity
+                        onPress={RecruitmentCancel}
+                    >
+                        <View style={styles.button}>
+                            <Text>탑승 취소</Text>
+                        </View>
+                    </TouchableOpacity>
+            );
+        } else if (UserInfo.Pesinger[0].nickname != ""){
+            return (
+                <TouchableOpacity
+                    onPress={RecruitmentCancel}
+                >
+                    <View style={styles.button}>
+                        <Text>탑승 취소</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        }
+    }
+
+    const RecruitmentComplete = () => {
+        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+        const myDoc2 = doc(db, "CollectionNameCarpoolTicket", "ReceiptDocument");
+
+        getDoc(myDoc)
+        .then((snapshot) => {
+            if (snapshot.exists) {
+                ticketInfos = snapshot.data();
+
+                if (ticketInfos.CarpoolTicket.length != undefined) {
+                    for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
+                        if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
+                            //setNickname(ticketInfos.CarpoolTicket[i].pesinger_info[0].nickname);
+                            setDoc(myDoc2, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i])});
+                            updateDoc(myDoc, { CarpoolCount: ticketInfos.CarpoolCount-1, CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
+                            alert("탑승 완료 했습니다.");
+                            navigation.navigate("Main");
+                        }
+                    } 
+                }
+            }
+        })
+    }
+
+    const ShowRecruitmentCompleteButton = () => {
+        if (driverName === UserInfo.Driver[0].nickname && driverDepartment === UserInfo.Driver[0].department) {
+            return (
+                <TouchableOpacity
+                    onPress={RecruitmentComplete}
+                >
+                    <View style={[styles.button, {marginBottom: 10}]}>
+                        <Text>탑승 완료</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        }
     }
 
     return (
@@ -214,6 +306,11 @@ export default function TicketScreen({navigation})  {
                         <Text>{recruitmentFourList.nickname}</Text>
                         <Text>{recruitmentFourList.department}</Text>
                     </View>
+                    
+                </View>
+                <View style={styles.button_container}>
+                    {ShowRecruitmentCompleteButton()}
+                    {ShowRecruitmentCancelButton()}
                     
                 </View>
             </View>
@@ -270,8 +367,23 @@ const styles = StyleSheet.create( {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-around',
+            
 
 
+        },
+
+        button_container: {
+            backgroundColor: 'yellow',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+
+        button: {
+            backgroundColor: 'green',
+            width: 150,
+            height: 25,
+            justifyContent: 'center',
+            alignItems: 'center'
         },
 
         mapText: {
