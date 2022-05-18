@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import { CommonActions } from '@react-navigation/native';
 
 //firebase
 import { db } from '../../Database/DatabaseConfig/firebase';
@@ -22,6 +23,11 @@ export default function TicketScreen({navigation})  {
         ShowRecruitmentList();
         
     }, []);
+
+    useEffect(() => {
+        console.log('재실행');
+        Read();
+    }, [recruitmentCancle])
 
 
     /*
@@ -86,17 +92,36 @@ export default function TicketScreen({navigation})  {
                 if (ticketInfos.CarpoolTicket.length != undefined) {
                     for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
                         if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
-                            setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
-                            setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
-                            setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
-                            setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
-                            setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
-                            setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
+                            if (ticketInfos.CarpoolTicket[i].pesinger_info.length < 1) {
+                                //navigation.dispatch(CommonActions.goBack());
+                                navigation.navigate("TicketDefaultScreen"); 
+                            } else {
+                                setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
+                                setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
+                                setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
+                                setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
+                                setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
+                                setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
+                            }
+                            
                         } else {
-                            if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                            
+                            if (UserInfo.Pesinger[0].auth === 'pesinger') {
                                 for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
                                     if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
                                         && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
+                                            setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
+                                            setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
+                                            setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
+                                            setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
+                                            setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
+                                            setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
+                                    }
+                                }
+                            } else {
+                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number) 
+                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) ) {
                                             setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
                                             setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
                                             setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
@@ -135,25 +160,31 @@ export default function TicketScreen({navigation})  {
                     if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
                         //setNickname(ticketInfos.CarpoolTicket[i].pesinger_info[0].nickname);
                         setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
-                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
+                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 1) {
                             setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
+                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
                         } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
                             setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
                             setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
+                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);
                         } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
                             setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
                             setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
                             setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);
+                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[4]);
                         }
                         
                         
                     } else {
                         if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
-                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
-                                    && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
-                                        setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
-                                        if (ticketInfos.CarpoolTicket[i].pesinger_count > 1) {
+                            if (UserInfo.Pesinger[0].auth === 'pesinger') {
+                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
+                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
+                                            setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
+                                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
                                             setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
                                         } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
                                             setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
@@ -161,11 +192,28 @@ export default function TicketScreen({navigation})  {
                                         } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
                                             setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
                                             setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);
-                                        }
-                                        
+                                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);                                            
+                                        } 
+                                    }
                                 }
-                            }                                 
+                            } else {
+                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number) 
+                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) ) {
+                                            setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
+                                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
+                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
+                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
+                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
+                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
+                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
+                                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);                                            
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -186,6 +234,39 @@ export default function TicketScreen({navigation})  {
 
                 for(let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
                     if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                        if (UserInfo.Pesinger[0].auth === 'pesinger') {
+                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
+                                    && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
+                                        
+                                        setRecruitmentCancle(ticketInfos.CarpoolTicket[i]);
+
+                                        updateDoc(myDoc, { CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
+                                        ticketInfos.CarpoolTicket[i].pesinger_info = ticketInfos.CarpoolTicket[i].pesinger_info.filter(element => element.student_number != UserInfo.Pesinger[0].student_number);              
+                                        ticketInfos.CarpoolTicket[i].pesinger_count -= 1                                                      
+                                        updateDoc(myDoc, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i]) });
+                                        alert('탐승 취소 하였습니다.');
+                                        navigation.navigate("TicketDefaultScreen");
+                                }
+                            }
+                        } else {
+                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
+                                if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number) 
+                                    && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) ) {
+                                        setRecruitmentCancle(ticketInfos.CarpoolTicket[i]);
+                                        
+                                        updateDoc(myDoc, { CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
+                                        ticketInfos.CarpoolTicket[i].pesinger_info = ticketInfos.CarpoolTicket[i].pesinger_info.filter(element => element.student_number != UserInfo.Driver[0].student_number);              
+                                        ticketInfos.CarpoolTicket[i].pesinger_count -= 1                                                      
+                                        updateDoc(myDoc, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i]) });
+                                        alert('탐승 취소 하였습니다.');
+                                        navigation.navigate("TicketDefaultScreen");
+                                        //navigation.dispatch( CommonActions.goBack()); 
+                                }
+                            }
+                        }
+                    }
+                    if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
                         for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
                             if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
                                 && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
@@ -196,6 +277,7 @@ export default function TicketScreen({navigation})  {
                                     updateDoc(myDoc, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i]) });
                                     alert('탐승 취소 하였습니다.');
                                     navigation.navigate("TicketDefaultScreen");
+                                    //navigation.dispatch( CommonActions.goBack()); 
                             }
                         }                                 
                     }
@@ -211,7 +293,7 @@ export default function TicketScreen({navigation})  {
                         onPress={RecruitmentCancel}
                     >
                         <View style={styles.button}>
-                            <Text>탑승 취소</Text>
+                            <Text style={styles.button_font}>탑승 취소</Text>
                         </View>
                     </TouchableOpacity>
             );
@@ -221,7 +303,7 @@ export default function TicketScreen({navigation})  {
                     onPress={RecruitmentCancel}
                 >
                     <View style={styles.button}>
-                        <Text>탑승 취소</Text>
+                        <Text style={styles.button_font}>탑승 취소</Text>
                     </View>
                 </TouchableOpacity>
             );
@@ -258,8 +340,8 @@ export default function TicketScreen({navigation})  {
                 <TouchableOpacity
                     onPress={RecruitmentComplete}
                 >
-                    <View style={[styles.button, {marginBottom: 10}]}>
-                        <Text>탑승 완료</Text>
+                    <View style={[styles.button]}>
+                        <Text style={styles.button_font}>도착 완료</Text>
                     </View>
                 </TouchableOpacity>
             );
@@ -285,26 +367,46 @@ export default function TicketScreen({navigation})  {
                     <Text style={styles.chatInfoText}>오픈채팅 : {openChatName}</Text>
                     <Text style={styles.chatInfoText}>비밀번호 : {openChatPassword}</Text>
                 </View>
+
                 <View style={styles.userList}>
                     <View style={styles.driverText}>
-                        <Text>{driverName}</Text>
-                        <Text>{driverDepartment}</Text>
+                        <Image style={{flex: 0.2,height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
+                        <View style={styles.UserInfo_text}>
+                            <Text style={styles.UserInfo_font}>{driverName}</Text>
+                            <Text style={styles.UserInfo_font}>{driverDepartment}</Text>
+                        </View>
                     </View>
+
                     <View style={styles.pesingerText}>
-                        <Text>{recruitmentOneList.nickname}</Text>
-                        <Text>{recruitmentOneList.department}</Text>
+                        <Image style={{flex: 0.2, height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
+                        <View style={styles.UserInfo_text}>
+                            <Text style={styles.UserInfo_font}>{recruitmentOneList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentOneList.department}</Text>
+                        </View>                   
                     </View>
+
                     <View style={styles.pesingerText}>
-                        <Text>{recruitmentTwoList.nickname}</Text>
-                        <Text>{recruitmentTwoList.department}</Text>
+                        <Image style={{flex: 0.2, height: 50, borderRadius: 50}}source={require('../../assets/mate_icon.png')}/>
+                        <View style={styles.UserInfo_text}>
+                            <Text style={styles.UserInfo_font}>{recruitmentTwoList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentTwoList.department}</Text>
+                        </View>
+                   </View>
+
+                    <View style={styles.pesingerText}>
+                        <Image style={{flex: 0.2, height: 50, borderRadius: 50}}source={require('../../assets/mate_icon.png')}/>
+                        <View style={styles.UserInfo_text}>
+                            <Text style={styles.UserInfo_font}>{recruitmentThreeList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentThreeList.department}</Text>
+                            </View>
                     </View>
-                    <View style={styles.pesingerText}>
-                        <Text>{recruitmentThreeList.nickname}</Text>
-                        <Text>{recruitmentThreeList.department}</Text>
-                    </View>
-                    <View style={styles.pesingerText}>
-                        <Text>{recruitmentFourList.nickname}</Text>
-                        <Text>{recruitmentFourList.department}</Text>
+
+                   <View style={styles.pesingerText}>
+                        <Image style={{flex: 0.2, height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
+                        <View style={styles.UserInfo_text}>
+                            <Text style={styles.UserInfo_font}>{recruitmentFourList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentFourList.department}</Text>
+                        </View>
                     </View>
                     
                 </View>
@@ -313,132 +415,166 @@ export default function TicketScreen({navigation})  {
                     {ShowRecruitmentCancelButton()}
                     
                 </View>
+
+
             </View>
-            
-
-
-            <View style={styles.footer}>
-                <TouchableOpacity onPress={() => navigation.navigate("Main")}>
-                    <Ionicons name="home-outline" size={24} color="black" />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => navigation.navigate("TicKetScreen")}>
-                    <Ionicons name="card" size={24} color="black" />
-                </TouchableOpacity>
+        
+                <View style={styles.footer}>
                 
-                <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
-                    <FontAwesome name="user-circle" size={24} color="black" />
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+                        <Ionicons name="home-outline" size={24} color="black" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.navigate("TicketScreen")}>
+                        <Ionicons name="card" size={30} color="black" />
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
+                        <FontAwesome name="user-circle" size={24} color="black" />
+                    </TouchableOpacity>
             
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create( {
-        container: {
-            flex: 1,
+    container: {
+        flex: 1,
 
-            
-        },
-
-        header: {
-            flex : 0.2,
-            backgroundColor : 'white',
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-
-        body: {
-            flex: 0.85,
-            backgroundColor: 'white',
-
-        },
-       
-        map: {
-            bottom: 10,
-            position: 'absolute',
-            backgroundColor: 'white',
-            borderWidth: 1,
-            borderColor: 'rgba(0, 0, 0, 0.15)',
-            borderRadius: 10,
-            width: '80%',
-            height: '60%',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            
-
-
-        },
-
-        button_container: {
-            backgroundColor: 'yellow',
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-
-        button: {
-            backgroundColor: 'green',
-            width: 150,
-            height: 25,
-            justifyContent: 'center',
-            alignItems: 'center'
-        },
-
-        mapText: {
-            fontSize: 20,
-            flex: 1,
-            textAlign: 'center',
-            fontWeight: 'bold',
-        },
         
-        chatInfo: {
+    },
 
-            width: '80%',
-            alignSelf: 'center',
-            top: 5,
+    header: {
+        flex : 0.25,
+        backgroundColor: "white",
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 
-        },
+    body: {
+        flex: 1,
+        backgroundColor: "white",
+        justifyContent:"space-around",
 
-        chatInfoText: {
-            fontSize: 20,
-            fontWeight: 'bold',
-            margin: 1,
-        },
-
-        userList: {
-            top: 10,
-            width: '80%',
-            height: '80%',
-            backgroundColor:'coral',
-            alignSelf: 'center',
-        },
-
-        driverText: {
-            marginTop: 15,
-            marginBottom: 10,
-        },
-
-        pesingerText: {
-            marginBottom: 10
-        },
-        userProfile: {
-            backgroundColor: 'green',
-
-
-
-        },
+    },
+    button_container: {
+        flex: 0.2,
         
-        footer: {
-            height: 80,
-            flexDirection: 'row',
-            backgroundColor: 'white',
-            borderWidth: 0.3,
-            alignItems: 'center',
-            justifyContent: 'space-around',
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    button: {
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderRadius: 10,
+        height: 50,
+        width: 300,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+  
+   
+    map: {
+        bottom: 10,
+        position: 'absolute',
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.15)',
+        borderRadius: 10,
+        width: '80%',
+        height: '60%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+
+
+    },
+
+    mapText: {
+        fontSize: 25,
+        flex: 1,
+        textAlign: 'center',
+        fontWeight: 'bold',
         
-        },
+    },
+    
+    chatInfo: {
+        flex: 0.2,
+        width: "80%",
+        alignSelf: "center",
+        justifyContent: "center",
         
-    }
+
+      
+
+    },
+
+    chatInfoText: {
+
+        fontSize: 20,
+        fontWeight: 'bold',
+
+    },
+
+    userList: {
+        flex: 0.8,   
+     
+        justifyContent: "space-around",
+    },
+
+    driverText: {
+        
+        flex: 1,
+        width: "80%",
+        flexDirection: "row",
+        alignSelf: "center",
+        alignItems: "center",
+
+        
+    },
+
+    pesingerText: {
+        
+        flex: 1,
+        width: "80%",
+        flexDirection: "row",
+        alignSelf: "center",
+        alignItems: "center"
+      
+    },
+
+    UserInfo_text: {
+        
+        flex: 1,
+        height : 40,
+        justifyContent: "space-between",
+
+    },
+
+    UserInfo_font: {
+        fontSize: 20,
+        left: 10,
+
+    },
+
+    button_font:{
+        fontSize: 20,
+        fontWeight: "bold"
+    },
+  
+    
+    footer: {
+        height: 80,
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        borderWidth: 0.2,
+        alignItems: 'center',
+        justifyContent: 'space-around',
+    
+    },
+    
+}
 );

@@ -6,12 +6,4 @@ npm install firebase@9.6.7 (버전!!!)
 npm install reanimated-bottom-sheet
 npm install react-native-reanimated react-native-gesture-handler
 npm i react-native-onboarding-swiper
-
-<View style={styles.search}>
-            <View style={{justifyContent: 'space-between', flexDirection: 'row',}}>
-                <Text style={styles.text1}>MATE</Text>
-                <View style={{flexDirection: 'row'}}>
-                    <Fontisto style={styles.bell_icon} name="bell" size={24} color="black" />
-                </View>
-            </View>
-        </View>
+npm i react-native-keyboard-aware-scroll-view --save

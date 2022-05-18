@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { db } from '../../Database/DatabaseConfig/firebase';
-import { doc, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
+import { doc, updateDoc, arrayRemove, arrayUnion, getDoc } from 'firebase/firestore';
 import {
     View,
     StyleSheet,
@@ -48,8 +48,13 @@ const TicketBottomSheet = (props) => {
     const [ openChat, setOpenChat ] = useState(false);
 
     // 수정 할때 사용할 state 출발지, 도착지
-    const [arrivalText, setArrivalText] = useState('');
-    const [departText, setDepartText] = useState('');
+    const [ arrivalText, setArrivalText ] = useState('');
+    const [ departText, setDepartText ] = useState('');
+
+    // 탑승했으면 다른 티켓에 드라이버, 패신저 탑승 못하도록 state로 사용 할 예정. 중복 -> overlap
+    const [ recruitmentOverlap, setRecruitmentOverlap ] = useState(false);
+    //let driverTicketOverlap = false;
+    const [ driverTicketOverlap, setDriverTicketOverlap ] = useState(false);
 
     const screenHeight = Dimensions.get("screen").height;
     const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -70,8 +75,8 @@ const TicketBottomSheet = (props) => {
         useNativeDriver: true,
     });
 
-    console.log('Ticket생성 모달 Data 출력 : ', data);
-    console.log('Ticket생성 모달 Driver 출력 : ', UserInfo.Pesinger[0]);
+    let ticket_info;
+
     const ShowOpenChat = () => {
        
         console.log('showOpenChat 호출');
@@ -127,6 +132,10 @@ const TicketBottomSheet = (props) => {
         })
     }
 
+    useEffect(() => {
+        ReadData();
+    }, []);
+
     // findDelete 함수는 자기 티켓만 삭제 할수있도록 setDeleted state true,false로 권한을 준다.
     // nickname으로 비교하지만 추후에 학번으로 바꾸고자 한다. 
     const findDelete = () => {
@@ -140,6 +149,39 @@ const TicketBottomSheet = (props) => {
     //console.log('현재 탑승인원 : ', data.recruitment_count);
     
 
+    const ReadData = () => {
+        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+
+        getDoc(myDoc)
+        .then(
+            (snapshot) => {
+                if (snapshot.exists) {
+                    ticket_info = snapshot.data();
+                    for (let i = 0; i < ticket_info.CarpoolTicket.length; i++) {
+                        for (let j = 0; j < ticket_info.CarpoolTicket[i].pesinger_info.length; j++) {
+                            if (ticket_info.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number 
+                                && ticket_info.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) {
+                                    setRecruitmentOverlap(true); // 드라이버 유저가 패신저로 탑승 할때 다른 티켓에서 탑승 하였다. 중복
+                            } else if (ticket_info.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number
+                                && ticket_info.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) {
+                                    setRecruitmentOverlap(true); // 패신저 유저가 다른 티켓에서 탑승 하였다. 중복
+                            }
+                        }
+                    }
+                    if (UserInfo.Driver[0].auth === 'driver') {
+                        for (let i = 0; i < ticket_info.CarpoolTicket.length; i++) {
+                            if (ticket_info.CarpoolTicket[i].student_number === UserInfo.Driver[0].student_number && ticket_info.CarpoolTicket[i].nickname === UserInfo.Driver[0].nickname) {
+                                setDriverTicketOverlap(true);
+                                console.log('실행! : ', driverTicketOverlap);
+                                break;
+                            }
+                        }
+                    }
+                    
+                }
+            }
+        )
+    }
 
     const TicketDelete = () => {
         if ((data.ticket_name === '카풀') && (UserInfo.Driver[0].nickname === data.nickname)) {
@@ -150,6 +192,7 @@ const TicketBottomSheet = (props) => {
             Read();
             showCarpoolTicket();
             setDeleted(true);
+            setDriverTicketOverlap(false);
         }
         else if (UserInfo.Driver[0].nickname != data.nickname) {
             alert('삭제 못하였습니다.');
@@ -159,12 +202,42 @@ const TicketBottomSheet = (props) => {
 
     // 탑승하기 버튼 클릭하면 탑승자 추가 된다.
     const addRecruitment = () => {
+
+        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+
+        getDoc(myDoc)
+        .then(
+            (snapshot) => {
+                if (snapshot.exists) {
+                    ticket_info = snapshot.data();
+                    for (let i = 0; i < ticket_info.CarpoolTicket.length; i++) {
+                        for (let j = 0; j < ticket_info.CarpoolTicket[i].pesinger_info.length; j++) {
+                            if (ticket_info.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number 
+                                && ticket_info.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) {
+                                    setRecruitmentOverlap(true); // 드라이버 유저가 패신저로 탑승 할때 다른 티켓에서 탑승 하였다. 중복
+                            } else if (ticket_info.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number
+                                && ticket_info.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) {
+                                    setRecruitmentOverlap(true); // 패신저 유저가 다른 티켓에서 탑승 하였다. 중복
+                            }
+                        }
+                    }
+                    if (UserInfo.Driver[0].auth === 'driver') {
+                        for (let i = 0; i < ticket_info.CarpoolTicket.length; i++) {
+                            if (ticket_info.CarpoolTicket[i].student_number === UserInfo.Driver[0].student_number && ticket_info.CarpoolTicket[i].nickname === UserInfo.Driver[0].nickname) {
+                                setDriverTicketOverlap(true);
+                                console.log('실행! : ', driverTicketOverlap);
+                                break;
+                            }
+                        }
+                    }
+                    
+                }
+            }
+        )
+        .catch(error => alert(error.message))
         
         if (data === undefined && data.pesinger_info === null) {
             if ((defult_data.ticket_name === '카풀') && (UserInfo.Pesinger[0].auth === 'pesinger')) {
-                const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
-                
-                console.log(UserInfo.Pesinger[0].student_number);
 
                 if (default_data.pesinger_count < default_data.recruitment_count) {
                     updateDoc(myDoc, { CarpoolTicket : arrayRemove(default_Pdata) });
@@ -174,13 +247,12 @@ const TicketBottomSheet = (props) => {
                     alert('탑승인원 추가 하였습니다.');
                     Read();
                     showCarpoolTicket();
+                } else {
+                    alert('탑승인원 초과 했습니다.');
                 }
-            } else {
-                alert('탑승인원 초과 했습니다.');
-            }
-        } else {
+            } 
+        } else if (recruitmentOverlap != true && driverTicketOverlap != true) {
             if ((data.ticket_name === '카풀') && (UserInfo.Pesinger[0].auth === 'pesinger')) {
-                const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
                 
                 if (data.pesinger_count >= data.recruitment_count) {
                     alert('탑승인원 초과 했습니다.')
@@ -203,15 +275,16 @@ const TicketBottomSheet = (props) => {
                 } else {
 
                 }
-            } else if ((data.nickname != UserInfo.Driver[0].nickname) && (UserInfo.Driver[0].auth === 'driver')) {
+            } else if ( data.nickname != UserInfo.Driver[0].nickname && UserInfo.Driver[0].auth === 'driver' && driverTicketOverlap === false) {
                 const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
             
+                console.log('드라이버 : ', driverTicketOverlap);
                 if (data.pesinger_count >= data.recruitment_count) {
                     alert('탑승인원 초과 했습니다.')
                 }
                 for (let i = 0; i < data.pesinger_count; i++) {
                     if (data.pesinger_info[i].student_number === UserInfo.Driver[0].student_number) {
-                        alert('탑승 한적 있습니다.');
+                        alert('탑승 한적 있습니다. ');
                         return;
                     } 
                 }
@@ -229,6 +302,11 @@ const TicketBottomSheet = (props) => {
                     alert('자신 만든 티켓입니다.');
                 }
             }
+        } else {
+            alert('탑승한 티켓이 존재합니다.');
+            setRecruitmentOverlap(false);
+            setDriverTicketOverlap(false);
+            return;
         }
     }
 
@@ -399,46 +477,6 @@ const TicketBottomSheet = (props) => {
         }
     }
 
-    const setUpdate = () => {
-        
-        if ((data.ticket_name === '카풀') && (UserInfo.UserInfo[0].nickname === data.nickname)) {
-            const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
-            
-            //console.log('ticket : ', data);
-            updateDoc(myDoc, { CarpoolTicket : arrayRemove(data) });
-            data.arrival_area = arrivalText;
-            data.depart_area = departText;
-            updateDoc(myDoc, {CarpoolTicket : arrayUnion(data)});
-            alert('수정 하였습니다.');
-            Read();
-            showCarpoolTicket();
-        }
-        else if ((data.ticket_name === '택시') && (UserInfo.UserInfo[0].nickname === data.nickname)) {
-            const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
-            
-            updateDoc(myDoc, { TaxiTicket : arrayRemove(data) });
-            data.arrival_area = arrivalText;
-            data.depart_area = departText;
-            updateDoc(myDoc, {TaxiTicket : arrayUnion(data)});
-            alert('수정 하였습니다.');
-            Read();
-            showTaxiTicket();
-        }
-
-    }
-/*
-    // 수정 모드 : 수정을 출발지, 도착지만 수정 하겠다.
-    const UpdateTextDisplay = () => {
-    
-        if (data.)
-        return (
-            <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-                <Text style={{fontSize: 22}}>수정 하기</Text>
-            </View>
-             
-        );    
-    }
-*/
     const RecruitmentCountOneColor = () => {
         if (data === undefined) {
             if (default_data.recruitment_count != 1) {
@@ -774,35 +812,43 @@ const TicketBottomSheet = (props) => {
                     {...panResponders.panHandlers}
                 >
                     <View style={styles.container}>
-                        <View>
-                            <View style={styles.start_local_container}>
+                        <View style={styles.header}>
+
                                 <View style={styles.start_local}>
                                     <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
                                     <View style={styles.start_text_container}>
                                         <Text style={styles.start_text}>출발지</Text>
                                     </View>
+
                                     <View style={styles.arrival_area_container}>
                                         <View style={styles.arrival_area}>
                                             <Text style={default_data.arrival_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data === undefined ? default_data.arrival_area : data.arrival_area}</Text>
                                         </View>
                                     </View>
                                 </View>
-                            </View>
+
+
                             <View style={styles.end_local}>
                                 <FontAwesome style={{backgroundColor: 'white',}} name="circle" size={15} color="#587DFF" />
                                 <View style={styles.end_text_container}>
                                     <Text style={styles.start_text}>도착지</Text>
                                 </View>
+
                                 <View style={styles.depart_area_container}>
                                     <View style={styles.depart_area}>
                                         <Text style={default_data.depart_area != '항공관' ? {padding: 10, paddingHorizontal: 25, color: '#FFFFFF',fontWeight: 'bold'} : {padding: 10, paddingHorizontal: 20, color: '#FFFFFF',fontWeight: 'bold'}}>{data === undefined ? default_data.depart_area : data.depart_area}</Text>
                                     </View>
                                 </View>                            
                             </View>
+                        
+                        </View>
+                        
+                        <View style={styles.body}>
                             <View style={styles.recruitment_count_container}>
                                 <View style={styles.recruitment_count_text_container}>
                                     <Text style={styles.recruitment_count_text}>인원</Text>
                                 </View>
+
                                 <View style={styles.recruitment_count}>
                                     <View style={RecruitmentCountOneColor()}>
                                         <Text style={RecruitmentCountTextOneColor()}>1</Text>
@@ -818,39 +864,42 @@ const TicketBottomSheet = (props) => {
                                     </View>                                                            
                                 </View>
                             </View>
-                            <View style={styles.time_container}>
-                                <View style={{flexDirection: 'row'}}>
-                                    <View style={styles.arrival_time_text}>
-                                        <Text style={{fontWeight: 'bold'}}>출발 시간</Text>
-                                    </View>
-                                    <View style={styles.arrival_time_container}>
-                                        <Text>{data === undefined ? default_data.arrival_time : data.arrival_time}</Text>
-                                    </View>
+
+
+
+
+                            <View style={{flexDirection: 'row', flex: 1,}}>
+                                <View style={styles.arrival_time_text}>
+                                    <Text style={{fontWeight: 'bold'}}>출발 시간</Text>
                                 </View>
-                    
-                                <View style={{flexDirection: 'row', marginTop: '5%'}}>
-                                    <View style={styles.estimated_time_text}>
-                                        <Text style={{fontWeight: 'bold'}}>예상 소요시간</Text>
-                                    </View>
-                                    <View style={styles.estimated_time_conatainer}>
-                                        <Text>{data === undefined ? default_data.departure_time : data.departure_time}</Text>
-                                    </View>
+                                <View style={styles.arrival_time_container}>
+                                    <Text>{data === undefined ? default_data.arrival_time : data.arrival_time}</Text>
                                 </View>
                             </View>
+                
+                            <View style={{flexDirection: 'row', flex: 1,}}>
+                                <View style={styles.estimated_time_text}>
+                                    <Text style={{fontWeight: 'bold'}}>예상 소요시간</Text>
+                                </View>
+                                
+                                <View style={styles.estimated_time_conatainer}>
+                                    <Text>{data === undefined ? default_data.departure_time : data.departure_time}</Text>
+                                </View>
+                            </View>
+
+
                             <View style={styles.driver_info_container}>
-                                <View style={{marginLeft: '2%'}}>
-                                    <Text style={{marginBottom: '10%', marginTop: '10%'}}>{data === undefined ? default_data.nickname : data.nickname}</Text>
+                                <View>
+                                    <Text>{data === undefined ? default_data.nickname : data.nickname}</Text>
                                     <Text>{data === undefined ? default_data.department : data.department}</Text>
                                 </View>
-                                <View style={styles.driver_charater}>
-                                    <Text>조용히 갈게요</Text>
-                                </View>
-                            </View>
-                            <View style={styles.recruitment_button_container}>
-                                {ShowTicketRecruitmentButton()}
-                                {ShowUpdateTicketButton()}
-                            </View>
                         </View>
+
+                        </View>
+                        <View style={styles.recruitment_button_container}>
+                            {ShowTicketRecruitmentButton()}
+                            {ShowUpdateTicketButton()}
+                        </View>   
                     </View>
                 </Animated.View>
             </View>
@@ -864,49 +913,66 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         backgroundColor: "rgba(0, 0, 0, 0.4)"
     },
+
     background: {
         flex: 1,
     },
+
+
     bottomSheetContainer: {
-        height: 600,
+        flex: 2,
         // justifyContent: "center",
         // alignItems: "center",
-        backgroundColor: 'white',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,   
+        
     },
-    start_local_container: {
-        marginTop: '4%'
+    header: {
+        flex: 1,
+        width: "90%",
+        justifyContent: "space-around",
+        left: 6,
+
+
+    },
+    container: {
+        flex:1,
+        backgroundColor:"white",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        
     },
     start_local: {
+        width: "60%",
         flexDirection: 'row',
-        marginLeft: '4%',
-        width: '90%',
-        borderBottomWidth: 2,
         borderColor: '#C4C4C44F',
-        padding: '2%',
         alignItems: 'center',
+        justifyContent: "space-around",
+        
     },
+   
+
     end_local: {
+        width: "60%",
         flexDirection: 'row',
-        marginLeft: '4%',
-        width: '90%',
-        borderBottomWidth: 2,
         borderColor: '#C4C4C44F',
-        padding: '2%',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: "space-around",
+    
         
     },
     start_text_container: {
-        marginHorizontal: '2%',
+
     },
+
     start_text: {
         fontSize: 13,
         fontWeight: 'bold',
     },
+
     end_text_container: {
-        marginHorizontal: '2%',
+
+
     },
+
     end_text: {
         fontSize: 13,
         fontWeight: 'bold',
@@ -921,94 +987,116 @@ const styles = StyleSheet.create({
 
     depart_area_container: {
 
+
+
     },
+
+    body: {
+        flex: 2,
+        width: "90%",
+        justifyContent: "space-around",
+        alignSelf: "center",
+        
+
+    },
+
     depart_area: {
         backgroundColor: '#315EFF',
         borderRadius: 15,
+
     },
     recruitment_count_container: {
-        marginLeft: '4%',
-        width: '90%',
-        padding: '2%',
-        paddingTop: '5%',
+        flex: 1,
         flexDirection: 'row',
+        
     },
+
     recruitment_count_text_container: {
         backgroundColor: '#C4C4C4',
         borderRadius: 15,
-        width: '20%', 
-        height: 30, 
+        height: 30,
+        alignSelf: "center",
+        flex:0.3,
         justifyContent: 'center', 
         alignItems: 'center'
     },
+
     recruitment_count_text: {
         fontWeight: 'bold',
+
+
     },
+
     recruitment_count: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        width: '65%',
+        flex: 1,
         
     },
     time_container: {
-        marginLeft: '4%',
-        width: '90%',
-        padding: '2%',
-        paddingTop: '5%',
-        paddingBottom: '5%',
+        backgroundColor:"blue",
+
     },
     arrival_time_text: {
         backgroundColor: '#C4C4C4',
-        width: '20%',
         height: 30,
+        alignSelf: "center",
+        flex:0.3,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: "center",
         borderRadius: 15
+        
     },
+
     arrival_time_container: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: '60%',
-        marginLeft: '20.1%',
+        flex: 1,
         borderBottomWidth: 2,
-        borderColor: '#C4C4C44F'
+        borderColor: '#C4C4C44F',
+
     },
+
     estimated_time_text: {
         backgroundColor: '#C4C4C4',
-        width: '25%',
+        flex: 0.3,
         height: 30,
+        alignSelf: "center",
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 15
     },
+
     estimated_time_conatainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: '60%',
-        marginLeft: '15.1%',
+        flex: 1,
         borderBottomWidth: 2,
-        borderColor: '#C4C4C44F'
+        borderColor: '#C4C4C44F',
+        
     },
+
     driver_info_container: {
-        marginLeft: '4%',
-        width: '90%',
-        paddingVertical: '8%',
+
         flexDirection: 'row',
         alignItems: 'center'
     },
+
     driver_charater: {
         backgroundColor: '#C4C4C4',
         marginLeft: '32%',
         padding: '2%',
         borderRadius: 15
     },
-    recruitment_button_container: {
 
-        marginLeft: '4%',
-        width: '90%',
+    recruitment_button_container: {
+        flex:1,
         alignItems: 'center',
+        justifyContent: "space-evenly",
     },
+
     button_container: {
         backgroundColor: '#FFFFFF',
         width: '70%', height: 40,

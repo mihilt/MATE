@@ -16,12 +16,11 @@ import { db } from '../../Database/DatabaseConfig/firebase';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 // 기본 데이터 불러오기 (CarpoolTicket, TexiTicket)
 import { CarpoolTicket } from'../../Database/Data/Ticket/carpoolData';
-import { TaxiTicket } from '../../Database/Data/Ticket/taxiData';
 // 회원정보 데이터
 import { UserInfo } from'../../Database/Data/User/userInfo';
 import BottomSheet from '../Modal/BottomSheet';
 import TicketBottomSheet from '../Modal/TicketBottomSheet';
-
+import { useIsFocused } from '@react-navigation/native';
 // 드롭 다운
 // 드롭다운 항목들 이다.
 const localList = ["", "인동"] // 선택 할 수 있는 지역
@@ -58,7 +57,9 @@ export default function Main({ navigation }) { // 정보 메인 부분
     const [ refresh, setRefresh ] = useState(false); 
     // 탑승 리스트페이지 True 일때 보여주기 TicketScreen
     const [ showTicketScreen, setShowTicketScreen ] = useState(false);
-    
+    // 이전 스크린으로 넘어가면 재실행하기.
+    const isFocused = useIsFocused(); 
+
     const CarpoolCreateButton = () => {
         setModalVisible(true);
         setTicket('카풀');
@@ -91,6 +92,12 @@ export default function Main({ navigation }) { // 정보 메인 부분
         console.log("메인 화면 : ", UserInfo.UserInfo[0]);
     }, []);
 
+    useEffect(() => {
+        Read();
+        showCarpoolTicket();
+        console.log('메인 재실행');
+    }, [isFocused])
+
 
     const sheetRef = React.useRef(null);
 
@@ -119,16 +126,33 @@ export default function Main({ navigation }) { // 정보 메인 부분
             console.log('userDoc 길이 : ', ticketInfos.CarpoolTicket.length);
             if (ticketInfos.CarpoolTicket.length != undefined) {
                 for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
-                    if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
-                        if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
-                            setShowTicketScreen(true);
+                    if (UserInfo.Driver[0].auth === 'driver') {
+                        if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
+                            if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
+                                setShowTicketScreen(true);
+                            } else {
+                                setShowTicketScreen(false);
+                            }
+                        } else {
+                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_info.length; j++) {
+                                if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number 
+                                    && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname) {
+                                    setShowTicketScreen(true);
+                                    break;
+                                } else {
+                                    setShowTicketScreen(false);
+                                }
+                            }
                         }
-                    } else {
+                    }
+                    else {
                         if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
                             for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
                                 if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
                                     && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
                                         setShowTicketScreen(true);
+                                } else {
+                                    setShowTicketScreen(false);
                                 }
                             }
                         }

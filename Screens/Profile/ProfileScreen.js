@@ -169,8 +169,8 @@ export default function ProfileScreen({navigation})  {
                     <Ionicons name="home-outline" size={24} color="black" />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.navigate("TicKetScreen")}>
-                        <Ionicons name="card-outline" size={24} color="black" />
+                    <TouchableOpacity onPress={() => navigation.navigate("TicketScreen")}>
+                        <Ionicons name="card-outline" size={30} color="black" />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>

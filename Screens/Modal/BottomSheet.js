@@ -17,6 +17,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Input } from 'react-native-elements';
 import { UserInfo } from'../../Database/Data/User/userInfo';
 import { CarpoolTicket } from'../../Database/Data/Ticket/carpoolData';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+
 
 const BottomSheet = (props) => {
     const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read, showCarpoolTicket, showTaxiTicket} = props;
@@ -469,24 +472,26 @@ const BottomSheet = (props) => {
             statusBarTranslucent
 
         >
-            <View style={styles.overlay}>
-                <TouchableWithoutFeedback
-                    onPress={closeModal}>
-                    <View style={styles.background}/>
 
-                </TouchableWithoutFeedback>
-                <KeyboardAvoidingView
-                    behavior={(Platform.OS === "android" || Platform.OS === "ios") ? "padding" : ""}
-                    style={styles.container}
-                >
+            <View style={styles.overlay}>
+                    <TouchableWithoutFeedback
+                        onPress={closeModal}>
+                        <View style={styles.background}/>
+
+
+                    </TouchableWithoutFeedback>
+                <View style={styles.container}>
+
                     <TouchableWithoutFeedback
                         onPress={Keyboard.dismiss}
                     >
+
+                    <KeyboardAwareScrollView extraScrollHeight={120} style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
                     <Animated.View
                     style={{...styles.bottomSheetContainer, transform: [{ translateY: translateY }]}}
                     {...panResponders.panHandlers}
                     >
-                    <View style={{flex: 0.39, justifyContent: 'space-around',}}>
+                    <View style={{borderTopLeftRadius: 30, borderTopRightRadius: 30, flex: 0.3,  justifyContent: 'space-around',}}>
                         
                         <View>
                             <View style={{flexDirection : 'row', justifyContent:'space-evenly', alignItems: 'center' }}>
@@ -529,7 +534,8 @@ const BottomSheet = (props) => {
 
                     <View style={{ flex:1, justifyContent : 'space-evenly',}}>
 
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginRight: 35,}}>
+                        <View style={{flex: 0.3, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginRight: 35,}}>
+                            
                             <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>모집인원</Text>
                             </View> 
@@ -571,7 +577,7 @@ const BottomSheet = (props) => {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <View style={{flex: 0.3, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                             <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor :"rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>출발시간</Text>
                             </View> 
@@ -582,7 +588,7 @@ const BottomSheet = (props) => {
                             />
                         </View>
 
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <View style={{flex: 0.3, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                             <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>오픈채팅</Text>
                             </View> 
@@ -592,7 +598,7 @@ const BottomSheet = (props) => {
                             />    
                         </View>
 
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <View style={{ flex: 0.3, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                             
                             <View style = {{borderRadius: 10, width: 55, height : 30, backgroundColor : "rgba(196, 196, 196, 0.31)", justifyContent: 'center', alignItems: 'center'}}>
                                 <Text>비밀번호</Text>
@@ -626,11 +632,13 @@ const BottomSheet = (props) => {
                                 <Text style={{color: 'black'}}>생성하기</Text>
                         </TouchableOpacity>
                     </View>
-
+                
                 </Animated.View>
+                </KeyboardAwareScrollView>
                     </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>
+                </View>
             </View>
+
         </Modal>
     )
 }
@@ -638,25 +646,35 @@ const BottomSheet = (props) => {
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: "rgba(0 ,0 ,0 , 0.4)"
+        backgroundColor: "rgba(0 ,0 ,0 , 0.4)",
+        
+
+        
+        
         
     },
     background: {
         flex: 1,
+        
 
 
     },
     bottomSheetContainer: {
-        flex: 1,
-        backgroundColor: 'white',
+        height: 900,
+        backgroundColor:"white", 
         justifyContent : 'space-around',
+        marginTop: 10,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
 
+    
         
     },
     container: {
-        flex: 3,
+        flex: 4,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+
 
 
     }
