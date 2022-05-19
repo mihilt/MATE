@@ -117,6 +117,7 @@ const LoginScreen = ({navigation}) => {
               value={studentNumber}
               containerStyle={{width: '85%', marginRight: 10}}
               onChangeText={Text => SetStudentNumber(Text)}
+              keyboardType="number-pad"
             />
             <Input
               placeholder='성명'

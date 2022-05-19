@@ -29,28 +29,6 @@ export default function TicketScreen({navigation})  {
         Read();
     }, [recruitmentCancle])
 
-
-    /*
-    // 데아터 문서 읽어오기
-    const Read = () => {
-        const myDoc = doc(db, "CollectionNameCarpoolTicket", "CarpoolTicketDocument");
-        
-        getDoc(myDoc)
-        .then((snapshot) => {
-            if (snapshot.exists) {
-                
-                readUserDoc = snapshot.data();
-                console.log("firebase로부터 불러온 회원 정보들 : ", readUserDoc.CarpoolTicket);
-                console.log("회원정보 : ", UserInfo.UserInfo[0]);
-                readUserDoc = readUserDoc.CarpoolTicket;
-                ShowTickets();
-            }
-        })
-        .catch((error) => {
-            alert(error.messeage);
-        });
-    }
-    */
    
     // firebase 문서로 부터 데이터를 읽으면 userDoc state에 선언 할려고 한다.
    const [ userDoc, setUserDoc ] = useState([]);

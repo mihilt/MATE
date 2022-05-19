@@ -73,29 +73,15 @@ export default function Main({ navigation }) { // 정보 메인 부분
         setData(key);
     }
     
-    /*
-    지금은 입력창 대신 드롭다운으로 했으므로 일단은 주석으로 남겼다. 
-    // 출발지, 도착지, 닉네임, 학과, 텍스트 받을 state
-    const [ arrivalAreaText, setArrivalAreaText ] = useState(""); // 출발지 텍스트
-    const [ departAreaText, setDepartAreaText ] = useState(""); // 도착지 텍스트
-    const [ nicknameText, setNicknameText ] = useState(""); // 닉네임 텍스트
-    const [ departmentText, setDepartmentText ] = useState(""); // 학과 텍스트 
-    */
-
-    // useEffect 처음 앱실행 했을때 테이블을 불러온다.
-    // useEffect 실행 했을때 티켓 정보들이 나온다.
-
     useEffect (() => {
         Read(); // Firebase의 문서들을 불러온다.
         showCarpoolTicket();
         showTaxiTicket();
-        console.log("메인 화면 : ", UserInfo.UserInfo[0]);
     }, []);
 
     useEffect(() => {
         Read();
         showCarpoolTicket();
-        console.log('메인 재실행');
     }, [isFocused])
 
 
@@ -123,7 +109,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
             ticketInfos = snapshot.data();
             carpoolCount = userDoc.CarpoolCount;
 
-            console.log('userDoc 길이 : ', ticketInfos.CarpoolTicket.length);
             if (ticketInfos.CarpoolTicket.length != undefined) {
                 for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
                     if (UserInfo.Driver[0].auth === 'driver') {
@@ -183,7 +168,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
             // 카풀, 택시 둘중 하나가 선택일 경우 그중 하나를 티켓이름으로 정한다.
             //console.log("카풀 : ", userDoc.CarpoolCount);
             if (userDoc.CarpoolCount === 0) {
-                console.log(ticket);
                 if (ticket === '카풀') {
                     carpoolCount = userDoc.CarpoolCount + 1;
                     docCarpoolData.CarpoolTicket[0].ticket_name = "카풀";
@@ -286,42 +270,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             );
         }
     }
-/*
-    function showCarpoolTicket() {
 
-        if (userDoc.CarpoolCount > 0) {
-            return (
-                userDoc.CarpoolTicket.slice(0).reverse().map(key => (
-                    <TouchableOpacity onPress={() => pressTicket(key)}>
-                        <View style={styles.ticket_container}> 
-                            <View style={styles.ticket_info}>
-                                <Fontisto name="bookmark-alt" size={24} color="#315EFF" />
-                                <View style={{alignItems: 'center'}}>
-                                    <Text>{key.arrival_area}</Text> 
-                                    <Text style={{fontSize: 8}}>09:00</Text>
-                                </View>
-                
-                                <View style={{alignItems: 'center'}}>
-                                    <Feather name="arrow-right-circle" size={24} color="black" />
-                                </View>
-                    
-                                <View style={{alignItems: 'center'}}>
-                                    <Text>{key.depart_area}</Text>
-                                    <Text style={{fontSize: 8}}>09:40</Text>
-                                </View>
-                            </View>
-                            <View style={{flexDirection: "row", justifyContent: 'center', alignItems: 'center'}}>
-                                
-                                <View style={{backgroundColor:'#315EFF', width:50, height: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}><Text style={{fontSize: 20, color: 'black'}}>{key.recruitment_count}/4</Text></View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    
-                ))
-            );
-        }
-    }
-*/
     const showTaxiTicket = () => {
         
         if (userDoc.TaxiCount > 0) {
@@ -441,7 +390,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
             showCarpoolTicket = {showCarpoolTicket}
             showTaxiTicket = {showTaxiTicket}
         />
-        {console.log("Main 출발지 : ", startInputText)}
         <TicketBottomSheet  
             ticketModalVisible={ticketModalVisible}
             setTicketModalVisible={setTicketModalVisible}

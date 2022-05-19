@@ -42,8 +42,6 @@ export default function ProfileScreen({navigation})  {
             if (snapshot.exists) {
                 
                 readUserDoc = snapshot.data();
-                console.log("firebase로부터 불러온 회원 정보들 : ", readUserDoc.CarpoolTicket);
-                console.log("회원정보 : ", UserInfo.UserInfo[0]);
                 readUserDoc = readUserDoc.CarpoolTicket;
                 ShowTickets();
             }
@@ -65,7 +63,6 @@ export default function ProfileScreen({navigation})  {
         if (UserInfo.Driver[0].auth === 'driver') {
             const myDoc = doc(db, "CollectionNameCarpoolTicket", "UserInfo");
 
-            console.log('드라이버 회원탈퇴 정보 : ', UserInfo.Driver[0]);
             updateDoc(myDoc, {DriverInfo: arrayRemove(UserInfo.Driver[0])});
             
             alert('회원탈퇴 완료 되었습니다.');
@@ -74,7 +71,6 @@ export default function ProfileScreen({navigation})  {
             navigation.navigate("StudendNumberLoginScreen")
         }
         else if (UserInfo.Pesinger[0].auth === 'pesinger') {
-            console.log('패신저 회원탈퇴 정보 : ', UserInfo.Pesinger[0]);
             const myDoc = doc(db, "CollectionNameCarpoolTicket", "UserInfo");
            
             updateDoc(myDoc, {PesingerInfo : arrayRemove(UserInfo.Pesinger[0])});
@@ -98,6 +94,14 @@ export default function ProfileScreen({navigation})  {
         UserInfo.UserInfo[0].status_message = text;
     }
 
+    const ShowNotice = () => {
+        if (UserInfo.Driver[0].auth != "") {
+            return UserInfo.Driver[0].status_message;
+        } else {
+            return UserInfo.Pesinger[0].status_message;
+        }
+    };
+
     const ShowName = () => {
         if (UserInfo.Driver[0].auth != "") {
             return UserInfo.Driver[0].nickname;
@@ -120,7 +124,7 @@ export default function ProfileScreen({navigation})  {
                 <Text style={styles.user_name_text}>{ShowName()}</Text>
 
                  <View style={{backgroundColor: 'rgba(196, 196, 196, 0.31)', borderRadius: 10,  width: '100%', height: '50%', justifyContent: 'center', alignItems: 'center'}}>
-                    <Text>티켓 설명</Text>
+                    <Text>{ShowNotice()}</Text>
                 </View> 
 
                 <TouchableOpacity style = {styles.button}

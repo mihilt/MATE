@@ -262,6 +262,7 @@ export default function SignUpScreen({navigation}) {
                             value={studentNumber}
                             maxLength={9}
                             onChangeText={Text => SetStudentNumber(Text)}
+                            keyboardType="number-pad"
                         />
 
                         <TextInput 

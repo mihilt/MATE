@@ -25,7 +25,6 @@ export default function FixProfileScreen({navigation})  {
 
     useEffect(() => {
         Read();
-        console.log(UserInfo.UserInfo[0]);
     }, [UserInfo.UserInfo[0].status_message]);
 
     // firebase로 불러온 정보를 선언(가리키고자)하고자 한다.
@@ -42,8 +41,6 @@ export default function FixProfileScreen({navigation})  {
             if (snapshot.exists) {
                 
                 readUserDoc = snapshot.data();
-                console.log("firebase로부터 불러온 회원 정보들 : ", readUserDoc.CarpoolTicket);
-                console.log("회원정보 : ", UserInfo.UserInfo[0]);
                 readUserDoc = readUserDoc.CarpoolTicket;
                 ShowTickets();
             }
@@ -68,7 +65,6 @@ export default function FixProfileScreen({navigation})  {
     // 상태메시지 입력 버튼
     const setStatusMessageButton = () => {
         UserInfo.UserInfo[0].status_message = text;
-        console.log(`상태메시지 : ${UserInfo.UserInfo[0].status_message}`);
         //onRefresh();
         //navigation.navigate('ProfileScreen');
         navigation.dispatch( CommonActions.goBack()); 
@@ -83,7 +79,6 @@ export default function FixProfileScreen({navigation})  {
     };
     
     const onRefresh = React.useCallback(() => {
-        console.log(`새로고침 실행`);
         setRefresh(true);
         wait(2000).then(() => setRefresh(false));
     }, []);
