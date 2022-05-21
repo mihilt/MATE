@@ -23,7 +23,7 @@ import { Touchable } from 'react-native';
 const TicketBottomSheet = (props) => {
 
 
-    const { ticketModalVisible, setTicketModalVisible, userDoc, data, setData,showCarpoolTicket, showTaxiTicket, Read, carpoolCount, UserInfo, navigation } = props;
+    const { ticketModalVisible, setTicketModalVisible, userDoc, data, setData,showCarpoolTicket, showTaxiTicket, Read, carpoolCount, UserInfo, navigation, FindOverlay  } = props;
     // 자기가 만든 티켓을 삭제할때 사용할 state이다.
 
     let default_data = {
@@ -191,6 +191,7 @@ const TicketBottomSheet = (props) => {
             showCarpoolTicket();
             setDeleted(true);
             setDriverTicketOverlap(false);
+            FindOverlay();
         }
         else if (UserInfo.Driver[0].nickname != data.nickname) {
             alert('삭제 못하였습니다.');

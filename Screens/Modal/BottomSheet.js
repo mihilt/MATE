@@ -22,7 +22,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 
 const BottomSheet = (props) => {
-    const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read, showCarpoolTicket, showTaxiTicket} = props;
+    const { modalVisible, setModalVisible, startInputText, endInputText, setStartInputText, setEndInputText, ticket, setTicket, Create, Read, showCarpoolTicket, showTaxiTicket, FindOverlay} = props;
     //const [ button, setButton ] = useState(0);
     
     const [ studentNumber, SetStudentNumber ] = useState("");
@@ -600,7 +600,7 @@ const BottomSheet = (props) => {
                                 if (startInputText != "" && endInputText != "" && arrivaltime != "" && CarpoolTicket.CarpoolTicket[0].open_chat_password != "" && CarpoolTicket.CarpoolTicket[0].open_chat != "") {
                                     
                                     Create();
-                                    console.log('학번:', studentNumber);
+                                    FindOverlay();
                                     CarpoolTicket.CarpoolTicket[0].student_number = UserInfo.Driver[0].student_number;
                                     closeModal();
                                     alert("티켓 생성 하였습니다.");

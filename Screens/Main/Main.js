@@ -1,4 +1,3 @@
-
 // 모듈 불러오는 부분, 현재 수정중
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, Image, ImageBackground } from "react-native";
@@ -58,6 +57,10 @@ export default function Main({ navigation }) { // 정보 메인 부분
     // 탑승 리스트페이지 True 일때 보여주기 TicketScreen
     const [ showTicketScreen, setShowTicketScreen ] = useState(false);
     // 이전 스크린으로 넘어가면 재실행하기.
+
+    // 드라이버 티켓 중복생성 방지
+    const [ createDriverTicket, setCreateDriverTicket ] = useState(false);
+
     const isFocused = useIsFocused(); 
 
     const CarpoolCreateButton = () => {
@@ -77,12 +80,17 @@ export default function Main({ navigation }) { // 정보 메인 부분
         Read(); // Firebase의 문서들을 불러온다.
         showCarpoolTicket();
         showTaxiTicket();
+        FindOverlay();
     }, []);
+
 
     useEffect(() => {
         Read();
         showCarpoolTicket();
+        FindOverlay();
     }, [isFocused])
+
+  
 
 
     const sheetRef = React.useRef(null);
@@ -115,6 +123,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                         if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
                             if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
                                 setShowTicketScreen(true);
+                                break;
                             } else {
                                 setShowTicketScreen(false);
                             }
@@ -136,6 +145,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                                 if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
                                     && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
                                         setShowTicketScreen(true);
+                                        break;
                                 } else {
                                     setShowTicketScreen(false);
                                 }
@@ -156,6 +166,23 @@ export default function Main({ navigation }) { // 정보 메인 부분
 
     };
 
+    const FindOverlay = () => {
+        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
+
+        getDoc(myDoc)
+        .then((snapshot) => {
+            ticketInfos = snapshot.data();
+            for(let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
+                if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
+                    setCreateDriverTicket(true);
+                    break;
+                } else {
+                    setCreateDriverTicket(false);
+                }
+            }
+
+        })
+    }
     // 티켓 생성
     const Create = () => {
         if (startInputText != null && endInputText != null) {
@@ -190,9 +217,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                     });
                 }
             }
-
             else {
-                console.log("1이상");
                 if (ticket === '카풀') {
                     carpoolCount = userDoc.CarpoolCount + 1;
                     docCarpoolData.CarpoolTicket[0].ticket_name = "카풀";
@@ -216,7 +241,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
                         alert(error.messeage);
                     });
                 }
-            }
+            } 
         }
     }
 
@@ -323,8 +348,11 @@ export default function Main({ navigation }) { // 정보 메인 부분
                         onPress={() => {
                             if (UserInfo.Pesinger[0].auth === 'pesinger') {
                                 alert('패신저는 생성 못합니다.');
+                            } else if (createDriverTicket === true){
+                                alert('티켓 생성 한적 있습니다.');
                             } else {
                                 CarpoolCreateButton();
+                                FindOverlay();
                             }
                         }}
                     >
@@ -355,6 +383,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             <TouchableOpacity
                 style={{paddingHorizontal: 30}}
                 onPress={() =>{
+                    Read(); 
                     if (showTicketScreen != true) {
                         navigation.navigate("TicketDefaultScreen");
                     } else {
@@ -388,6 +417,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             Read = {Read}
             showCarpoolTicket = {showCarpoolTicket}
             showTaxiTicket = {showTaxiTicket}
+            FindOverlay = {FindOverlay}
         />
         <TicketBottomSheet  
             ticketModalVisible={ticketModalVisible}
@@ -401,6 +431,7 @@ export default function Main({ navigation }) { // 정보 메인 부분
             carpoolCount={carpoolCount}
             UserInfo={UserInfo}
             navigation={navigation}
+            FindOverlay={FindOverlay}
         />
     </View>
   );
@@ -626,4 +657,3 @@ const styles = StyleSheet.create({
 
     },
 });
-
