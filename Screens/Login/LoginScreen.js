@@ -47,7 +47,6 @@ const LoginScreen = ({navigation}) => {
     
     // useEffect
     useEffect (() => {
-      console.log("useEffect 호출");
       Read();
     },[]);
 
@@ -58,7 +57,7 @@ const LoginScreen = ({navigation}) => {
       let signIn = false;
 
       for (let i = 0; i < UserInfo.Driver_login.length; i++) {
-        console.log(UserInfo.Driver_login[i].student_number);
+        
         if (UserInfo.Driver_login[i].student_number === studentNumber && UserInfo.Driver_login[i].nickname === studentName) {
           
           // 로그인 성공
@@ -76,7 +75,7 @@ const LoginScreen = ({navigation}) => {
         }
       }
       for (let i = 0; i < UserInfo.Pesinger_login.length; i++) {
-        console.log(UserInfo.Pesinger_login[i].student_number);
+        
         if (UserInfo.Pesinger_login[i].student_number === studentNumber && UserInfo.Pesinger_login[i].nickname === studentName) {
           
           // 로그인 성공

@@ -47,7 +47,6 @@ export default function SignUpScreen({navigation}) {
 
     useEffect(() => {
         Read();
-        console.log(readDoc);
     }, []);
 
     async function  Read() {
@@ -88,7 +87,6 @@ export default function SignUpScreen({navigation}) {
 
             const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
             if (nickname != "" && studentNumber.length === 9 && department != "") {
-                console.log('패신저 : ', Pesinger_login);
                 for (let i = 0; i < Driver_login.length; i++) {
                     if ((studentNumber === Driver_login[i].student_number)) {
                         alert('회원가입 하신적 있습니다.');

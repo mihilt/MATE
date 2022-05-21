@@ -79,7 +79,6 @@ const TicketBottomSheet = (props) => {
 
     const ShowOpenChat = () => {
        
-        console.log('showOpenChat 호출');
         if (data.ticket_name === '카풀' && UserInfo.Driver[0].nickname === data.nickname) {
             setOpenChat(true);
             return (
@@ -171,8 +170,7 @@ const TicketBottomSheet = (props) => {
                     if (UserInfo.Driver[0].auth === 'driver') {
                         for (let i = 0; i < ticket_info.CarpoolTicket.length; i++) {
                             if (ticket_info.CarpoolTicket[i].student_number === UserInfo.Driver[0].student_number && ticket_info.CarpoolTicket[i].nickname === UserInfo.Driver[0].nickname) {
-                                setDriverTicketOverlap(true);
-                                console.log('실행! : ', driverTicketOverlap);
+                                setDriverTicketOverlap(true);                            
                                 break;
                             }
                         }
@@ -224,8 +222,7 @@ const TicketBottomSheet = (props) => {
                     if (UserInfo.Driver[0].auth === 'driver') {
                         for (let i = 0; i < ticket_info.CarpoolTicket.length; i++) {
                             if (ticket_info.CarpoolTicket[i].student_number === UserInfo.Driver[0].student_number && ticket_info.CarpoolTicket[i].nickname === UserInfo.Driver[0].nickname) {
-                                setDriverTicketOverlap(true);
-                                console.log('실행! : ', driverTicketOverlap);
+                                setDriverTicketOverlap(true);                            
                                 break;
                             }
                         }
@@ -277,8 +274,7 @@ const TicketBottomSheet = (props) => {
                 }
             } else if ( data.nickname != UserInfo.Driver[0].nickname && UserInfo.Driver[0].auth === 'driver' && driverTicketOverlap === false) {
                 const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
-            
-                console.log('드라이버 : ', driverTicketOverlap);
+                        
                 if (data.pesinger_count >= data.recruitment_count) {
                     alert('탑승인원 초과 했습니다.')
                 }

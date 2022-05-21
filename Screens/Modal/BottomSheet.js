@@ -96,27 +96,19 @@ const BottomSheet = (props) => {
     const setStartLocalSelect = () => {
         if (button === 1) {
             setStartInputText('인동');
-            setStartInputSelect([true, false, false, false]);
-            console.log('modal console 출발지: ', startInputText);
-            console.log(button);
+            setStartInputSelect([true, false, false, false]);                        
         }
         else if (button === 2) {
             setStartInputText('옥계');
             setStartInputSelect([false, true, false, false]);
-            console.log('modal console 출발지: ', startInputText);
-            console.log(button);
         }
         else if (button === 3) {
             setStartInputText('본관');
-            setStartInputSelect([false, false, true, false]);
-            console.log('modal console 출발지: ', startInputText);
-            console.log(button);
+            setStartInputSelect([false, false, true, false]);            
         }
         else if (button === 4) {
             setStartInputText('항공관');
             setStartInputSelect([false, false, false, true]);
-            console.log('modal console 출발지: ', startInputText);
-            console.log(button);
         }
     }
 
@@ -124,26 +116,18 @@ const BottomSheet = (props) => {
         if (button === 1) {
             setEndInputText('인동');
             setEndInputSelect([true, false, false, false]);
-            console.log('modal console 도착지: ', endInputText);
-            console.log(button);
         }
         else if (button === 2) {
             setEndInputText('옥계');
             setEndInputSelect([false, true, false, false]);
-            console.log('modal console 도착지: ', endInputText);
-            console.log(button);
         }
         else if (button === 3) {
             setEndInputText('본관');
             setEndInputSelect([false, false, true, false]);
-            console.log('modal console 도착지: ', endInputText);
-            console.log(button);
         }
         else if (button === 4) {
             setEndInputText('항공관');
             setEndInputSelect([false, false, false, true]);
-            console.log('modal console 도착지: ', endInputText);
-            console.log(button);
         }
     }
 

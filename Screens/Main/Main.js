@@ -166,7 +166,6 @@ export default function Main({ navigation }) { // 정보 메인 부분
             // userDoc 변수는 firebase 문서의 데이터로 가르키고 있다.
            
             // 카풀, 택시 둘중 하나가 선택일 경우 그중 하나를 티켓이름으로 정한다.
-            //console.log("카풀 : ", userDoc.CarpoolCount);
             if (userDoc.CarpoolCount === 0) {
                 if (ticket === '카풀') {
                     carpoolCount = userDoc.CarpoolCount + 1;

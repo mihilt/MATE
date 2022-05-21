@@ -42,25 +42,8 @@ export default function SignUpScreen({navigation}) {
         if (docSnap.exists()) {
             readDoc = docSnap.data();
             PesingerInfoDatas = readDoc.PesingerInfo;
-            console.log("회원정보 데이터들 : ", PesingerInfoDatas);
             UserInfo.userInfoDatas = userInfoDatas;
-            console.log("Read 성공 : ", UserInfo.userInfoDatas);
             
-        //   for (let i = 0; i < userInfoDatas.length; i++) {
-        //     // 로그인 성공
-        //     if (userInfoDatas[i].student_number === studentNumber && userInfoDatas[i].password === password) {
-        //       SetSignIn(true);
-        //       UserInfoDefaultData.nickname = userInfoDatas[i].nickname;
-        //       UserInfoDefaultData.student_number = userInfoDatas[i].student_number;
-        //       UserInfoDefaultData.department = userInfoDatas[i].department;
-    
-        //       console.log("회원정보 기본데이터 값 : ", UserInfoDefaultData);
-        //     }
-        //   }
-        // }
-    
-        // 보안성 취약 
-    
         
         }
     }

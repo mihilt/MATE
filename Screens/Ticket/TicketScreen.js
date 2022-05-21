@@ -48,9 +48,12 @@ export default function TicketScreen({navigation})  {
    const [ driverDepartment, setDriverDepartment ] = useState("");
    const [ recruitmentCancle, setRecruitmentCancle ] = useState({}); // 탑승 취소 할때 사용
 
-   //const [nickname, setNickname] = useState("");
-   //let recruitmentList;
-   
+   // recruitmentOneList undefined일때 밑에 객체를 사용.
+   const defaultRecruitmentList = {
+       nickname: '',
+       department: '',
+   };
+
    const Read = ()  => {
     // Reading Doc
     // doc(firebase 경로, "컬랙션 이름", "문서 이름")
@@ -195,6 +198,11 @@ export default function TicketScreen({navigation})  {
                         }
                     }
                 }
+            } else {
+                setRescruitmentOneList({nickname: '', department: ''});
+                setRescruitmentTwoList({nickname: '', department: ''});                
+                setRescruitmentThreeList({nickname: '', department: ''});
+                setRescruitmentFourList({nickname: '', department: ''});
             }
             
         })
@@ -358,32 +366,32 @@ export default function TicketScreen({navigation})  {
                     <View style={styles.pesingerText}>
                         <Image style={{flex: 0.2, height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
                         <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentOneList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentOneList.department}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentOneList != undefined ? recruitmentOneList.nickname : defaultRecruitmentList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentOneList != undefined ? recruitmentOneList.department : defaultRecruitmentList.department}</Text>
                         </View>                   
                     </View>
 
                     <View style={styles.pesingerText}>
                         <Image style={{flex: 0.2, height: 50, borderRadius: 50}}source={require('../../assets/mate_icon.png')}/>
                         <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentTwoList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentTwoList.department}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentTwoList != undefined ? recruitmentTwoList.nickname : defaultRecruitmentList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentTwoList != undefined ? recruitmentTwoList.department : defaultRecruitmentList.department}</Text>
                         </View>
                    </View>
 
                     <View style={styles.pesingerText}>
                         <Image style={{flex: 0.2, height: 50, borderRadius: 50}}source={require('../../assets/mate_icon.png')}/>
                         <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentThreeList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentThreeList.department}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentThreeList != undefined ? recruitmentThreeList.nickname : defaultRecruitmentList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentThreeList != undefined ? recruitmentThreeList.department : defaultRecruitmentList.department}</Text>
                             </View>
                     </View>
 
                    <View style={styles.pesingerText}>
                         <Image style={{flex: 0.2, height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
                         <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentFourList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentFourList.department}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentFourList != undefined ? recruitmentFourList.nickname : defaultRecruitmentList.nickname}</Text>
+                            <Text style={styles.UserInfo_font}>{recruitmentFourList != undefined ? recruitmentFourList.department : defaultRecruitmentList.department}</Text>
                         </View>
                     </View>
                     

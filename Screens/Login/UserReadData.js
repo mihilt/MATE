@@ -19,7 +19,6 @@ export default async function  Read() {
     if (docSnap.exists()) {
       readDoc = docSnap.data();
       userInfoDatas = readDoc.UserInfo;
-      console.log("회원정보 데이터들 : ", userInfoDatas);
       
     //   for (let i = 0; i < userInfoDatas.length; i++) {
     //     // 로그인 성공
