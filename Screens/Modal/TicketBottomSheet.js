@@ -77,30 +77,6 @@ const TicketBottomSheet = (props) => {
 
     let ticket_info;
 
-    const ShowOpenChat = () => {
-       
-        if (data.ticket_name === '카풀' && UserInfo.Driver[0].nickname === data.nickname) {
-            setOpenChat(true);
-            return (
-                <View>
-                    <Text style={{fontSize: 15, marginRight: 10}}>오픈채팅방 : {data.open_chat}</Text>
-                    <Text style={{fontSize: 15, marginRight: 10}}>비밀번호 : {data.open_chat_password}</Text>
-                </View>
-            );
-        } else {
-            for (let i = 0; i < data.pesinger_info.length; i++) {
-                if (data.pesinger_info[i] === UserInfo.Pesinger[0].student_number) {
-                    setOpenChat(true);
-                    return (
-                        <View>
-                            <Text style={{fontSize: 15, marginRight: 10}}>오픈채팅방 : {data.open_chat}</Text>
-                            <Text style={{fontSize: 15, marginRight: 10}}>비밀번호 : {data.open_chat_password}</Text>
-                        </View>
-                    );
-                }
-            }
-        }
-    }
 
     const panResponders = useRef(PanResponder.create({
         onStartShouldSetPanResponder: () => true,
@@ -374,105 +350,43 @@ const TicketBottomSheet = (props) => {
             }
         }
     }
-    // 드라이버만 티켓 삭제 하기 구현
-    const ShowDeletTicketButton = () => {
-      
-        if (data === undefined) {
-            if (default_data.student_number === UserInfo.Driver[0].student_number && default_data.nickname === UserInfo.Driver[0].nickname) {
-                return (
-                    <View style={styles.button_container}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                closeModal();
-                                TicketDelete();
-                            }
-                        }
-                            style={{width: '100%', alignItems: 'center'}}
-                        >
-                            <Text style={{fontWeight: 'bold'}}>삭제하기</Text>
-                        </TouchableOpacity>
-                    </View> 
-                );
-            }
-        } else {
-            if (data.student_number === UserInfo.Driver[0].student_number && data.nickname === UserInfo.Driver[0].nickname) {
-                return (
-                    <View style={styles.button_container}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                closeModal();
-                                TicketDelete();
-                            }
-                        }
-                            style={{width: '100%', alignItems: 'center'}}
-                        >
-                            <Text style={{fontWeight: 'bold'}}>삭제하기</Text>
-                        </TouchableOpacity>
-                    </View> 
-                );
-            }
-        }
-    }
 
-    const ShowUpdateTicketButton = () => {
-        if (data === undefined) {
-            if (default_data.student_number === UserInfo.Driver[0].student_number && default_data.nickname === UserInfo.Driver[0].nickname) {
-                return (
-                    <View style={styles.button_container}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                closeModal();
-                                navigation.navigate("TicketUpdateScreen");
-                        }}
-                            style={{width: '100%', alignItems: 'center'}}
-                        >
-                            <Text style={{fontWeight: 'bold'}}>수정하기</Text>
-                        </TouchableOpacity>
-                    </View> 
-                );
-            }
-        } else {
-            if (data.student_number === UserInfo.Driver[0].student_number && data.nickname === UserInfo.Driver[0].nickname) {
-                return (
-                    <View style={styles.button_container}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                closeModal();
-                                navigation.navigate("TicketUpdateScreen");
-                            }
-                        }
-                            style={{width: '100%', alignItems: 'center'}}
-                        >
-                            <Text style={{fontWeight: 'bold'}}>수정하기</Text>
-                        </TouchableOpacity>
-                    </View> 
-                );
-            }
-        }
-    }
-
-    // 출발지, 도착지수정 실행 하는 함수
-    const setArrivalUpdate = (btn_id) => {
-        // btn_id : 1 경운대학교, btn_id : 2 인동, btn_id : 3 옥계
-        if (btn_id === 1) {
-            setArrivalText('경운대학교');
-        } else if (btn_id === 2) {
-            setArrivalText('인동');
-        } else if (btn_id === 3) {
-            setArrivalText('옥계');
-        }
-    }
-
-    const setDepartUpdate = (btn_id) => {
-        // btn_id : 1 경운대학교, btn_id : 2 인동, btn_id : 3 옥계
-        if (btn_id === 1) {
-            setDepartText('경운대학교');
-        } else if (btn_id === 2) {
-            setDepartText('인동');
-        } else if (btn_id === 3) {
-            setDepartText('옥계');
-        }
-    }
+    // const ShowUpdateTicketButton = () => {
+    //     if (data === undefined) {
+    //         if (default_data.student_number === UserInfo.Driver[0].student_number && default_data.nickname === UserInfo.Driver[0].nickname) {
+    //             return (
+    //                 <View style={styles.button_container}>
+    //                     <TouchableOpacity
+    //                         onPress={() => {
+    //                             closeModal();
+    //                             navigation.navigate("TicketUpdateScreen");
+    //                     }}
+    //                         style={{width: '100%', alignItems: 'center'}}
+    //                     >
+    //                         <Text style={{fontWeight: 'bold'}}>수정하기</Text>
+    //                     </TouchableOpacity>
+    //                 </View> 
+    //             );
+    //         }
+    //     } else {
+    //         if (data.student_number === UserInfo.Driver[0].student_number && data.nickname === UserInfo.Driver[0].nickname) {
+    //             return (
+    //                 <View style={styles.button_container}>
+    //                     <TouchableOpacity
+    //                         onPress={() => {
+    //                             closeModal();
+    //                             navigation.navigate("TicketUpdateScreen");
+    //                         }
+    //                     }
+    //                         style={{width: '100%', alignItems: 'center'}}
+    //                     >
+    //                         <Text style={{fontWeight: 'bold'}}>수정하기</Text>
+    //                     </TouchableOpacity>
+    //                 </View> 
+    //             );
+    //         }
+    //     }
+    // }
 
     const RecruitmentCountOneColor = () => {
         if (data === undefined) {
@@ -895,7 +809,6 @@ const TicketBottomSheet = (props) => {
                         </View>
                         <View style={styles.recruitment_button_container}>
                             {ShowTicketRecruitmentButton()}
-                            {ShowUpdateTicketButton()}
                         </View>   
                     </View>
                 </Animated.View>
