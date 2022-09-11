@@ -1,566 +1,328 @@
-import React, { useState, useEffect }from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput } from 'react-native';
-// 아이콘(원격주소)
-import { Fontisto } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
+// 학번로그인 -> 회원가입 버튼 클릭하면 회원가입 페이지 화면으로 넘어간다.
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import React, { useState } from 'react';
+import { KeyboardAvoidingView } from "react-native";
+// 아이콘
 import { AntDesign } from '@expo/vector-icons';
-import { CommonActions } from '@react-navigation/native';
+// 드롭메뉴
+import SelectList from 'react-native-dropdown-select-list'
 
-//firebase
-import { db } from '../../Database/DatabaseConfig/firebase';
-import { doc, getDoc, updateDoc, arrayRemove, arrayUnion, setDoc } from 'firebase/firestore';
-// 회원정보 데이터
-import { UserInfo } from'../../Database/Data/User/userInfo';
-import { CarpoolTicket } from '../../Database/Data/Ticket/carpoolData';
+export default function TicketScreen({navigation, route}) {
 
-export default function TicketScreen({navigation})  {
- 
-      
-    useEffect(() => {
-        Read();
-        ShowRecruitmentList();
+    // state step bar
+    const [ next, setNext ] = useState(["first"]);
+    
+    // step bar list
+    const stepbarList = ["first", "second", "third"];
+    
+
+    // 드롭메뉴 State
+    const [ startPoint, setStartPoint ] = useState("");
+    const [ endPoint, setEndPoint ] = useState("");
+
+    const localData = ["경운대학교", "인동", "옥계"];
+
+    // 다음 버튼 클릭시 step bar 바꿔 해당 컴포넌트 보여주기.
+    const onStepBarBtn = () => {
         
-    }, []);
-
-    useEffect(() => {
-        console.log('재실행');
-        Read();
-    }, [recruitmentCancle])
-
-   
-    // firebase 문서로 부터 데이터를 읽으면 userDoc state에 선언 할려고 한다.
-   const [ userDoc, setUserDoc ] = useState([]);
-
-   // Ticket 테이블 읽어서 저장
-   let ticketInfos;
-   
-   const [ arrivalArea, setArrivalArea ] = useState("");
-   const [ departArea, setDepartArea ] = useState("");
-   const [ openChatName, setOpenChatName ] = useState("");
-   const [ openChatPassword, setOpenChatPassword ] = useState("");
-   const [ recruitmentOneList, setRescruitmentOneList ] = useState({});
-   const [ recruitmentTwoList, setRescruitmentTwoList ] = useState({});
-   const [ recruitmentThreeList, setRescruitmentThreeList ] = useState({});
-   const [ recruitmentFourList, setRescruitmentFourList ] = useState({});
-   const [ driverName, setDriverName ] = useState("");
-   const [ driverDepartment, setDriverDepartment ] = useState("");
-   const [ recruitmentCancle, setRecruitmentCancle ] = useState({}); // 탑승 취소 할때 사용
-
-   // recruitmentOneList undefined일때 밑에 객체를 사용.
-   const defaultRecruitmentList = {
-       nickname: '',
-       department: '',
-   };
-
-   const Read = ()  => {
-    // Reading Doc
-    // doc(firebase 경로, "컬랙션 이름", "문서 이름")
-    // myDoc 변수는 firebase CarpoolTicketDocument 문서로 가르켜 준다.
-
-        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
-
-        getDoc(myDoc)
-        .then((snapshot) => {
-            // Read Success
-            // You can read what ever document by changing the collection and document path here.
-            if (snapshot.exists) { // DataSnapshop은 데이터가 포함되어있으면 true를 반환 해주며, snapshot.data()
-                //console.log(snapshot.data());
-                setUserDoc(snapshot.data()); // snapshot.data() 호출 되면 CloudDB에 있는 데이터들을 객체로 반환해준다.(console.log(snapshot.data()))
-                ticketInfos = snapshot.data();
-
-                if (ticketInfos.CarpoolTicket.length != undefined) {
-                    for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
-                        if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
-                            if (ticketInfos.CarpoolTicket[i].pesinger_info.length < 1) {
-                                //navigation.dispatch(CommonActions.goBack());
-                                navigation.navigate("TicketDefaultScreen"); 
-                            } else {
-                                setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
-                                setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
-                                setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
-                                setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
-                                setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
-                                setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
-                            }
-                            
-                        } else {
-                            
-                            if (UserInfo.Pesinger[0].auth === 'pesinger') {
-                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
-                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
-                                            setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
-                                            setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
-                                            setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
-                                            setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
-                                            setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
-                                            setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
-                                    }
-                                }
-                            } else {
-                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number) 
-                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) ) {
-                                            setArrivalArea(ticketInfos.CarpoolTicket[i].arrival_area); // 출발지
-                                            setDepartArea(ticketInfos.CarpoolTicket[i].depart_area); // 도착지
-                                            setOpenChatName(ticketInfos.CarpoolTicket[i].open_chat); // 오픈채팅방 이름 
-                                            setOpenChatPassword(ticketInfos.CarpoolTicket[i].open_chat_password); // 오픈채팅 비밀번호
-                                            setDriverName(ticketInfos.CarpoolTicket[i].nickname); // 드라이버 이름
-                                            setDriverDepartment(ticketInfos.CarpoolTicket[i].department); // 드라이버 학과
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-
-            } else {
-                alert("No Document");
+        setNext(([...prev]) => {
+            if (prev.length === 1) {
+                prev.push(stepbarList[1]);
+            } else if(prev.length === 2) {
+                prev.push(stepbarList[2]);
+          
             }
+            return prev;
         })
-        .catch((error) => {
-            alert(error.message);
-        });
-    };
-
-    const ShowRecruitmentList = () => {
-        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
-
-        getDoc(myDoc)
-        .then((snapshot) => {
-            // Read Success
-            // You can read what ever document by changing the collection and document path here.
-            
-            //console.log(snapshot.data());
-            ticketInfos = snapshot.data();
-            if (ticketInfos.CarpoolTicket.length != undefined) {
-                for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
-                    if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
-                        //setNickname(ticketInfos.CarpoolTicket[i].pesinger_info[0].nickname);
-                        setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
-                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 1) {
-                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
-                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
-                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);
-                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
-                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);
-                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[4]);
-                        }
-                        
-                        
-                    } else {
-                        if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
-                            if (UserInfo.Pesinger[0].auth === 'pesinger') {
-                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
-                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
-                                            setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
-                                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
-                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
-                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
-                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);                                            
-                                        } 
-                                    }
-                                }
-                            } else {
-                                for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                    if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number) 
-                                        && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) ) {
-                                            setRescruitmentOneList(ticketInfos.CarpoolTicket[i].pesinger_info[0]);
-                                        if (ticketInfos.CarpoolTicket[i].pesinger_count === 2) {
-                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 3) {
-                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                                        } else if (ticketInfos.CarpoolTicket[i].pesinger_count === 4) {
-                                            setRescruitmentTwoList(ticketInfos.CarpoolTicket[i].pesinger_info[1]);
-                                            setRescruitmentThreeList(ticketInfos.CarpoolTicket[i].pesinger_info[2]);
-                                            setRescruitmentFourList(ticketInfos.CarpoolTicket[i].pesinger_info[3]);                                            
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                setRescruitmentOneList({nickname: '', department: ''});
-                setRescruitmentTwoList({nickname: '', department: ''});                
-                setRescruitmentThreeList({nickname: '', department: ''});
-                setRescruitmentFourList({nickname: '', department: ''});
-            }
-            
-        })
-        .catch((error) => alert(error.message))
-    }
-
-    // 탑승 취소 기능
-    const RecruitmentCancel = () => {
-        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
-
-        getDoc(myDoc)
-        .then((snapshot) => {
-            if (snapshot.exists) {
-                ticketInfos = snapshot.data();
-
-                for(let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
-                    if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
-                        if (UserInfo.Pesinger[0].auth === 'pesinger') {
-                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
-                                    && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
-                                        
-                                        setRecruitmentCancle(ticketInfos.CarpoolTicket[i]);
-
-                                        updateDoc(myDoc, { CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
-                                        ticketInfos.CarpoolTicket[i].pesinger_info = ticketInfos.CarpoolTicket[i].pesinger_info.filter(element => element.student_number != UserInfo.Pesinger[0].student_number);              
-                                        ticketInfos.CarpoolTicket[i].pesinger_count -= 1                                                      
-                                        updateDoc(myDoc, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i]) });
-                                        alert('탐승 취소 하였습니다.');
-                                        navigation.navigate("TicketDefaultScreen");
-                                }
-                            }
-                        } else {
-                            for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                                if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Driver[0].student_number) 
-                                    && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Driver[0].nickname) ) {
-                                        setRecruitmentCancle(ticketInfos.CarpoolTicket[i]);
-                                        
-                                        updateDoc(myDoc, { CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
-                                        ticketInfos.CarpoolTicket[i].pesinger_info = ticketInfos.CarpoolTicket[i].pesinger_info.filter(element => element.student_number != UserInfo.Driver[0].student_number);              
-                                        ticketInfos.CarpoolTicket[i].pesinger_count -= 1                                                      
-                                        updateDoc(myDoc, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i]) });
-                                        alert('탐승 취소 하였습니다.');
-                                        navigation.navigate("TicketDefaultScreen");
-                                        //navigation.dispatch( CommonActions.goBack()); 
-                                }
-                            }
-                        }
-                    }
-                    if (ticketInfos.CarpoolTicket[i].pesinger_count > 0) {
-                        for (let j = 0; j < ticketInfos.CarpoolTicket[i].pesinger_count; j++) {
-                            if ((ticketInfos.CarpoolTicket[i].pesinger_info[j].student_number === UserInfo.Pesinger[0].student_number) 
-                                && (ticketInfos.CarpoolTicket[i].pesinger_info[j].nickname === UserInfo.Pesinger[0].nickname) ) {
-                                    setRecruitmentCancle(ticketInfos.CarpoolTicket[i]);
-                                    updateDoc(myDoc, { CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
-                                    ticketInfos.CarpoolTicket[i].pesinger_info = ticketInfos.CarpoolTicket[i].pesinger_info.filter(element => element.student_number != UserInfo.Pesinger[0].student_number);              
-                                    ticketInfos.CarpoolTicket[i].pesinger_count -= 1                                                      
-                                    updateDoc(myDoc, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i]) });
-                                    alert('탐승 취소 하였습니다.');
-                                    navigation.navigate("TicketDefaultScreen");
-                                    //navigation.dispatch( CommonActions.goBack()); 
-                            }
-                        }                                 
-                    }
-                }
-            }
-        })
-    }
-
-    const ShowRecruitmentCancelButton = () => {
-        if (driverName != UserInfo.Driver[0].nickname && driverDepartment != UserInfo.Driver[0].department) {
-            return (
-                    <TouchableOpacity
-                        onPress={RecruitmentCancel}
-                    >
-                        <View style={styles.button}>
-                            <Text style={styles.button_font}>탑승 취소</Text>
-                        </View>
-                    </TouchableOpacity>
-            );
-        } else if (UserInfo.Pesinger[0].nickname != ""){
-            return (
-                <TouchableOpacity
-                    onPress={RecruitmentCancel}
-                >
-                    <View style={styles.button}>
-                        <Text style={styles.button_font}>탑승 취소</Text>
-                    </View>
-                </TouchableOpacity>
-            );
-        }
-    }
-
-    const RecruitmentComplete = () => {
-        const myDoc = doc(db, "CollectionNameCarpoolTicket", "TicketDocument");
-        const myDoc2 = doc(db, "CollectionNameCarpoolTicket", "ReceiptDocument");
-
-        getDoc(myDoc)
-        .then((snapshot) => {
-            if (snapshot.exists) {
-                ticketInfos = snapshot.data();
-
-                if (ticketInfos.CarpoolTicket.length != undefined) {
-                    for (let i = 0; i < ticketInfos.CarpoolTicket.length; i++) {
-                        if (UserInfo.Driver[0].student_number === ticketInfos.CarpoolTicket[i].student_number && UserInfo.Driver[0].nickname === ticketInfos.CarpoolTicket[i].nickname) {
-                            //setNickname(ticketInfos.CarpoolTicket[i].pesinger_info[0].nickname);
-                            setDoc(myDoc2, {CarpoolTicket: arrayUnion(ticketInfos.CarpoolTicket[i])});
-                            updateDoc(myDoc, { CarpoolCount: ticketInfos.CarpoolCount-1, CarpoolTicket: arrayRemove(ticketInfos.CarpoolTicket[i]) })
-                            alert("탑승 완료 했습니다.");
-                            navigation.navigate("Main");
-                        }
-                    } 
-                }
-            }
-        })
-    }
-
-    const ShowRecruitmentCompleteButton = () => {
-        if (driverName === UserInfo.Driver[0].nickname && driverDepartment === UserInfo.Driver[0].department) {
-            return (
-                <TouchableOpacity
-                    onPress={RecruitmentComplete}
-                >
-                    <View style={[styles.button]}>
-                        <Text style={styles.button_font}>도착 완료</Text>
-                    </View>
-                </TouchableOpacity>
-            );
-        }
+        
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-
-                <View style={styles.map}>
-                    <Text style={styles.mapText}>{arrivalArea}</Text>
-                    <AntDesign name="arrowright" size={30} color="black" />
-                    <Text style={styles.mapText}>{departArea}</Text>
-                </View>
-
-            </View>
-
-            
-            
-            <View style={styles.body}>
-                <View style={styles.chatInfo}>
-                    <Text style={styles.chatInfoText}>오픈채팅 : {openChatName}</Text>
-                    <Text style={styles.chatInfoText}>비밀번호 : {openChatPassword}</Text>
-                </View>
-
-                <View style={styles.userList}>
-                    <View style={styles.driverText}>
-                        <Image style={{flex: 0.2,height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
-                        <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{driverName}</Text>
-                            <Text style={styles.UserInfo_font}>{driverDepartment}</Text>
-                        </View>
+        <KeyboardAvoidingView 
+            style={{flex: 1, backgroundColor: "#F5F5F5", }}
+        >
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <View style={{ marginTop: 51,}}>
+                        <TouchableOpacity 
+                            onPress={() => {
+                                if (next.length === 2) {
+                                    setNext(([...prev]) => {
+                                        prev.splice(prev.length-1, 1);
+                                        return prev;
+                                    });
+                                } else if (next.length === 3) {
+                                    setNext(([...prev]) => {
+                                        prev.splice(prev.length-1, 1);
+                                        return prev;
+                                    });
+                                } else {
+                                    navigation.navigate("Main");
+                                }
+                            }}
+                            style={{width: 35, height: 35, justifyContent: 'center'}}
+                        >                        
+                            <AntDesign name="left" size={25} color="black" />                        
+                        </TouchableOpacity>
                     </View>
-
-                    <View style={styles.pesingerText}>
-                        <Image style={{flex: 0.2, height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
-                        <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentOneList != undefined ? recruitmentOneList.nickname : defaultRecruitmentList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentOneList != undefined ? recruitmentOneList.department : defaultRecruitmentList.department}</Text>
-                        </View>                   
+                    <View style={styles.stepbar_container}>
+                        <View style={styles.stepbar_container_first_step}></View>
+                        <View style={next[1] === stepbarList[1] ? styles.stepbar_container_first_step : styles.stepbar_container_second_step}></View>
+                        <View style={next[2] === stepbarList[2] ? styles.stepbar_container_first_step : styles.stepbar_container_second_step}></View>
                     </View>
-
-                    <View style={styles.pesingerText}>
-                        <Image style={{flex: 0.2, height: 50, borderRadius: 50}}source={require('../../assets/mate_icon.png')}/>
-                        <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentTwoList != undefined ? recruitmentTwoList.nickname : defaultRecruitmentList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentTwoList != undefined ? recruitmentTwoList.department : defaultRecruitmentList.department}</Text>
-                        </View>
-                   </View>
-
-                    <View style={styles.pesingerText}>
-                        <Image style={{flex: 0.2, height: 50, borderRadius: 50}}source={require('../../assets/mate_icon.png')}/>
-                        <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentThreeList != undefined ? recruitmentThreeList.nickname : defaultRecruitmentList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentThreeList != undefined ? recruitmentThreeList.department : defaultRecruitmentList.department}</Text>
-                            </View>
+                    <View style={styles.title_container}>
+                        {
+                            (
+                                () => {
+                                    if (next.length === 1) {
+                                        return (
+                                            <Text style={styles.title}>어디로 가실 건가요?</Text>
+                                        );
+                                    } else if (next.length === 2) {
+                                        return (
+                                            <Text style={styles.title}>언제 가실 건가요?</Text>
+                                        );
+                                    } else {
+                                        return (
+                                            <Text style={styles.title}>카톡 오픈채팅방을 알려주세요</Text>
+                                        );
+                                    }
+                                }
+                            )()
+                        }
                     </View>
-
-                   <View style={styles.pesingerText}>
-                        <Image style={{flex: 0.2, height: 50, borderRadius: 50 }}source={require('../../assets/mate_icon.png')}/>
-                        <View style={styles.UserInfo_text}>
-                            <Text style={styles.UserInfo_font}>{recruitmentFourList != undefined ? recruitmentFourList.nickname : defaultRecruitmentList.nickname}</Text>
-                            <Text style={styles.UserInfo_font}>{recruitmentFourList != undefined ? recruitmentFourList.department : defaultRecruitmentList.department}</Text>
-                        </View>
-                    </View>
-                    
                 </View>
-                <View style={styles.button_container}>
-                    {ShowRecruitmentCompleteButton()}
-                    {ShowRecruitmentCancelButton()}
-                    
-                </View>
-
-
-            </View>
-        
-                <View style={styles.footer}>
                 
-                    <TouchableOpacity onPress={() => navigation.navigate("Main")}>
-                        <Ionicons name="home-outline" size={24} color="black" />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate("TicketScreen")}>
-                        <Ionicons name="card" size={30} color="black" />
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
-                        <FontAwesome name="user-circle" size={24} color="black" />
-                    </TouchableOpacity>
-            
+                <View style={styles.form}>
+                    {
+                        (
+                            () => {
+                                if (next.length === 1) {
+                                    return (
+                                        <>
+                                            <View style={{ height: 180, flexDirection: 'row', marginTop: 10}}>
+                                                <View style={[styles.selectListContainer, {marginRight: 15,}]}>
+                                                    <SelectList 
+                                                        setSelected={setStartPoint}
+                                                        data={localData}
+                                                        onSelect={() => alert(startPoint)}
+                                                        placeholder="출발지"
+                                                        search={false}
+                                                    /> 
+                                                </View>
+                                                <View style={styles.selectListContainer}>
+                                                    <SelectList 
+                                                        setSelected={setEndPoint}
+                                                        data={localData}
+                                                        onSelect={() => alert(endPoint)}
+                                                        placeholder="도착지"
+                                                        search={false}                                                                
+                                                    /> 
+                                                </View>
+                                            </View>
+                                            <View style={{height: 210, flexDirection: 'row', alignItems :'center', justifyContent: 'center', paddingRight: 10, paddingLeft: 10}}>
+                                                <View style={{width: "56%", alignItems :'flex-end'}}>
+                                                    <Text style={{fontSize: 25, fontWeight: 'bold'}}>{startPoint !== "" ? startPoint : "출발지"}</Text>
+                                                </View>
+                                                <View style={{width: "30%", alignItems: 'center',}}>
+                                                    <AntDesign name="arrowright" size={24} color="black" />
+                                                </View>
+                                                <View style={{alignItems: 'flex-start', width: "56%",}}>
+                                                    <Text style={{fontSize: 25, fontWeight: 'bold'}}>{endPoint !== "" ? endPoint : "도착지"}</Text>                                                
+                                                </View>
+                                            </View>
+                                        </>
+                                    );
+                                } else if (next.length === 2) {
+                                    return (
+                                        <>
+                                            <View style={styles.form_container}>                        
+                                                <Text style={styles.form_label_text}>요일</Text>
+                                                <TextInput style={styles.form_input}/>                                                
+                                            </View>
+                                            <View style={[styles.form_container, {marginTop: 20}]}>                             
+                                                <Text style={styles.form_label_text}>시간</Text>
+                                                <TextInput style={styles.form_input} />                                                   
+                                            </View>   
+                                        </>
+                                    );
+                                } else {
+                                    return (
+                                        <>
+                                            <View style={styles.form_container}>                        
+                                                <Text style={styles.form_label_text}>링크</Text>
+                                                <TextInput style={styles.form_input} />                                                                                        
+                                            </View>
+                                            <View style={[styles.form_container, {marginTop: 20}]}>                             
+                                                <Text style={styles.form_label_text}>방 이름</Text>
+                                                <TextInput style={styles.form_input} />                                                                      
+                                            </View>
+                                            <View style={styles.message_container}>
+                                                <Text style={styles.message_container_text}>차량번호, 계좌번호 안내해주세요.</Text>
+                                            </View>   
+                                        </>
+                                    );
+                                }
+                            }
+                        )()
+                    }                                   
+                </View>        
+                <View style={styles.footer}>                    
+                    <View style={styles.button_container}>
+                        {
+                            (
+                                () => {
+                                    if (next.length !== 3) {
+                                        return (
+                                            <TouchableOpacity 
+                                                onPress={onStepBarBtn}
+                                                style={styles.button_container_next_button}
+                                            >
+                                                <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 23}}>다음으로</Text>
+                                            </TouchableOpacity>
+                                        );
+                                    } else {
+                                        return (
+                                            <TouchableOpacity 
+                                                onPress={() => navigation.navigate("Main") }
+                                                style={styles.button_container_next_button}
+                                            >
+                                                <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 23}}>개설하기</Text>
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                }
+                            )()
+                        }                        
+                    </View>
+                </View>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 
-const styles = StyleSheet.create( {
-    container: {
-        flex: 1,
-
+const styles = StyleSheet.create(
+    {
+        container: {
+            flex: 1,
+            paddingLeft: 20,
+            paddingRight: 20,
+        },
         
-    },
+        header: {
+            flex: 0.21,
+            justifyContent: 'flex-end',
+            justifyContent: 'center',
+            marginBottom: 20,
+            
+        },
 
-    header: {
-        flex : 0.25,
-        backgroundColor: "white",
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+        title_container: {
+            marginTop: 20,
+            justifyContent: 'center',
+        },
+        title: {
+            fontSize: 25,
+            fontWeight: "bold",
+        },
 
-    body: {
-        flex: 1,
-        backgroundColor: "white",
-        justifyContent:"space-around",
-
-    },
-    button_container: {
-        flex: 0.2,
+        stepbar_container: {
+            flexDirection: "row",
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: 10,
+            marginBottom: 10,
+        },
         
-        justifyContent: "center",
-        alignItems: "center",
-    },
+        stepbar_container_first_step: {
+            width: 95,
+            height: 5.5,
+            backgroundColor: '#3B67FF',
+        },
 
-    button: {
-        backgroundColor: '#FFFFFF',
-        borderWidth: 1,
-        borderRadius: 10,
-        height: 50,
-        width: 300,
-        justifyContent: "center",
-        alignItems: "center",
-    },
+        stepbar_container_second_step: {
+            width: 95,
+            height: 5.5,
+            backgroundColor: '#d9d9d9',
+        },
 
-  
-   
-    map: {
-        bottom: 10,
-        position: 'absolute',
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: 'rgba(0, 0, 0, 0.15)',
-        borderRadius: 10,
-        width: '80%',
-        height: '60%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around',
+        form: {            
+            flex: 0.4,
+        },
 
+        form_container: {
+            flex: 0.2,
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
 
-    },
+        form_label_text: {
+            fontWeight: 'bold',
+            width: 60,
 
-    mapText: {
-        fontSize: 25,
-        flex: 1,
-        textAlign: 'center',
-        fontWeight: 'bold',
+        },
+
+        startpoint_first_dropmenu: {
+            width: 80,
+            borderColor: 'gray',
+            borderBottomWidth: 1,
+            marginRight: 10,
+            marginLeft: 10,
+        },
+
+        endpoin_first_dropmenu: {
+            width: 80,
+            borderColor: 'gray',
+            borderBottomWidth: 1,
+            marginRight: 10,
+            marginLeft: 10,
+        },
+
+        selectListContainer: {
+            width: 105,
+        },
         
-    },
-    
-    chatInfo: {
-        flex: 0.2,
-        width: "80%",
-        alignSelf: "center",
-        justifyContent: "center",
-        
+        second_dropmenu: {
+            width: 130,
+            borderColor: 'gray',
+            borderBottomWidth: 1,
+        },
 
-      
+        form_input: {
+            width: 250,
+            borderColor: 'gray',
+            borderBottomWidth: 1,
+        },
 
-    },
+        footer: {
+            flex: 0.5,
+            justifyContent: 'flex-end',
+        },
 
-    chatInfoText: {
+        message_container: {
+          flex: 0.2,  
+          justifyContent: 'center',
+        },
 
-        fontSize: 20,
-        fontWeight: 'bold',
+        message_container_text: {
+            fontSize: 10,
+            color: "#989595",
+        },
 
-    },
 
-    userList: {
-        flex: 0.8,   
-     
-        justifyContent: "space-around",
-    },
+        button_container: {
+            flex: 0.3,
+            justifyContent: 'center',
+            marginBottom: 10,
+        },
 
-    driverText: {
-        
-        flex: 1,
-        width: "80%",
-        flexDirection: "row",
-        alignSelf: "center",
-        alignItems: "center",
+        button_container_next_button : {
+            backgroundColor: '#3B67FF',
+            height: 55,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 15
+        }
 
-        
-    },
-
-    pesingerText: {
-        
-        flex: 1,
-        width: "80%",
-        flexDirection: "row",
-        alignSelf: "center",
-        alignItems: "center"
-      
-    },
-
-    UserInfo_text: {
-        
-        flex: 1,
-        height : 40,
-        justifyContent: "space-between",
-
-    },
-
-    UserInfo_font: {
-        fontSize: 20,
-        left: 10,
-
-    },
-
-    button_font:{
-        fontSize: 20,
-        fontWeight: "bold"
-    },
-  
-    
-    footer: {
-        height: 80,
-        flexDirection: 'row',
-        backgroundColor: 'white',
-        borderWidth: 0.2,
-        alignItems: 'center',
-        justifyContent: 'space-around',
-    
-    },
-    
-}
+    }
 );

@@ -1,99 +1,70 @@
 // 학번 로그인 컴포넌트이다.
 
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { Input, Button } from 'react-native-elements';
+import React, { useState, useEffect, useRef } from 'react'
+import { Input } from 'react-native-elements';
 // firebase db 경로 불러오기
-import { db } from '../../Database/DatabaseConfig/firebase';
+import { db, auth } from '../../Database/DatabaseConfig/firebase';
 // firebase db read 모듈 불러오기
-import { doc, getDoc, getDocFromCache } from 'firebase/firestore';
-// 회원정보 기본데이터 틀(기반) 불러오기
-import { UserInfo } from '../../Database/Data/User/userInfo';
-
+import { getDocs, collection } from 'firebase/firestore';
+//firebase auth
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginScreen = ({navigation}) => {
-    const [ studentNumber, SetStudentNumber ] = useState(''); // 학번
-    const [ studentName, SetStudentName ] = useState(''); // 성명
-
-    // 회원정보 기본데이터를 UserInfoDefaultData 변수로 선언 (로그인 성공하면 학번, 학과, 이름 값을 넣을 예정 (티켓 생성 할때 유용 할것 같다,))
-    const DriverProfile = UserInfo.Driver[0];
-    const PesingerProfile = UserInfo.Pesinger[0];
-
+    // state 선언
+    const [ email, setEmail ] = useState(''); // 이메일
+    const [ password, setPassword ] = useState(''); // 비밀번호
+    
     // 로그인
-    const Driver_login = UserInfo.Driver_login; // 드라이버
-    const Pesinger_login = UserInfo.Pesinger_login; // 패신저
-    
-    async function  Read() {
-      // 회원정보 문서 db 불러오기
-      const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
+    const [ userDataStore, setUserDataStore ] = useState([]);
+    // 프로필
+    //const [ profile, setProfile ] = useState({});
+    const profile = useRef({});
 
-      const docSnap =  await getDoc(myDoc);
+    const [ loading, setLoading ] = useState(true);
 
-      
-      if (docSnap.exists()) {
-        readDoc = docSnap.data();
-        
-        // 드라이버
-        for (let i = 0; i < readDoc.DriverInfo.length; i++) {
-          Driver_login.push(readDoc.DriverInfo[i]);
-        }
-        // 패신저
-        for (let i = 0; i < readDoc.PesingerInfo.length; i++) {
-          Pesinger_login.push(readDoc.PesingerInfo[i]);
-        }
-      }
-    }
-    
-    
+
     // useEffect
-    useEffect (() => {
-      Read();
+    useEffect ( () => {
+      getUserDatas();
+      
     },[]);
 
     
+    // DB에서 UserDatas를 불러온다. 없으면 
+    const getUserDatas = async () => {
+      const datas = await getDocs(collection(db, "UserDatas"));
+
+      datas.forEach(document => {
+
+          const userObj = {
+              ...document.data()
+          };
+          
+          setUserDataStore((prev) => [{...userObj}, ...prev]);
+      });
+      setLoading(false);
+    }
+
     // 로그인 기능 함수
     const SignIn = () => {
-
-      let signIn = false;
-
-      for (let i = 0; i < UserInfo.Driver_login.length; i++) {
-        
-        if (UserInfo.Driver_login[i].student_number === studentNumber && UserInfo.Driver_login[i].nickname === studentName) {
-          
-          // 로그인 성공
-          DriverProfile.nickname = UserInfo.Driver_login[i].nickname;
-          DriverProfile.student_number = UserInfo.Driver_login[i].student_number;
-          DriverProfile.department = UserInfo.Driver_login[i].department;
-          DriverProfile.auth = UserInfo.Driver_login[i].auth;
-          DriverProfile.kakao_id = UserInfo.Driver_login[i].kakao_id;
-
-          signIn = true;
-
-          if (signIn === true) {
-            navigation.navigate("Main");
+      if (loading === false) {
+        userDataStore.map(user => {
+          console.log(user.pwd === password);
+          if (user.email === email && user.pwd === password) {
+            console.log("singIn : ", user);
+            profile.current = user;
           }
-        }
-      }
-      for (let i = 0; i < UserInfo.Pesinger_login.length; i++) {
+        });
         
-        if (UserInfo.Pesinger_login[i].student_number === studentNumber && UserInfo.Pesinger_login[i].nickname === studentName) {
-          
-          // 로그인 성공
-          PesingerProfile.nickname = UserInfo.Pesinger_login[i].nickname;
-          PesingerProfile.student_number = UserInfo.Pesinger_login[i].student_number;
-          PesingerProfile.department = UserInfo.Pesinger_login[i].department;
-          PesingerProfile.auth = UserInfo.Pesinger_login[i].auth;
-          PesingerProfile.kakao_id = UserInfo.Pesinger_login[i].kakao_id;
-
-          signIn = true;
-
-          if (signIn === true) {
-            navigation.navigate("Main");
-          }
-        }
-      }
-      if (signIn === false) {
-        alert("학번 또는 비밀번호 잘못 입력 했습니다.");
+        signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("로그인 성공");
+          navigation.navigate("Main", profile.current);
+        })
+        .catch(err => alert("계정, 비밀번호 잘못 입력 받았습니다."));
+      } else {
+        console.log("로딩중...");
       }
     };
 
@@ -111,31 +82,31 @@ const LoginScreen = ({navigation}) => {
           </View>
           <View style={styles.input_container}>
             <Input
-              placeholder='학번'
+              placeholder='이메일'
               leftIcon={{ type: 'material'}}   //name: 에 알맞는 명령어 입력시 아이콘 변경됨
-              value={studentNumber}
+              value={email}
               containerStyle={{width: '85%', marginRight: 10}}
-              onChangeText={Text => SetStudentNumber(Text)}
-              keyboardType="number-pad"
+              onChangeText={email=> setEmail(email)}
             />
             <Input
-              placeholder='성명'
+              placeholder='비밀번호'
               leftIcon={{ type: 'material'}}   //name: 에 알맞는 명령어 입력시 아이콘 변경됨
-              value={studentName}
+              value={password}
               containerStyle={{width: '85%', marginRight: 10}}
-              onChangeText={Text => SetStudentName(Text)}
+              onChangeText={pwd => setPassword(pwd)}
+              secureTextEntry={true}
             />
           </View>
           <View style={styles.button_container}>
             <TouchableOpacity  
               style={styles.button} 
               onPress={
-                () => {
+                async () => {
                   // 로그인 (학번을 보고 읽어온 회원 db를 하나씩 비교하는 알고리즘으로 설계 하였다.)
                   //Read();
-                  SignIn();
-                  SetStudentNumber("");
-                  SetStudentName("");
+                  await SignIn();
+                  setEmail("");
+                  setPassword("");
                 }
               }
             >

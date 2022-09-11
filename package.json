@@ -10,6 +10,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^4.4.3",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/stack": "^6.1.1",
     "expo": "~44.0.0",
@@ -20,6 +21,7 @@
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
     "react-native-dropdown-picker": "5.4.0",
+    "react-native-dropdown-select-list": "^1.0.21",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "~2.1.0",
     "react-native-keyboard-aware-scroll-view": "0.9.5",

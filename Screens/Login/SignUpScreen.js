@@ -1,303 +1,259 @@
 // 학번로그인 -> 회원가입 버튼 클릭하면 회원가입 페이지 화면으로 넘어간다.
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Pressable, TextInput} from "react-native";
-import SelectDropdown from 'react-native-select-dropdown'; // dropdown 모듈 불러오기
-import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, } from "react-native";
+import React, { useState, useEffect, useRef } from 'react';
 
-// 회원정보 기본데이터 불러오기
-import { UserInfo } from '../../Database/Data/User/userInfo';
 
 // firebase cloud db 경로 불러오기
-import { db } from '../../Database/DatabaseConfig/firebase';
+import { db, auth } from '../../Database/DatabaseConfig/firebase';
 
 // firebase doc 읽기, 생성, 업로드 관련 모듈 불러오기
-import { doc, setDoc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 
-// 뒤로가기 아이콘
-import { Ionicons } from '@expo/vector-icons'; 
 import { KeyboardAvoidingView } from "react-native";
-import { TouchableWithoutFeedback } from "react-native";
-import { Keyboard } from "react-native";
 
+// firebase Auth 불러오기
+import { onAuthStateChanged } from 'firebase/auth';
+
+// 아이콘
+import { AntDesign } from '@expo/vector-icons';
 
 export default function SignUpScreen({navigation}) {
     
-    // 버튼에서 패신저 클릭하면 성명, 학번, 학과 입력창 나오며, 드라이버 클릭하면 학과 입력창 안나옴. 
-    const [ button, setButton ] = useState('pesinger');
-    const [ isSelect, setSelect ] = useState([false, true]) // 0 인덱스 드라이버, 1 인덱스 패신저 
-    const [ studentNumber, SetStudentNumber ] = useState(""); // 학번
-    const [ department, SetDepartment ] = useState(""); // 학과
-    const [ nickname, SetNickname ] = useState(""); // 성명
-    const [ kakaoId, setKakaoId ] = useState(""); // 카카오아이디
+    const EMAiL = "email";
+    const PASSWORD = "pwd";
+    const DEPARTMENT = "department";
+    const STUDENT_ID = "studentId";
+    const NAME = "name";
+    const PHONE_NUMBER = "phoneNumber";
+    const SELECT_DRIVER_PENSINGER = "selectDriverPensinger";
+    const GOING_SCHOOL_DAYS = "goingSchoolDays";
 
-    // userInfoDoc변수에 UserInfo 기본데이터를 선언한다.
-    const pesingerData = UserInfo.UserInfo[0];
-    const driverData = UserInfo.UserInfo[0];
-    // 프로필 작업
-    const pesinger = UserInfo.Pesinger;
-    const driver = UserInfo.Pesinger;
-
-    // 로그인
-    const Driver_login = UserInfo.Driver_login; // 드라이버
-    const Pesinger_login = UserInfo.Pesinger_login; // 패신저
-
-    let readDoc = {}; // firebase에서 읽어온 데이터를 선언 할 변수이다.
+    const [ userData, setUserData ] = useState({
+        email: "",
+        pwd: "",
+        department: "",
+        studentId: "",
+        name: "",
+        phoneNumber: "",
+        selectDriverPensinger: "드라이버",
+        goingSchoolDays: [],
+        startPoint : "",
+        endPoint: "",
+        startPointSubAddress: "",
+        endPointSubAddress: "",
+        profileURI: "",
+    });
     
-    //let userInfoDatas = [];
-    // firebase db 회원정보 불러오기, 로그인 기능 포함
+    const [ authData, setAuthData ] = useState();
 
-    useEffect(() => {
-        Read();
+    //const [ sign, setSign ] = useState("false");
+    const sign = useRef(false);
+
+    //const [ validationText, setValidationText ] = useState("");
+    const validationText = useRef("");
+
+    const [ userDataStore, setUserDataStore ] = useState([]);
+
+    useEffect(async () => {
+
+        onAuthStateChanged(auth, (user) => {
+            if (user !== null) {
+            console.log("SignUpScreen : ", user);
+            setAuthData(user);
+            } else {
+            console.log("user data 없음");
+            }
+        });
+
+        await getUserDatas();
+        
     }, []);
 
-    async function  Read() {
-    // 회원정보 문서 db 불러오기
-        const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
-    
-        const docSnap =  await getDoc(myDoc);
+    // DB에서 UserDatas를 불러온다. 없으면 
+    const getUserDatas = async () => {
+        const datas = await getDocs(collection(db, "UserDatas"));
 
-        if (docSnap.exists()) {
-            readDoc = docSnap.data();
-            
-            console.log('드라이버 회원정보 : ', readDoc.DriverInfo);
-            
-            // 드라이버
-            for (let i = 0; i < readDoc.DriverInfo.length; i++) {
-              Driver_login.push(readDoc.DriverInfo[i]);
-            }
-            // 패신저
-            for (let i = 0; i < readDoc.PesingerInfo.length; i++) {
-              Pesinger_login.push(readDoc.PesingerInfo[i]);
-            }
-            
-        }
+        datas.forEach(document => {
+
+            const userObj = {
+                ...document.data()
+            };
+
+            setUserDataStore((prev) => [userObj, ...prev]);
+        });
+
     }
-    // 회원가입 버튼 클릭했을때 호출 하는 함수.
-    // Firebase UserInfo 문서에 회원정보 기본데이터를 생성할려고 한다.
 
-    const UserInfoCreate = () => {
 
-        // myDoc 변수는 컬랙션 아디이 경로에 문서 아이디(UserInfo)로 가르킨다.
-        // doc(firebase경로, 컬렉션 아이디, 문서 아이디)
-        if (button === 'driver') {
-            driverData.nickname = nickname; // 성명
-            driverData.student_number = studentNumber; // 학번
-            driverData.department = department; // 학과
-            driverData.auth = button; // 드라이버, 패신저
-            driverData.kakao_id = kakaoId; // 카카오아이디
-
-            const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
-            if (nickname != "" && studentNumber.length === 9 && department != "") {
-                for (let i = 0; i < Driver_login.length; i++) {
-                    if ((studentNumber === Driver_login[i].student_number)) {
-                        alert('회원가입 하신적 있습니다.');
-                        return ;
-                    }
-                }for (let i = 0; i < Pesinger_login.length; i++) {
-                    if ((studentNumber === Pesinger_login[i].student_number)) {
-                        alert('회원가입 하신적 있습니다.');
-                        return ;
-                    }
+    // 이벤트 핸들러
+    const onInupUserInfoData = (target, data) => {
+        if (target === EMAiL) {
+            setUserData((prev) => {
+                return {
+                    ...prev,
+                    [target]: data
                 }
-                setDoc(myDoc, {"DriverInfo": arrayUnion(driverData)}, {merge: true})
-                .then(() => {
-                    // 회원가입 성공 할 경우 실행한다.
-                    alert("Successed Sign Up");
-    
-                    // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
-                
-                    driver[0].nickname = nickname;
-                    driver[0].student_number = studentNumber;
-                    driver[0].department = department;
-                    driver[0].auth = button;
-                    driver[0].kakao_id = kakaoId;
-                    //console.log('드라이버 : ', driver[0]);
-
-                      // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
-                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
-                    SetStudentNumber(""); 
-                    SetDepartment("");
-                    SetNickname("");
-                
-                    Read();
-                    // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
-                    navigation.navigate("StudendNumberLoginScreen");
-                })
-                .catch((error) => alert(error.messeage)); 
-            } else {
-                alert("입력을 안한 항목이 있거나 혹은 학번 양식 안맞습니다.");
-            }
-        } else {
-            pesingerData.nickname = nickname; // 성명
-            pesingerData.student_number = studentNumber; // 학번
-            pesingerData.department = department; // 학과
-            pesingerData.auth = button; // 드라이버, 패신저
-            pesingerData.kakao_id = kakaoId; // 카카오아이디
-
-            const myDoc = doc(db, 'CollectionNameCarpoolTicket', 'UserInfo'); 
-            if (nickname != "" && studentNumber.length === 9 && department != "" ) {
-                
-                for (let i = 0; i < Driver_login.length; i++) {
-                    if ((studentNumber === Driver_login[i].student_number)) {
-                        alert('회원가입 하신적 있습니다.');
-                        return ;
-                    }
-                }for (let i = 0; i < Pesinger_login.length; i++) {
-                    if ((studentNumber === Pesinger_login[i].student_number)) {
-                        alert('회원가입 하신적 있습니다.');
-                        return ;
-                    }
+            });
+            console.log(userData);
+        } else if (target === PASSWORD) {
+            setUserData((prev) => {
+                return {
+                    ...prev,
+                    [target]: data
                 }
-                
+            });
 
-                setDoc(myDoc, {"PesingerInfo": arrayUnion(pesingerData)}, {merge: true})
-                .then(() => {
-                    // 회원가입 성공 할 경우 실행한다.
-                    alert("Successed Sign Up");
-    
-                    
-                    pesinger[0].nickname = nickname;
-                    pesinger[0].student_number = studentNumber;
-                    pesinger[0].department = department;
-                    pesinger[0].auth = button;
-                    pesinger[0].kakao_id = kakaoId;
-                    //console.log('드라이버 : ', driver[0]);
-                      // 회원 정보 입력 다했으므로 원래대로 초기화 해야한다.
-                    // 학번, 비밀번호, 학년, 학과 등등 공백으로 선언
-                    SetStudentNumber(""); 
-                    SetDepartment("");
-                    SetNickname("");
+        } else if (target === DEPARTMENT) {
+            setUserData((prev) => {
+                return {
+                    ...prev,
+                    [target]: data
+                }
+            });
 
-                    Read();
-                    // 회원가입 성공하면 학번로그인 페이지로 넘어가주는 부분
-                    navigation.navigate("StudendNumberLoginScreen");
-                })
-                .catch((error) => alert(error.messeage)); 
+        } else if (target === STUDENT_ID) {
+            setUserData((prev) => {
+                return {
+                    ...prev,
+                    [target]: data
+                }
+            });
+
+        } else if (target === NAME) {
+            setUserData((prev) => {
+                return {
+                    ...prev,
+                    [target]: data
+                }
+            });
+
+        } else if (target === PHONE_NUMBER) {
+            setUserData((prev) => {
+                return {
+                    ...prev,
+                    [target]: data
+                }
+            });
+        } 
+    }
+
+    // validation
+    const validation = () => {
+        console.log("validation : ", userDataStore);
+        
+        // 원정보들을 입력 해야 화원 검증 실행한다.
+        if ( userData.studentId !== "" && userData.email !== "" && userData.department !== "" && userData.phoneNumber !== "" && userData.pwd !== "" && userData.name !== "") {
+            if (userDataStore.length !== 0) {
+                userDataStore.map((data) => {
+                    console.log("validation map 함수 : ", data);
+                if (data.studentId === userData.studentId) {
+                    sign.current = false;
+                    //setValidationText("이미 가입 하신적 있습니다.");
+                    validationText.current = "이미 가입 하신적 있습니다.";
+                    //setSign(false);
+                } else {
+                    sign.current = true;
+                    //setSign(true);
+                    //setValidationText("회원가입 성공 하였습니다.");
+                    validationText.current = "회원가입 성공 하였습니다.";
+                }
+            });
             } else {
-                alert("입력을 안한 항목이 있거나 혹은 학번 양식 안맞습니다.");
+                console.log("Hello")
+                sign.current = true;
+                //setSign(true);
+                //setValidationText("회원가입 성공 하였습니다.");
+                validationText.current = "회원가입 성공 하였습니다.";   
             }
-        }
-    };
-
-
-    // 드라이버 버튼 클릭 하면 패신저 버튼은 회색으로 변경 해주는 메소드.
-    const DriverColorChagneBtn = () => {
-        if (isSelect[0] === true) {
-            return '#315EFF';
         } else {
-            return '#E7E7E7';
+            sign.current = false;
+            //setValidationText("입력 안한 항목이 존재합니다.");
+            validationText.current = "입력 안한 항목이 존재합니다.";
         }
     }
-    const PesingerColorChangeBtn = () => {
-        if (isSelect[1] === true) {
-            return '#315EFF';
-        } else {
-            return '#E7E7E7';
-        }
-    }
-    const DriverBtn = () => {
-        return (
-          <Pressable
-            style={[{width: 140, height: 55, borderRadius: 29, justifyContent: 'center', alignItems: 'center', marginRight: 10},
-              {backgroundColor: DriverColorChagneBtn()},
-            ]}
-            onPress={() => {
-              setSelect([true,false]);
-              setButton('driver');
-            }}>
-            <Text style={{color: isSelect[0] === true ? 'white' : 'gray', fontWeight: 'bold'}}>드라이버</Text>
-          </Pressable>
-        );
-    };
-    const PesingerBtn = () => {
-        return (
-          <Pressable
-            style={[{width: 140, height: 55, borderRadius: 29, justifyContent: 'center', alignItems: 'center', marginLeft: 10},
-              {backgroundColor: PesingerColorChangeBtn()},
-            ]}
-            onPress={() => {
-              setSelect([false, true]);
-              setButton('pesinger');
-            }}>
-            <Text style={{color: isSelect[1] === true ? 'white' : 'gray', fontWeight: 'bold'}}>패신저</Text>
-          </Pressable>
-        );
-    };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "heigh"}
-            style={styles.container}
+        <KeyboardAvoidingView 
+            style={{flex: 1, backgroundColor: "#F5F5F5", }}
         >
-            <TouchableWithoutFeedback
-                onPress={Keyboard.dismiss}
-            >
-                <View style={styles.container}>
-                    
-                    <View style={styles.header}>
-                        <TouchableOpacity
-                            style={{right: 160 }}
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <View style={{ marginTop: 51,}}>
+                        <TouchableOpacity 
                             onPress={() => navigation.navigate("StudendNumberLoginScreen")}
-                        >
-                                <Ionicons  name="arrow-back" size={35} color="black" />
-                    
-                        </TouchableOpacity> 
-                            <Text style={styles.title_text}>회원가입</Text>
+                            style={{width: 35, height: 35, justifyContent: 'center'}}
+                        >                        
+                            <AntDesign name="left" size={25} color="black" />                        
+                        </TouchableOpacity>
                     </View>
-
-                    <View style={styles.input_container}>
-                        
-                        <TextInput
-                            style={styles.text_input}
-                            placeholder='이름'
-                            value={nickname}
-                            onChangeText={Text => SetNickname(Text)}
-                            
-                        />
-
-                        <TextInput
-                            placeholder='학번'
-                            style={styles.text_input}
-                            value={studentNumber}
-                            maxLength={9}
-                            onChangeText={Text => SetStudentNumber(Text)}
-                            keyboardType="number-pad"
-                        />
-
-                        <TextInput 
-                            placeholder='학과'
-                            style={styles.text_input}
-                            value={department}
-                            onChangeText={Text => SetDepartment(Text)}
-                        />
-
-                        <TextInput 
-                            placeholder='카카오아이디'
-                            style={styles.text_input}
-                            value={kakaoId}
-                            onChangeText={Text => setKakaoId(Text)}
-                        />
+                    <View style={styles.stepbar_container}>
+                        <View style={styles.stepbar_container_first_step}></View>
+                        <View style={styles.stepbar_container_second_step}></View>
                     </View>
-                      
-                     <View style={styles.select_button_container}>
-                            {DriverBtn()}
-                            {PesingerBtn()}
+                    <View style={styles.title_container}>
+                        <Text style={styles.title}>아래에 정보를 입력해 주세요</Text>
                     </View>
+                </View>
                 
-
+                <View style={styles.form}>
+                    <View style={styles.form_container}>
+                        <TextInput 
+                            placeholder="이름"
+                            placeholderTextColor={"#000000"}
+                            style={styles.form_container_textinput}
+                            onChangeText={(data) => onInupUserInfoData(NAME, data)}
+                        />
+                        <TextInput 
+                            placeholder="전화번호"
+                            placeholderTextColor={"#000000"}
+                            style={styles.form_container_textinput}
+                            onChangeText={(data) => onInupUserInfoData(PHONE_NUMBER, data)}
+                        />
+                        <TextInput 
+                            placeholder="이메일"
+                            placeholderTextColor={"#000000"}
+                            style={styles.form_container_textinput}
+                            onChangeText={(data) => onInupUserInfoData(EMAiL, data)}
+                        />
+                        <TextInput 
+                            placeholder="학번"
+                            placeholderTextColor={"#000000"}
+                            style={styles.form_container_textinput}
+                            onChangeText={(data) => onInupUserInfoData(STUDENT_ID, data)}
+                        />
+                        <TextInput 
+                            placeholder="학과"
+                            placeholderTextColor={"#000000"}
+                            style={styles.form_container_textinput}
+                            onChangeText={(data) => onInupUserInfoData(DEPARTMENT, data)}
+                        />
+                        <TextInput 
+                            placeholder="비밀번호"
+                            secureTextEntry={true}
+                            placeholderTextColor={"#000000"}
+                            style={styles.form_container_textinput}
+                            onChangeText={(data) => onInupUserInfoData(PASSWORD, data)}
+                        />
+                    </View>                  
+                </View>        
+                <View style={styles.footer}>
+                    <View style={styles.message_container}>
+                        <Text style={styles.message_container_text}>변경할 수 없는 정보입니다.</Text>
+                    </View>
+                    
                     <View style={styles.button_container}>
-                        <TouchableOpacity
-                            style={styles.button}
+                        <TouchableOpacity 
+                            style={styles.button_container_next_button}
                             onPress={() => {
-                                UserInfoCreate();
+                                validation();
+                                sign.current ? navigation.navigate("SignUpSecondScreen", userData) : alert(validationText.current)
                             }}
-                        > 
-                            <View>
-                                <Text style={{color: '#FFFFFF', fontSize: 24}}>가입완료</Text>
-                            </View>
+                        >
+                            <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 23}}>다음</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </TouchableWithoutFeedback>
+            </View>
         </KeyboardAvoidingView>
     );
 }
@@ -306,71 +262,93 @@ const styles = StyleSheet.create(
     {
         container: {
             flex: 1,
-
+            marginLeft: 32,
+            marginRight: 32,
         },
+        
         header: {
-            flexDirection: 'row', // 중심축 변경
-            flex: 0.4,
+            flex: 0.21,
+            justifyContent: 'flex-end',
             justifyContent: 'center',
-            alignItems: 'center',
+            marginBottom: 20,
             
-
         },
 
-        keyboard_container: {
-            flex: 1,
-            backgroundColor: 'yellow'
+        title_container: {
+            marginTop: 20,
+            justifyContent: 'center',
         },
         title: {
-
+            fontSize: 25,
+            fontWeight: "400",
         },
 
-        title_text: {
-            fontSize: 32,
-            fontWeight: 'bold',
-            color: 'black',
-            alignSelf: 'flex-end',
-            position: 'absolute',
-
-        },
-
-        input_container: {
-            flex: 1.5,
-            justifyContent: 'space-around',
+        stepbar_container: {
+            flexDirection: "row",
+            justifyContent: 'space-between',
             alignItems: 'center',
+            marginTop: 10,
+            marginBottom: 10,
+        },
+        
+        stepbar_container_first_step: {
+            width: 150,
+            height: 5.5,
+            backgroundColor: '#3B67FF',
+        },
 
+        stepbar_container_second_step: {
+            width: 150,
+            height: 5.5,
+            backgroundColor: '#d9d9d9',
+        },
+
+        form: {            
+            flex: 0.4,
+        },
+
+        form_container: {
+            flex: 0.9,
+            justifyContent: 'space-evenly'
+        },
+
+        form_container_textinput : {
+            borderBottomColor: '#D9D9D9',
+            borderBottomWidth: 1,
+            fontWeight: "400",
+            paddingTop: 10,
+            paddingBottom: 10,
             
         },
 
-        select_button_container: {
-            flex: 0.7,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-
+        footer: {
+            flex: 0.2,
         },
+
+        message_container: {
+          flex: 0.3,
+          justifyContent: 'flex-end',
+          paddingBottom: 20,
+        },
+
+        message_container_text: {
+            fontSize: 10,
+            color: "#989595",
+        },
+
 
         button_container: {
-            flex: 0.45,
+            flex: 0.3,
+            justifyContent: 'center',
+            marginBottom: 10,
+        },
+
+        button_container_next_button : {
+            backgroundColor: '#3B67FF',
+            height: 55,
             justifyContent: 'center',
             alignItems: 'center',
-
-
-            
-        },
-        button: {
-            backgroundColor: '#315EFF',
-            paddingHorizontal: 60,
-            paddingVertical: 10,
-            borderRadius: 10,
-        },
-        text_input: {
-            fontSize: 20,
-            borderBottomWidth: 0.3,
-            width: 300,
-            height: 45,
-
-
+            borderRadius: 15
         }
 
     }
