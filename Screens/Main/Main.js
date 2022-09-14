@@ -8,6 +8,7 @@ import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
 import { SCREEN_HEIGHT } from "@gorhom/bottom-sheet";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Main({ navigation, route }) { 
     // State
@@ -32,8 +33,12 @@ export default function Main({ navigation, route }) {
                 <View style={styles.logo}>
                     <Text style={styles.logo_text}>MATE</Text>
                 </View>
+                <View style={{width: 120}}/>
                 <TouchableOpacity>
-                    <Feather name="settings" size={24} color="black" />
+                    <Ionicons name="md-person-circle-outline" size={30} color="#909090" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Feather name="settings" size={24} color="#909090" />
                 </TouchableOpacity>
             </View>
             <View style={ isModalVisible === true || isDriverPesingerModal === true ? {height: 380, opacity: 0.1} : styles.main}>
@@ -41,19 +46,22 @@ export default function Main({ navigation, route }) {
                     onPress={() => navigation.navigate("LocalSettingFirst")}
                     style={styles.local_setting}
                 >
-                    <View style={styles.local_setting_title}>
-                        <Text style={styles.local_setting_title_text}>지역 설정</Text>
-                    </View>
                     <View style={styles.local_display}>
-                        <Text style={styles.local_display_text}>지역1</Text>            
-                        <Text style={styles.local_display_text}>지역2</Text>                    
+                        <MaterialCommunityIcons name="map-marker-outline" size={28} color="#007AFF"/>
+                        <Text style={styles.local_display_text}>지역설정</Text>            
+                        <Text style={styles.local_name}>테스트 지역</Text>
+                        <AntDesign name="right" size={24} color="#909090" />
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    onPress={dirverPensingerModal}
-                    style={styles.ticket_create}>
-                    <View style={styles.ticket_create_title}>
-                        <Text style={styles.ticket_create_title_text}>티켓 만들기</Text>
+                    style={styles.carpool_section}
+                >
+                    <View style={styles.local_display}>
+                        <Ionicons name="car-outline" size={28} color="#007AFF"/>
+                        <Text style={styles.carpool_display_text}>카풀 모집하기</Text>
+                        <Text style={styles.carpool_people}>00</Text>
+                        <Text style={styles.carpool_unit}>명</Text>
+                        <AntDesign name="right" size={24} color="#909090" />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.carpool_list}>
@@ -187,23 +195,30 @@ const styles = StyleSheet.create({
 
     local_setting: {
         backgroundColor: '#FFFFFF',
-        height: 95,
-        paddingLeft: 17, 
+        height: 60,
+        paddingLeft: 20, 
         paddingRight: 17,
-        paddingTop: 15,
         borderRadius: 20,
     },
 
     local_display: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        alignItems: 'center',
         marginTop: 17,
     },
 
     local_display_text: {
-        width: 92,
-        textAlign: 'center',
-        marginRight: 40
+        width: 70,
+        paddingLeft: 10,
+        fontSize: 15,
+        fontWeight: '600'
+    },
+
+    carpool_display_text: {
+        width: 210,
+        paddingLeft: 10,
+        fontSize: 15,
+        fontWeight: '600'
     },
 
     ticket_create: {
@@ -297,6 +312,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         
     },
+
     DriverPesingerModalView: {
         backgroundColor: 'white',
         borderTopLeftRadius: 20,
@@ -325,6 +341,7 @@ const styles = StyleSheet.create({
         
 
     },
+    
     modalView: {
         backgroundColor: 'white',
         borderTopLeftRadius: 20,
@@ -342,4 +359,29 @@ const styles = StyleSheet.create({
         //반경 지정
         shadowRadius: 3.84,
     },
+
+    carpool_section: {
+        backgroundColor: '#FFFFFF',
+        height: 60,
+        paddingLeft: 20, 
+        paddingRight: 17,
+        borderRadius: 20,
+        marginTop: 5
+    },
+
+    carpool_people: {
+        width: 20
+    },
+
+    carpool_unit: {
+        fontSize: 15,
+        paddingRight: 10
+    },
+
+    local_name: {
+      fontSize: 15,
+      textAlign: 'right',
+      paddingRight: 10,
+      width: 180
+    }
 });
