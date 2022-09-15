@@ -8,3 +8,4 @@ npm install react-native-reanimated react-native-gesture-handler
 npm i react-native-onboarding-swiper
 npm i react-native-keyboard-aware-scroll-view --save
 expo install expo-image-picker
+npm i @expo-google-fonts/archivo

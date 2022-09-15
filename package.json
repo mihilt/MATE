@@ -10,6 +10,8 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo-google-fonts/archivo": "^0.2.2",
+    "@expo-google-fonts/noto-sans-kr": "^0.2.2",
     "@gorhom/bottom-sheet": "^4.4.3",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/stack": "^6.1.1",
@@ -28,12 +30,14 @@
     "react-native-reanimated": "~2.3.1",
     "react-native-safe-area-context": "3.3.2",
     "react-native-select-dropdown": "^1.8.0",
+    "react-native-svg": "^9.3.3",
     "react-native-web": "0.17.1",
     "react-native-webview": "11.15.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "react-native-svg-transformer": "^1.0.0"
   },
   "private": true
 }
