@@ -105,29 +105,31 @@ export default function SignUpScreen({navigation, route}) {
                         <View style={{marginLeft: 5}}>
                             <Text style={{fontSize: 18, fontFamily: 'NotoSansKR_400Regular'}}>아래에 정보를 입력해주세요</Text>
                         </View>
-                        <View style={styles.select_container}>
-                            {
-                                selectDriverPesingerList.map(selectData => {
-                                    const isSelected = selectDriverPesinger.includes(selectData);
-                                    return (
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                setSelectDriverPesinger(([...prev]) => {
-                                                    const id = prev.indexOf(selectData)
-                                                    
-                                                    prev.splice(id, 1);
-                                                    prev.push(selectData);                                                                    
-                                                    return prev;
-                                                });
-                                            }} 
-                                            style={isSelected ? styles.select_container_active_btn : styles.select_container_non_active_btn}
-                                        >
-                                            <Text style={isSelected ? {color: '#FFFFFF', fontFamily: 'NotoSansKR_700Bold'} : {color: '#007AFF', fontFamily: 'NotoSansKR_700Bold'}}>{selectData}</Text>
-                                        </TouchableOpacity>
-                                    );
-                                })
-                            }
-                        </View>
+                        <View style={{alignItems: 'center'}}>
+                            <View style={styles.select_container}>
+                                {
+                                    selectDriverPesingerList.map(selectData => {
+                                        const isSelected = selectDriverPesinger.includes(selectData);
+                                        return (
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setSelectDriverPesinger(([...prev]) => {
+                                                        const id = prev.indexOf(selectData)
+                                                        
+                                                        prev.splice(id, 1);
+                                                        prev.push(selectData);                                                                    
+                                                        return prev;
+                                                    });
+                                                }} 
+                                                style={isSelected ? styles.select_container_active_btn : styles.select_container_non_active_btn}
+                                            >
+                                                <Text style={isSelected ? {color: '#FFFFFF', fontFamily: 'NotoSansKR_700Bold'} : {color: '#007AFF', fontFamily: 'NotoSansKR_700Bold'}}>{selectData}</Text>
+                                            </TouchableOpacity>
+                                        );
+                                    })
+                                }
+                            </View>
+                        </View>                        
                         <View style={{marginTop: 12, marginLeft: 12}}>
                             <Text style={{fontSize: 10, color: "#989595", fontFamily: 'NotoSansKR_400Regular'}}>카풀에 운행 가능한 차량이 있다면 ‘드라이버’를 선택해 주세요</Text>
                         </View>
@@ -164,14 +166,14 @@ export default function SignUpScreen({navigation, route}) {
                         </View>
                     </View>
                     <View style={{marginLeft: 5}}>                                               
-                        <TextInput placeholder="학번" placeholderTextColor={"#2E2E2E"} borderBottomColor="#D9D9D9" borderBottomWidth="1" style={{width: "50%", paddingBottom: 13, marginBottom: 20,}}/>
-                        <TextInput placeholder="학과" placeholderTextColor={"#2E2E2E"} borderBottomColor="#D9D9D9" borderBottomWidth="1" style={{width: "50%", paddingBottom: 13, marginBottom: 20,}}/>
+                        <TextInput placeholder="학번" placeholderTextColor={"#2E2E2E"} borderBottomColor="#D9D9D9"  style={{width: "50%", paddingBottom: 13, marginBottom: 20, borderBottomWidth: 1}}/>
+                        <TextInput placeholder="학과" placeholderTextColor={"#2E2E2E"} borderBottomColor="#D9D9D9"  style={{width: "50%", paddingBottom: 13, marginBottom: 20, borderBottomWidth: 1}}/>
                         <View>
                             <Text>요일</Text>
                             <Text style={styles.message_container_text}>9시까지 학교에 가야하는 날을 모두 선택해 주세요</Text>
                         </View>                       
                         
-                        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginTop: 44}}>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginTop: Platform.OS === "ios" ? 44 : 0}}>
                             {
                                 days.map((day) => {
                                     const isSelected = goingSchoolDays.includes(day);
@@ -254,7 +256,6 @@ const styles = StyleSheet.create(
         },
 
         select_container: {
-            backgroundColor: '#FFFFFF',
             borderColor: '#007AFF',
             borderWidth: 1,
             width: 312,
@@ -264,8 +265,6 @@ const styles = StyleSheet.create(
             alignItems: 'center',
             justifyContent: 'space-between',
             marginTop: 15,
-            marginLeft: 12,
-            marginRight: 16,
         },
 
         select_container_active_btn: {
