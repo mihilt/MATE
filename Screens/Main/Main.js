@@ -1,6 +1,7 @@
 // 모듈 불러오는 부분, 현재 수정중
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image } from "react-native";
+
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,21 +18,12 @@ export default function Main({ navigation, route }) {
     const [ isDriverPesingerModal, setIsDriverPesingerModal ] = useState(false);
     const [ isModalVisible, setIsModalVisible ] = useState(false);
     const [ toggleCarpoolList, setToggleCarpoolList ] = useState(true);
-    
-    const toggleModal = () => {
-        //setIsModalVisible(prev => !prev);
-        setIsModalVisible(!isModalVisible);
-    }
-
-    const dirverPensingerModal = () => {
-        setIsDriverPesingerModal(!isDriverPesingerModal);
-    }
-
+  
     const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-    console.log(typeof SCREEN_HEIGHT);
+
     return (
-        <View style={(isModalVisible === true || isDriverPesingerModal === true) ? { flex:1, backgroundColor: 'black', opacity: 0.8, paddingLeft: 20, paddingRight: 20,} : styles.container}>
-            <View style={isModalVisible === true || isDriverPesingerModal === true ? {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: 120, opacity: 0.1} :  styles.header}>
+        <View style={styles.container}>
+            <View style={styles.header}>
                 <View style={styles.logo}>
                     <Text style={styles.logo_text}>MATE</Text>
                 </View>

@@ -1,72 +1,33 @@
 // 학번 로그인 컴포넌트이다.
-
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native'
-import React, { useState, useEffect, useRef } from 'react'
-import { Input } from 'react-native-elements';
-// firebase db 경로 불러오기
-import { db, auth } from '../../Database/DatabaseConfig/firebase';
-// firebase db read 모듈 불러오기
-import { getDocs, collection } from 'firebase/firestore';
-//firebase auth
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Dimensions } from 'react-native'
+import React from 'react'
+// 외부 폰트 불러오는 모듈
+import { useFonts, Archivo_400Regular, Archivo_700Bold, Archivo_800ExtraBold } from '@expo-google-fonts/archivo';
+import { NotoSansKR_400Regular, NotoSansKR_500Mediu, NotoSansKR_100Thin, NotoSansKR_300Light, NotoSansKR_500Medium, NotoSansKR_700Bold, NotoSansKR_900Black, } from "@expo-google-fonts/noto-sans-kr";
+//아이콘
+import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = ({navigation}) => {
-    // state 선언
-    const [ email, setEmail ] = useState(''); // 이메일
-    const [ password, setPassword ] = useState(''); // 비밀번호
-    
-    // 로그인
-    const [ userDataStore, setUserDataStore ] = useState([]);
-    // 프로필
-    //const [ profile, setProfile ] = useState({});
-    const profile = useRef({});
+    const deviceWidth = Dimensions.get('window').width;
+    const deviceHeight = Dimensions.get('window').height;
 
-    const [ loading, setLoading ] = useState(true);
+    //console.log("휴대폰 너비 : ", deviceWidth);
+    //console.log("휴대폰 높이 : ", deviceHeight);
 
+    let [ fontLoaded ] = useFonts({
+      Archivo_400Regular,
+      Archivo_700Bold,
+      Archivo_800ExtraBold,
+      NotoSansKR_500Medium,
+      NotoSansKR_400Regular,
+      NotoSansKR_700Bold,
+      NotoSansKR_900Black,
+    });
 
-    // useEffect
-    useEffect ( () => {
-      getUserDatas();
-      
-    },[]);
-
-    
-    // DB에서 UserDatas를 불러온다. 없으면 
-    const getUserDatas = async () => {
-      const datas = await getDocs(collection(db, "UserDatas"));
-
-      datas.forEach(document => {
-
-          const userObj = {
-              ...document.data()
-          };
-          
-          setUserDataStore((prev) => [{...userObj}, ...prev]);
-      });
-      setLoading(false);
+    if (!fontLoaded) {
+      return null;
     }
 
-    // 로그인 기능 함수
-    const SignIn = () => {
-      if (loading === false) {
-        userDataStore.map(user => {
-          console.log(user.pwd === password);
-          if (user.email === email && user.pwd === password) {
-            console.log("singIn : ", user);
-            profile.current = user;
-          }
-        });
-        
-        signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          alert("로그인 성공");
-          navigation.navigate("Main", profile.current);
-        })
-        .catch(err => alert("계정, 비밀번호 잘못 입력 받았습니다."));
-      } else {
-        console.log("로딩중...");
-      }
-    };
 
     return (
     <KeyboardAvoidingView
@@ -78,41 +39,22 @@ const LoginScreen = ({navigation}) => {
       >
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={{fontWeight: 'bold', fontSize: 64, color: '#FFFFFF',}}>MATE</Text> 
+            <Text style={{fontSize: deviceHeight >= 700 ? 84 : 64, color: '#FFFFFF', fontFamily: 'Archivo_800ExtraBold'}}>MATE</Text> 
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{color: '#FFFFFF', fontFamily: 'NotoSansKR_400Regular', fontSize: deviceHeight >= 700 ? 18 : 14}}>경운대학교 <Text style={{color: '#FFFFFF', fontFamily: 'NotoSansKR_900Black'}}>카풀서비스 </Text></Text> 
+              <Ionicons name="car-outline" size={24} color="white" />              
+            </View>
           </View>
-          <View style={styles.input_container}>
-            <Input
-              placeholder='이메일'
-              leftIcon={{ type: 'material'}}   //name: 에 알맞는 명령어 입력시 아이콘 변경됨
-              value={email}
-              containerStyle={{width: '85%', marginRight: 10}}
-              onChangeText={email=> setEmail(email)}
-            />
-            <Input
-              placeholder='비밀번호'
-              leftIcon={{ type: 'material'}}   //name: 에 알맞는 명령어 입력시 아이콘 변경됨
-              value={password}
-              containerStyle={{width: '85%', marginRight: 10}}
-              onChangeText={pwd => setPassword(pwd)}
-              secureTextEntry={true}
-            />
+          <View>
+            <Text style={{textAlign: 'center', color: '#FFFFFF', fontFamily: 'NotoSansKR_500Medium'}}>간편하게 로그인하고{"\n"}다양한 서비스를 이용해보세요</Text>
           </View>
           <View style={styles.button_container}>
             <TouchableOpacity  
-              style={styles.button} 
-              onPress={
-                async () => {
-                  // 로그인 (학번을 보고 읽어온 회원 db를 하나씩 비교하는 알고리즘으로 설계 하였다.)
-                  //Read();
-                  await SignIn();
-                  setEmail("");
-                  setPassword("");
-                }
-              }
+              style={styles.button}
+              onPress={() => navigation.navigate("Main")}               
             >
-              <Text style={styles.text}>로그인</Text>
+              <Text style={styles.text}>카카오 로그인</Text>
             </TouchableOpacity>
-
             <TouchableOpacity 
               style={styles.button}
               onPress={() => navigation.navigate("SignUpScreen")} 
@@ -134,7 +76,6 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: '15%',
     },
 
     button: {
@@ -143,27 +84,25 @@ const styles = StyleSheet.create({
       width: 300,
       height: 52,
       marginBottom: 10,
-      backgroundColor: '#315EFF',
+      backgroundColor: '#F9E000',
       borderRadius: 14,
     },
 
     text: {
-      color: '#FFFFFF',
-      fontSize: 17
+      color: '#2E2E2E',
+      fontSize: 17,
+      fontFamily: 'NotoSansKR_700Bold',
     },
 
     container: {
         flex:1,
-        //alignContent:'center' 
-        // alignItems: 'center',           //중앙으로 옮김 정확한 명령어 의미 필요
-        // justifyContent: 'center'        //중앙으로 옮김 정확한 명령어 의미 필요
+        backgroundColor: '#007AFF',
     },
 
     header: {
-      flex: 1,
+      flex: 1.8,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#315EFF',
       borderBottomLeftRadius: 32
     },
 
