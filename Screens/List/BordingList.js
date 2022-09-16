@@ -1,9 +1,16 @@
 // 학번로그인 -> 회원가입 버튼 클릭하면 회원가입 페이지 화면으로 넘어간다.
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, Dimensions } from "react-native";
 import React, { useState, } from 'react';
+
 // 아이콘
 import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
+//SVG
+import Svg, { Path, G, Mask, Rect } from "react-native-svg";
 export default function BordingList({navigation, route}) {
 
     // 탑승 종료 state
@@ -14,12 +21,15 @@ export default function BordingList({navigation, route}) {
         setFinish(!finish);
     }
 
+    const deviceWidth = Dimensions.get("window").width;
+    const deviceHeight = Dimensions.get("window").height;
+
     return (
         <View 
             style={{flex: 1, backgroundColor: "#FFFFFF", }}
         >
-            <View style={styles.container}>
-                <View style={styles.header}>
+            <View style={styles.container }>
+                <View style={ Platform.OS === "ios" ? [ styles.header, { flex:  deviceHeight >= 700 ? 0.17 : 0.15} ] : { flex: 0.12, justifyContent: 'flex-end', justifyContent: 'center', backgroundColor: 'yellow', paddingLeft: 20, paddingRight: 20}}>
                     <View style={styles.navbar}>
                         <TouchableOpacity 
                             onPress={() => {
@@ -29,83 +39,113 @@ export default function BordingList({navigation, route}) {
                             style={styles.backIcon}
                         >                        
                             <AntDesign name="left" size={25} color="black" />                        
-                        </TouchableOpacity>
-                        <View style={styles.startPointEndPointText}>
-                            <View style={{flexDirection:'row', alignItems: 'center', width: 210, justifyContent: 'center'}}>
-                                <View style={{width: "40%", alignItems: 'center'}}>
-                                    <Text>인동</Text>
-                                </View>
-                                <View style={{width: 40, alignItems: 'center'}}>
-                                    <AntDesign name="arrowright" size={24} color="black" />
-                                </View>
-                                <View style={{width: "45%", alignItems: 'center'}}>
-                                    <Text>경운대학교</Text>
-                                </View>
-                            </View>
-                            <View>
-                                <Text>9/8 9:30 출발</Text>
-                            </View>
-                        </View>
-
+                        </TouchableOpacity>                        
                     </View>
-                    
-                    
                 </View>
                 
-                <View style={styles.form}>                                                                                                                                             
-                    <View style={styles.kakaoOpenChatLinkContainer}>
-                        <Image style={{width: 50, height: 50,}} resizeMethod="resize" source={require("../../assets/kakao_logo.png")}></Image>
-                        <TouchableOpacity style={{marginLeft: 15, backgroundColor: '#d9d9d9', justifyContent: 'center', borderRadius: 15, height: 35, width: 70, alignItems: 'center'}}>
-                            <Text style={{color: "gray", fontWeight: 'bold',}}>복사 하기</Text>
-                        </TouchableOpacity>
-                    </View>                                                                                                                                                                                                                            
-                </View>
-                <View style={{flex: 0.6}}>
-                    <View>                        
+                <View style={Platform.OS === 'ios' ? {flex: deviceHeight >= 700 ? 0.62 : 0.7, backgroundColor: 'pink'} : {flex: 0.7, backgroundColor: 'pink',}}>
+                    <View style={{justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1,}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'green', marginLeft: 30}}>
+                            <Text style={{marginRight: 10}}>인동</Text>
+                            <View>
+                                <Ionicons name="arrow-forward" size={24} color="black" />   
+                            </View>
+                            <Text style={{marginLeft: 10}}>경운대학교</Text>                                                                                                                                                                                                                     
+                        </View>
+                        <View style={{marginTop: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <Octicons name="calendar" size={deviceHeight >= 700 ? 32 : 28} color="#D9D9D9" />
+                                <Text style={{marginLeft: 10}}>8월 28일 (화)</Text>
+                            </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 5,}}>
+                                <MaterialIcons name="access-time" size={deviceHeight >= 700 ? 32 : 28} color="#D9D9D9" />
+                                <Text style={{marginLeft: 5, color: '#007AFF'}}>오전 8시 30분</Text>
+                            </View>
+                        </View>
+                        
+                        
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'green', width: 200, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 15, marginLeft: 40, marginTop: 20, marginBottom: 15}}>
+                            <Svg
+                                id="Capa_1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                                x="0px"
+                                y="0px"
+                                width="23px"
+                                height="23px"
+                                viewBox="0 0 442.761 442.762"
+                                fill="#3A1D1D"
+                                style={{
+                                 enableBackground: "new 0 0 442.761 442.762",                                                                                
+                                }}
+                                xmlSpace="preserve"                                                        
+                                >
+                                <G>
+                                <Path d="M237.082,31.617c-113.596,0-205.681,84.96-205.681,189.764c0,28.473,6.809,55.473,18.986,79.711L1.735,389.064 c-2.703,4.887-2.215,10.916,1.239,15.307c2.673,3.396,6.721,5.299,10.912,5.299c1.223,0,2.457-0.162,3.674-0.498l106.505-29.232 c32.435,19.719,71.269,31.205,113.017,31.205c113.594,0,205.68-84.959,205.68-189.764 C442.761,116.577,350.675,31.617,237.082,31.617z" />
+                                </G>
+                            </Svg>
+                            <Text style={{marginLeft: 5}}>1:1 오픈 채팅 참여하기</Text>
+                        </View>                        
+                        
+                    </View>
+                
+                    <View style={{marginTop: 30}}>                        
                         <View style={styles.carpool_list_display}>
-                            <View style={styles.profile_image}></View>
+                            <View style={{marginBottom: 8, marginLeft: 20}}>
+                                <Text>드라이버</Text>
+                            </View>                            
                             <View style={styles.carpool_list_display_title}>
-                                <Text style={styles.ccarpool_list_ticket_display_title_text}>이름</Text>
+                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>                                    
+                                    <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />                                                                                                                        
+                                    <Text style={styles.carpool_list_ticket_display_title_text}>최수정</Text>
+                                </View>                                  
+                            </View>                            
+                        </View>
+                        <View style={styles.carpool_list_display}>
+                            <View style={{marginBottom: 8, marginLeft: 20}}>
+                                <Text>패신저 (3/3)</Text>
+                            </View>
+                            
+                            <View style={styles.carpool_list_display_title}>
+                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>
+                                    <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />   
+                                    <Text style={styles.carpool_list_ticket_display_title_text}>김수지</Text>
+                                </View>                                
                                 <TouchableOpacity 
                                     onPress={() => navigation.navigate("DiclationScreen")}
-                                    style={styles.carpool_list_ticket_display_title_driver}>
+                                    style={styles.carpool_list_ticket_display_title_pesinger}
+                                >
+                                    <Feather name="bell" size={24} color="#d8d7d7" />
                                     <Text style={styles.complaint_text}>신고</Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                        <View style={styles.carpool_list_display}>
-                            <View style={styles.profile_image}></View>
                             <View style={styles.carpool_list_display_title}>
-                                <Text style={styles.carpool_list_ticket_display_title_text}>이름</Text>
+                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>
+                                    <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />   
+                                    <Text style={styles.carpool_list_ticket_display_title_text}>박지우</Text>
+                                </View>                                
                                 <TouchableOpacity 
                                     onPress={() => navigation.navigate("DiclationScreen")}
-                                    style={styles.carpool_list_ticket_display_title_pesinger}>
+                                    style={styles.carpool_list_ticket_display_title_pesinger}
+                                >
+                                    <Feather name="bell" size={24} color="#d8d7d7" />
                                     <Text style={styles.complaint_text}>신고</Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                        <View style={styles.carpool_list_display}>
-                            <View style={styles.profile_image}></View>
                             <View style={styles.carpool_list_display_title}>
-                                <Text style={styles.ccarpool_list_ticket_display_title_text}>이름</Text>
+                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>
+                                    <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />   
+                                    <Text style={styles.carpool_list_ticket_display_title_text}>이정민</Text>
+                                </View>                                
                                 <TouchableOpacity 
                                     onPress={() => navigation.navigate("DiclationScreen")}
-                                    style={styles.carpool_list_ticket_display_title_driver}>
+                                    style={styles.carpool_list_ticket_display_title_pesinger}
+                                >
+                                    <Feather name="bell" size={24} color="#d8d7d7" />
                                     <Text style={styles.complaint_text}>신고</Text>
                                 </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={styles.carpool_list_display}>
-                            <View style={styles.profile_image}></View>
-                            <View style={styles.carpool_list_display_title}>
-                                <Text style={styles.carpool_list_ticket_display_title_text}>이름</Text>
-                                <TouchableOpacity 
-                                    onPress={() => navigation.navigate("DiclationScreen")}
-                                    style={styles.carpool_list_ticket_display_title_pesinger}>
-                                    <Text style={styles.complaint_text}>신고</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                            </View>                            
+                        </View>                      
                     </View>                    
                 </View>        
                 <View style={styles.footer}>  
@@ -154,14 +194,14 @@ const styles = StyleSheet.create(
     {
         container: {
             flex: 1,
+        },
+        header: {
             paddingLeft: 20,
             paddingRight: 20,
-        },
-        
-        header: {
-            flex: 0.21,
+            flex: 0.15,
             justifyContent: 'flex-end',
             justifyContent: 'center',
+            backgroundColor: 'yellow',
             
         },
 
@@ -184,10 +224,6 @@ const styles = StyleSheet.create(
         kakaoOpenChatLinkContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-        },
-
-        form: {            
-            flex: 0.2,
         },
 
         form_container: {
@@ -235,9 +271,7 @@ const styles = StyleSheet.create(
         },
 
         carpool_list_display: {
-            flexDirection: 'row',
-            marginBottom: 20,
-            alignItems: 'center'
+            marginBottom: 10,
         },
 
         carpool_list_display_title: {
@@ -245,7 +279,8 @@ const styles = StyleSheet.create(
             width: "87%",
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginLeft: 10,
+            marginLeft: 20,
+            marginRight: 20,
         },
     
         carpool_list_ticket_display_title_driver: {
@@ -258,17 +293,17 @@ const styles = StyleSheet.create(
         },
     
         carpool_list_ticket_display_title_pesinger: {
-            width: 37,
             height: 21,
-            backgroundColor: '#e31e1e',
             borderRadius: 5,
             justifyContent: 'center',
             alignItems: 'center',
+            flexDirection: 'row'
         },
 
         complaint_text: {
-            color: "#FFFFFF",
+            color: "#d8d7d7",
             fontWeight: 'bold',
+            marginLeft: 5
         },
 
         profile_image: {
@@ -279,8 +314,10 @@ const styles = StyleSheet.create(
         },
 
         footer: {
-            flex: 0.5,
+            flex: 0.2,
+            
             justifyContent: 'flex-end',
+            paddingBottom: 30
         },
 
         message_container: {
@@ -308,15 +345,18 @@ const styles = StyleSheet.create(
         },
 
         button_container_next_button : {
-            backgroundColor: '#3B67FF',
+            
+            backgroundColor: '#007AFF',
             height: 55,
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 15
+            borderRadius: 25,
+            marginLeft: 15,
+            marginRight: 15,
         },
         
         finish_button_container_button : {
-            backgroundColor: '#3B67FF',
+            backgroundColor: '#007AFF',
             height: 55,
             width: 150,
             justifyContent: 'center',

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Image, Dimensions, TextInput} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Image, Dimensions, TextInput } from "react-native";
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAvoidingView } from "react-native";
@@ -6,7 +6,7 @@ import { KeyboardAvoidingView } from "react-native";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 // 아이콘
 import { AntDesign } from '@expo/vector-icons';
-import Svg, { Path } from "react-native-svg"
+import Svg, { Path } from "react-native-svg";
 // 폰트
 import { useFonts, NotoSansKR_400Regular, NotoSansKR_500Mediu, NotoSansKR_100Thin, NotoSansKR_300Light, NotoSansKR_500Medium, NotoSansKR_700Bold, NotoSansKR_900Black, } from "@expo-google-fonts/noto-sans-kr";
 
@@ -27,6 +27,8 @@ export default function SignUpScreen({navigation, route}) {
     const deviceWidth = Dimensions.get('window').width;
     const deviceHeight = Dimensions.get('window').height;
 
+    console.log(deviceWidth, deviceHeight);
+    // 폰트 설정
     let [ fontLoaded ] = useFonts({
         NotoSansKR_500Medium,
         NotoSansKR_400Regular,

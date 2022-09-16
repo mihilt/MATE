@@ -9,3 +9,24 @@ npm i react-native-onboarding-swiper
 npm i react-native-keyboard-aware-scroll-view --save
 expo install expo-image-picker
 npm i @expo-google-fonts/archivo
+npm install react-native-webview
+
+<Svg
+    id="Capa_1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    x="0px"
+    y="0px"
+    width="23px"
+    height="23px"
+    viewBox="0 0 442.761 442.762"
+    fill="#3A1D1D"
+    style={{
+    enableBackground: "new 0 0 442.761 442.762",                                                                                
+    }}
+    xmlSpace="preserve"                                                        
+    >
+    <G>
+    <Path d="M237.082,31.617c-113.596,0-205.681,84.96-205.681,189.764c0,28.473,6.809,55.473,18.986,79.711L1.735,389.064 c-2.703,4.887-2.215,10.916,1.239,15.307c2.673,3.396,6.721,5.299,10.912,5.299c1.223,0,2.457-0.162,3.674-0.498l106.505-29.232 c32.435,19.719,71.269,31.205,113.017,31.205c113.594,0,205.68-84.959,205.68-189.764 C442.761,116.577,350.675,31.617,237.082,31.617z" />
+    </G>
+</Svg>

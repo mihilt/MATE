@@ -9,6 +9,7 @@ import SignUpScreen from "./Screens/Login/SignUpScreen"; // 회원가입 페이�
 import TicketScreen from "./Screens/Ticket/TicketScreen";
 import BordingList from "./Screens/List/BordingList";
 import DiclationScreen from "./Screens/Diclation/DiclationScreen";
+import KakaoWebView from "./Screens/Login/KakaoWebView";
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,7 @@ export default class App extends React.Component {
               }}
             > 
               <Stack.Screen name="StudendNumberLoginScreen" component={LoginScreen} /> 
+              <Stack.Screen name="KakaoWebView" component={KakaoWebView} /> 
               <Stack.Screen name="SignUpScreen" component={SignUpScreen} /> 
               <Stack.Screen name="Main" component={Main} />
               <Stack.Screen name="LocalSettingFirst" component={LocalSettingFirst} />                                                  
