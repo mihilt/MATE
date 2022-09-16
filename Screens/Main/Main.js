@@ -14,9 +14,7 @@ import Svg, { Path } from "react-native-svg";
 
 export default function Main({ navigation, route }) { 
     // State
-    // modal state
-    const [ isDriverPesingerModal, setIsDriverPesingerModal ] = useState(false);
-    const [ isModalVisible, setIsModalVisible ] = useState(false);
+
     const [ toggleCarpoolList, setToggleCarpoolList ] = useState(true);
   
     const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -35,7 +33,7 @@ export default function Main({ navigation, route }) {
                     <Feather name="settings" size={24} color="#909090" />
                 </TouchableOpacity>
             </View>
-            <View style={ isModalVisible === true || isDriverPesingerModal === true ? {height: 380, opacity: 0.1} : styles.main}>
+            <View style={styles.main}>
                 <View style={{paddingLeft: 20, paddingRight: 20}}>
                     <TouchableOpacity 
                         onPress={() => navigation.navigate("LocalSettingFirst")}
@@ -136,71 +134,8 @@ export default function Main({ navigation, route }) {
                 </View>}
             </View>
 
-            <Modal animated="slide" visible={isDriverPesingerModal} transparent={true}>
-                <View style={styles.DriverPesingerModal}>
-                    <View style={styles.DriverPesingerModalView}>
-                        <View style={{alignItems: 'flex-end', paddingRight: 17, marginBottom: 10, marginTop: 10}}>
-                            <TouchableOpacity 
-                                onPress={dirverPensingerModal}
-                                style={{flexDirection: 'row'}}>
-                                <AntDesign name="close" size={28} color="black" />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{flexDirection: 'row',  flex: 1, paddingLeft: 17, paddingRight: 17, alignItems: 'center', justifyContent: 'center'}}>
-                            <View style={{width: "40%", alignItems: 'center'}}>
-                                <View style={{width: "40%", alignItems: 'center', marginBottom: 15}}>                                    
-                                    <Fontisto name="taxi" size={26.5} color="black" />                                    
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setIsDriverPesingerModal(!isDriverPesingerModal);
-                                        setTimeout(() => {
-                                            navigation.navigate("TicketScreen", {firstLocal: "인동", secondLocal: "경운대학교"});
-                                        }, 300);
-                                    }}
-                                >
-                                    <Text style={{fontSize: 25, fontWeight: 'bold'}}>타세요</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{width: "40%", alignItems: 'center'}}>
-                                <View style={{width: "40%", alignItems: 'center', marginBottom: 15}}>                                    
-                                    <Ionicons name="person-add" size={24} color="black" />                                    
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setIsDriverPesingerModal(!isDriverPesingerModal);
-                                        setTimeout(() => {
-                                            navigation.navigate("TicketScreen", {firstLocal: "인동", secondLocal: "경운대학교"});
-                                        }, 300);
-                                    }}
-                                >
-                                    <Text style={{fontSize: 25, fontWeight: 'bold'}}>태워주세요</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            
 
-            <Modal animated="slide" visible={isModalVisible} transparent={true}>
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View style={{alignItems: 'flex-end', paddingRight: 17, marginBottom: 10, marginTop: 10}}>
-                            <TouchableOpacity 
-                                onPress={toggleModal}
-                                style={{flexDirection: 'row'}}>
-                                <AntDesign name="close" size={28} color="black" />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{flexDirection: 'row', paddingLeft: 17, paddingRight: 17, height: 30,  alignItems: 'center', justifyContent: 'space-between',}}>
-                            <Text>리스트</Text>
-                            <View style={styles.list_container_text_container}>
-                                <Text>내역</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
             {/* <View style={styles.footer}>
                 <TouchableOpacity 
                     onPress={() => navigation.navigate("BordingList")}
