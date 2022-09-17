@@ -10,6 +10,7 @@ import TicketScreen from "./Screens/Ticket/TicketScreen";
 import BordingList from "./Screens/List/BordingList";
 import DiclationScreen from "./Screens/Diclation/DiclationScreen";
 import KakaoWebView from "./Screens/Login/KakaoWebView";
+import TicketDetail from "./Screens/Ticket/TicketDetail";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ export default class App extends React.Component {
               <Stack.Screen name="TicketScreen" component={TicketScreen} />              
               <Stack.Screen name="DiclationScreen" component={DiclationScreen} />
               <Stack.Screen name="BordingList" component={BordingList} />
+              <Stack.Screen name="TicketDetail" component={TicketDetail} />
               
             </Stack.Navigator>
           </NavigationContainer>
