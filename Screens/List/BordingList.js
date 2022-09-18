@@ -29,7 +29,7 @@ export default function BordingList({navigation, route}) {
             style={{flex: 1, backgroundColor: "#FFFFFF", }}
         >
             <View style={styles.container }>
-                <View style={ Platform.OS === "ios" ? [ styles.header, { flex:  deviceHeight >= 700 ? 0.17 : 0.15} ] : { flex: 0.12, justifyContent: 'flex-end', justifyContent: 'center', backgroundColor: 'yellow', paddingLeft: 20, paddingRight: 20}}>
+                <View style={ Platform.OS === "ios" ? [ styles.header, { flex:  deviceHeight >= 700 ? 0.17 : 0.15} ] : { flex: 0.12, justifyContent: 'flex-end', justifyContent: 'center', paddingLeft: 20, paddingRight: 20}}>
                     <View style={styles.navbar}>
                         <TouchableOpacity 
                             onPress={() => {
@@ -43,14 +43,14 @@ export default function BordingList({navigation, route}) {
                     </View>
                 </View>
                 
-                <View style={Platform.OS === 'ios' ? {flex: deviceHeight >= 700 ? 0.62 : 0.7, backgroundColor: 'pink'} : {flex: 0.7, backgroundColor: 'pink',}}>
-                    <View style={{justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1,}}>
-                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'green', marginLeft: 30}}>
-                            <Text style={{marginRight: 10}}>인동</Text>
+                <View style={Platform.OS === 'ios' ? {flex: deviceHeight >= 700 ? 0.62 : 0.7} : {flex: 0.7,}}>
+                    <View style={{justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#D9D9D9'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 50}}>
+                            <Text style={{marginRight: 10, fontSize:20}}>인동</Text>
                             <View>
                                 <Ionicons name="arrow-forward" size={24} color="black" />   
                             </View>
-                            <Text style={{marginLeft: 10}}>경운대학교</Text>                                                                                                                                                                                                                     
+                            <Text style={{marginLeft: 10, fontSize:20}}>경운대학교</Text>                                                                                                                                                                                                                     
                         </View>
                         <View style={{marginTop: 10}}>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -64,7 +64,8 @@ export default function BordingList({navigation, route}) {
                         </View>
                         
                         
-                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'green', width: 200, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 15, marginLeft: 40, marginTop: 20, marginBottom: 15}}>
+                        
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 200, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 15, marginLeft: 40, marginTop: 20, marginBottom: 15, borderColor: '#3A1D1D', borderWidth: 1}}>
                             <Svg
                                 id="Capa_1"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -92,10 +93,10 @@ export default function BordingList({navigation, route}) {
                     <View style={{marginTop: 30}}>                        
                         <View style={styles.carpool_list_display}>
                             <View style={{marginBottom: 8, marginLeft: 20}}>
-                                <Text>드라이버</Text>
+                                <Text style={{color: '#D9D9D9'}}>드라이버</Text>
                             </View>                            
                             <View style={styles.carpool_list_display_title}>
-                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>                                    
+                                <View style={{width: 120, flexDirection: 'row', alignItems: 'center'}}>                                    
                                     <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />                                                                                                                        
                                     <Text style={styles.carpool_list_ticket_display_title_text}>최수정</Text>
                                 </View>                                  
@@ -103,11 +104,11 @@ export default function BordingList({navigation, route}) {
                         </View>
                         <View style={styles.carpool_list_display}>
                             <View style={{marginBottom: 8, marginLeft: 20}}>
-                                <Text>패신저 (3/3)</Text>
+                                <Text style={{color: '#D9D9D9'}}>패신저 (3/3)</Text>
                             </View>
                             
                             <View style={styles.carpool_list_display_title}>
-                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={{width: 120, flexDirection: 'row', alignItems: 'center'}}>
                                     <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />   
                                     <Text style={styles.carpool_list_ticket_display_title_text}>김수지</Text>
                                 </View>                                
@@ -120,7 +121,7 @@ export default function BordingList({navigation, route}) {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.carpool_list_display_title}>
-                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={{width: 120, flexDirection: 'row', alignItems: 'center'}}>
                                     <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />   
                                     <Text style={styles.carpool_list_ticket_display_title_text}>박지우</Text>
                                 </View>                                
@@ -133,7 +134,7 @@ export default function BordingList({navigation, route}) {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.carpool_list_display_title}>
-                                <View style={{width: 120, backgroundColor: 'yellow', flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={{width: 120, flexDirection: 'row', alignItems: 'center'}}>
                                     <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />   
                                     <Text style={styles.carpool_list_ticket_display_title_text}>이정민</Text>
                                 </View>                                
@@ -154,31 +155,31 @@ export default function BordingList({navigation, route}) {
                             () => {
                                 if (finish === false){
                                     return (
-                                        <View style={styles.button_container}>             
-                                            <TouchableOpacity 
-                                                onPress={onFinish}
-                                                style={styles.button_container_next_button}
-                                            >
-                                                <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 23}}>탑승 종료</Text>
-                                            </TouchableOpacity>                                        
-                                        </View>
-                                    )
-                                } else {
-                                    return (
                                         <View style={styles.finish_button_container}>             
                                             <TouchableOpacity 
                                                 onPress={onFinish}
                                                 style={[styles.finish_button_container_cancle_button, {marginRight: 15}]}
                                             >
-                                                <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 23}}>취소</Text>
+                                                <Text style={{color: '#007AFF', fontWeight: "bold", fontSize: 15}}>티켓 삭제</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity 
                                                 onPress={() => navigation.navigate("Main")}
                                                 style={styles.finish_button_container_button}
                                             >
-                                                <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 23}}>종료</Text>
+                                                <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 15}}>운행 종료</Text>
                                             </TouchableOpacity>                                        
                                         </View>
+                                    )
+                                } else {
+                                    return (
+                                        <View style={styles.button_container}>             
+                                            <TouchableOpacity 
+                                                onPress={onFinish}
+                                                style={styles.button_container_next_button}
+                                            >
+                                                <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 15}}>탑승 종료</Text>
+                                            </TouchableOpacity>                                        
+                                        </View>                                       
                                     )
                                 }
                             }
@@ -201,7 +202,6 @@ const styles = StyleSheet.create(
             flex: 0.15,
             justifyContent: 'flex-end',
             justifyContent: 'center',
-            backgroundColor: 'yellow',
             
         },
 
@@ -314,7 +314,7 @@ const styles = StyleSheet.create(
         },
 
         footer: {
-            flex: 0.2,
+            flex: 0.18,
             
             justifyContent: 'flex-end',
             paddingBottom: 30
@@ -332,16 +332,15 @@ const styles = StyleSheet.create(
 
 
         button_container: {
-            flex: 0.3,
             justifyContent: 'center',
             marginBottom: 10,
         },
 
-        finish_button_container: {
-            flex: 0.3,
+        finish_button_container: {            
             justifyContent: 'center',
             marginBottom: 10,
             flexDirection: 'row',
+            
         },
 
         button_container_next_button : {
@@ -361,16 +360,18 @@ const styles = StyleSheet.create(
             width: 150,
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 15
+            borderRadius: 25
         },
 
         finish_button_container_cancle_button : {
-            backgroundColor: '#80bdff',
+            backgroundColor: '#FFFFFF',
             height: 55,
             width: 150,
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 15
+            borderRadius: 25,
+            borderWidth: 1,
+            borderColor: '#007AFF'
         },
 
         

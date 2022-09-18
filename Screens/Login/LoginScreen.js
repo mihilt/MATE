@@ -7,7 +7,7 @@ import { NotoSansKR_400Regular, NotoSansKR_500Mediu, NotoSansKR_100Thin, NotoSan
 //아이콘
 import { Ionicons } from '@expo/vector-icons';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({navigation, route}) => {
     const deviceWidth = Dimensions.get('window').width;
     const deviceHeight = Dimensions.get('window').height;
 
@@ -28,6 +28,7 @@ const LoginScreen = ({navigation}) => {
       return null;
     }
 
+    console.log(route.params);
 
     return (
     <KeyboardAvoidingView
@@ -51,7 +52,7 @@ const LoginScreen = ({navigation}) => {
           <View style={styles.button_container}>
             <TouchableOpacity  
               style={styles.button}
-              onPress={() => navigation.navigate("Main")}               
+              onPress={() => navigation.navigate("KakaoWebView")}               
             >
               <Text style={styles.text}>카카오 로그인</Text>
             </TouchableOpacity>

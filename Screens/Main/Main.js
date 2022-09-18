@@ -1,6 +1,6 @@
 // 모듈 불러오는 부분, 현재 수정중
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ScrollView } from "react-native";
 
 // 아이콘(원격주소) 불러오기
 import { Fontisto } from '@expo/vector-icons';
@@ -15,6 +15,7 @@ import Svg, { Path } from "react-native-svg";
 export default function Main({ navigation, route }) { 
     // State
 
+    console.log("Main userData : ", route.params );
     const [ toggleCarpoolList, setToggleCarpoolList ] = useState(true);
   
     const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -82,8 +83,11 @@ export default function Main({ navigation, route }) {
                         </View>
                     </TouchableOpacity>
                 </View>
-                {toggleCarpoolList && <View style={styles.carpool_list}>
-                    <TouchableOpacity style={styles.carpool_list_ticket_display}>
+                {toggleCarpoolList && <ScrollView style={styles.carpool_list}>
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate("TicketDetail")}
+                        style={styles.carpool_list_ticket_display}
+                    >
                         <View style={styles.profile_image}></View>
                         <View style={styles.carpool_list_ticket_display_title}>
                             <View style={styles.carpool_list_ticket_content}>
@@ -99,7 +103,10 @@ export default function Main({ navigation, route }) {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.carpool_list_ticket_display}>
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate("TicketDetail")}
+                        style={styles.carpool_list_ticket_display}
+                    >
                         <View style={styles.profile_image}></View>
                         <View style={styles.carpool_list_ticket_display_title}>
                             <View style={styles.carpool_list_ticket_content}>
@@ -115,7 +122,10 @@ export default function Main({ navigation, route }) {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.carpool_list_ticket_display}>
+                    <TouchableOpacity 
+                        onPress={() => navigation.navigate("TicketDetail")}
+                        style={styles.carpool_list_ticket_display}
+                    >
                         <View style={styles.profile_image}></View>
                         <View style={styles.carpool_list_ticket_display_title}>
                             <View style={styles.carpool_list_ticket_content}>
@@ -131,7 +141,7 @@ export default function Main({ navigation, route }) {
                             </View>
                         </View>
                     </TouchableOpacity>
-                </View>}
+                </ScrollView>}
             </View>
 
             
@@ -147,8 +157,9 @@ export default function Main({ navigation, route }) {
                 </TouchableOpacity>
             </View> */}
             <View style={styles.footer}>
-                <View
+                <TouchableOpacity
                     style={styles.footer_button}
+                    onPress={() => navigation.navigate("BordingList")}
                 >
                     <Text
                         style={{
@@ -159,7 +170,7 @@ export default function Main({ navigation, route }) {
                     >
                         예약된 카풀이 없어요!
                     </Text>
-                </View>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -283,7 +294,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#A8BBFF',
     },
 
-    footer: {
+    footer: {        
         flex: 1,
         justifyContent: 'flex-end',
         paddingLeft: 20,
@@ -437,7 +448,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 35,
-        marginBottom: 20
+        marginBottom: 29
     }
 
 });

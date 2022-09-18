@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Platform, Image, Dimensions, TextInput } from "react-native";
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAvoidingView } from "react-native";
 // firebase Storage 불러오기
@@ -9,9 +9,20 @@ import { AntDesign } from '@expo/vector-icons';
 import Svg, { Path } from "react-native-svg";
 // 폰트
 import { useFonts, NotoSansKR_400Regular, NotoSansKR_500Mediu, NotoSansKR_100Thin, NotoSansKR_300Light, NotoSansKR_500Medium, NotoSansKR_700Bold, NotoSansKR_900Black, } from "@expo-google-fonts/noto-sans-kr";
+import axios from "axios";
 
 export default function SignUpScreen({navigation, route}) {
     
+    console.log(route.params.kakao_account.email);
+    useEffect(async () => {
+        const getRes = await axios.get(`http://3.37.159.244:8080/member`);              
+        console.log("user res : ", getRes);
+    }, []);
+
+    // 학번, 학과 state
+    const [ studentId, setStudentId ] = useState("");
+    const [ department, setDepartment ] = useState("");
+
     // 등교 데이터 state
     const [ goingSchoolDays, setGoingSchoolDays ] = useState([]);
     const days = ["월", "화", "수", "목", "금"];
@@ -24,10 +35,36 @@ export default function SignUpScreen({navigation, route}) {
     const [image, setImage] = useState(null);
     const [ uploading, setUploading ] = useState(false);
 
+    // useRef 
+    const studentIdRef = useRef("");
+    const departmentRef = useRef("");
+    const goingSchoolDaysRef = useRef([]);
+    const authRef = useRef("");
+    const profileImgUriRef = useRef("");
+
+    // 회원정보 객체 state
+    const [ userData, setUserData ] = useState({
+        email : "",
+        studentId: "",
+        department: "",
+        goingSchoolDays: "",
+        auth: "",
+        profileImageURI: "",
+    });
+
+    const user = {
+        email : "",
+        studentId: "",
+        department: "",
+        goingSchoolDays: "",
+        auth: "",
+        profileImageURI: "",
+    }
+
     const deviceWidth = Dimensions.get('window').width;
     const deviceHeight = Dimensions.get('window').height;
 
-    console.log(deviceWidth, deviceHeight);
+    
     // 폰트 설정
     let [ fontLoaded ] = useFonts({
         NotoSansKR_500Medium,
@@ -62,7 +99,9 @@ export default function SignUpScreen({navigation, route}) {
     
         if (!result.cancelled) {
           setImage(result.uri);
-          userData.profileURI = result.uri;
+          user.profileImageURI = result.uri;
+          profileImgUriRef.current = result.uri;
+        
         }
     };
 
@@ -84,7 +123,19 @@ export default function SignUpScreen({navigation, route}) {
         setImage(null);
     }
 
-    
+    // 회원정보 입력 핸들러
+    const onChangeTextStudentId = (text) => {
+        setStudentId(text);
+        studentIdRef.current = text;
+    }
+
+    const onChangeTextDepartment = (text) => {
+        setDepartment(text);
+        user.department = text;
+        departmentRef.current = text;
+    }
+
+    console.log(userData);
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -119,7 +170,9 @@ export default function SignUpScreen({navigation, route}) {
                                                         const id = prev.indexOf(selectData)
                                                         
                                                         prev.splice(id, 1);
-                                                        prev.push(selectData);                                                                    
+                                                        prev.push(selectData);   
+                                                        user.auth = prev[0];     
+                                                        authRef.current = prev[0];                                                            
                                                         return prev;
                                                     });
                                                 }} 
@@ -168,8 +221,22 @@ export default function SignUpScreen({navigation, route}) {
                         </View>
                     </View>
                     <View style={{marginLeft: 5}}>                                               
-                        <TextInput placeholder="학번" placeholderTextColor={"#2E2E2E"} borderBottomColor="#D9D9D9"  style={{width: "50%", paddingBottom: 13, marginBottom: 20, borderBottomWidth: 1}}/>
-                        <TextInput placeholder="학과" placeholderTextColor={"#2E2E2E"} borderBottomColor="#D9D9D9"  style={{width: "50%", paddingBottom: 13, marginBottom: 20, borderBottomWidth: 1}}/>
+                        <TextInput 
+                            value={studentId}
+                            onChangeText={(text) => onChangeTextStudentId(text)}
+                            placeholder="학번"
+                            placeholderTextColor={"#2E2E2E"}
+                            borderBottomColor="#D9D9D9"
+                            style={{width: "50%", paddingBottom: 13, marginBottom: 20, borderBottomWidth: 1}}
+                        />
+                        <TextInput 
+                            value={department}
+                            onChangeText={(text) => onChangeTextDepartment(text)}
+                            placeholder="학과"
+                            placeholderTextColor={"#2E2E2E"}
+                            borderBottomColor="#D9D9D9"
+                            style={{width: "50%", paddingBottom: 13, marginBottom: 20, borderBottomWidth: 1}}
+                        />
                         <View>
                             <Text>요일</Text>
                             <Text style={styles.message_container_text}>9시까지 학교에 가야하는 날을 모두 선택해 주세요</Text>
@@ -194,6 +261,8 @@ export default function SignUpScreen({navigation, route}) {
                                                         
                                                         //console.log("등교일 입력후 userData 현황 : ", userData)
                                                     }
+                                                    user.goingSchoolDays = prev;
+                                                    goingSchoolDaysRef.current = prev;
                                                     return prev;                                        
                                                 });
                                             }}
@@ -213,8 +282,25 @@ export default function SignUpScreen({navigation, route}) {
                         <TouchableOpacity 
                             style={styles.button_container_next_button}
                             onPress={async () => {
-                                navigation.navigate("StudendNumberLoginScreen");
-                                // console.log("signup button : ", userData);
+                                setUserData({
+                                    email : route.params.kakao_account.email,
+                                    studentId: studentId,
+                                    department: department,
+                                    goingSchoolDays: goingSchoolDays,
+                                    auth: selectDriverPesinger[0],
+                                    profileImageURI: image,
+                                });
+                                
+                                const res = await axios.post(`http://3.37.159.244:8080/member/new`, {                                
+                                    EMAIL: route.params.kakao_account.email,
+                                    STUDENT_ID: studentIdRef.current,
+                                    DEPARTMENT: departmentRef.current,
+                                    GOING_TO_SCHOOL_DAYS: goingSchoolDays.current,
+                                    AUTH: authRef.current,
+                                    PROFILE_IMAGE: profileImgUriRef.current,
+                               });          
+                               
+                                //navigation.navigate("Main", userData);                        
                             }}
                         >
                             <Text style={{color: '#FFFFFF', fontFamily: 'NotoSansKR_700Bold', fontSize: 23}}>완료하기</Text>
