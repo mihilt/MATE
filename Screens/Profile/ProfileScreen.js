@@ -23,7 +23,7 @@ export default function ProfileScreen({navigation}) {
     /*
     useEffect(async () => {
         const data = await axios.get('http://3.37.159.244:8080/member/');
-        setProfleData(data);
+        setProfleData(data)
     }, []);
     */
     // 폰트 설정
