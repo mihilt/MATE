@@ -1,5 +1,5 @@
 // 학번로그인 -> 회원가입 버튼 클릭하면 회원가입 페이지 화면으로 넘어간다.
-import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, Dimensions, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, Dimensions } from "react-native";
 import React, { useState, } from 'react';
 
 // 아이콘
@@ -14,7 +14,15 @@ import { useFonts, NotoSansKR_400Regular, NotoSansKR_500Mediu, NotoSansKR_100Thi
 
 //SVG
 import Svg, { Path, G, Mask, Rect } from "react-native-svg";
-export default function BordingList({navigation, route}) {
+export default function PesingerBordingList({navigation, route}) {
+
+    // 탑승 종료 state
+    const [ finish, setFinish ] = useState(false);
+
+    // 탑승 종료 이벤트 
+    const onFinish = () => {
+        setFinish(!finish);
+    }
 
     const deviceWidth = Dimensions.get("window").width;
     const deviceHeight = Dimensions.get("window").height;
@@ -30,46 +38,6 @@ export default function BordingList({navigation, route}) {
     if (!fontLoaded) {
         return null;
     }
-
-    // 티켓 삭제 Alert창 보여주는 함수
-    const ticketDeleteAlert = () => Alert.alert(
-        "카풀 삭제 하시겠습니까?", 
-        `드라이버의 일방적 삭제로 인한${'\n'}신고가 3회 이상 누적되면${'\n'}서비스 이용에 제한이 있을 수 있습니다.카풀을 삭제하시겠습니까?`,
-        [
-            {
-                text: '취소',
-                style: 'cancel',
-            },
-            {
-                text: '삭제',
-                onPress: () => {
-                    navigation.navigate('Main');
-                },
-                style: 'destructive'
-            }
-        ],
-        { cancelable: false }
-    );
-
-    // 운행 종료 Alert창 보여주는 
-    const driveFinishAlert = () => Alert.alert(
-        "운행 종료하겠습니까?", 
-        `유료 운행의 경우 오전 7~9시,${'\n'}오후 6~8시까지 운행을 종료해야 합니다.${'\n'}${'\n'}운행 종료하시겠습니까?`,
-        [
-            {
-                text: '취소',
-                style: 'cancel',
-            },
-            {
-                text: '종료',
-                onPress: () => {
-                    navigation.navigate('Main');
-                },
-                style: 'destructive'
-            }
-        ],
-        { cancelable: false }
-    );
 
     return (
         <View 
@@ -146,8 +114,16 @@ export default function BordingList({navigation, route}) {
                                 <View style={{width: 120, flexDirection: 'row', alignItems: 'center'}}>                                    
                                     <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />                                                                                                                        
                                     <Text style={styles.carpool_list_ticket_display_title_text}>최수정</Text>
-                                </View>                                  
-                            </View>                            
+                                </View>   
+                                <TouchableOpacity 
+                                    onPress={() => navigation.navigate("DiclationScreen")}
+                                    style={styles.carpool_list_ticket_display_title_pesinger}
+                                >
+                                    <Feather name="bell" size={24} color="#d8d7d7" />
+                                    <Text style={styles.complaint_text}>신고</Text>
+                                </TouchableOpacity>                               
+                            </View>  
+                                                      
                         </View>
                         <View style={styles.carpool_list_display}>
                             <View style={{marginBottom: 8, marginLeft: 20}}>
@@ -158,14 +134,7 @@ export default function BordingList({navigation, route}) {
                                 <View style={{width: 120, flexDirection: 'row', alignItems: 'center'}}>
                                     <Ionicons name="person-circle-sharp" size={45} color="#d9d9d9" />   
                                     <Text style={styles.carpool_list_ticket_display_title_text}>김수지</Text>
-                                </View>                                
-                                <TouchableOpacity 
-                                    onPress={() => navigation.navigate("DiclationScreen")}
-                                    style={styles.carpool_list_ticket_display_title_pesinger}
-                                >
-                                    <Feather name="bell" size={24} color="#d8d7d7" />
-                                    <Text style={styles.complaint_text}>신고</Text>
-                                </TouchableOpacity>
+                                </View>                                                                
                             </View>
                             <View style={styles.carpool_list_display_title}>
                                 <View style={{width: 120, flexDirection: 'row', alignItems: 'center'}}>
@@ -196,21 +165,15 @@ export default function BordingList({navigation, route}) {
                         </View>                      
                     </View>                    
                 </View>        
-                <View style={styles.footer}>                     
-                    <View style={styles.finish_button_container}>             
+                <View style={styles.footer}>                                              
+                    <View style={styles.button_container}>             
                         <TouchableOpacity 
-                            onPress={ticketDeleteAlert}
-                            style={[styles.finish_button_container_cancle_button, {marginRight: 15}]}
+                            onPress={onFinish}
+                            style={styles.button_container_next_button}
                         >
-                            <Text style={{color: '#007AFF', fontWeight: "bold", fontSize: 15}}>티켓 삭제</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            onPress={driveFinishAlert}
-                            style={styles.finish_button_container_button}
-                        >
-                            <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 15}}>운행 종료</Text>
+                            <Text style={{color: '#FFFFFF', fontWeight: "bold", fontSize: 15}}>내리기</Text>
                         </TouchableOpacity>                                        
-                    </View>                              
+                    </View>                                                                                 
                 </View>
             </View>
         </View>
@@ -359,12 +322,12 @@ const styles = StyleSheet.create(
 
 
         button_container: {
-            justifyContent: 'center',
-            marginBottom: 10,
+            justifyContent: 'center',            
         },
 
         finish_button_container: {            
-            justifyContent: 'center',            
+            justifyContent: 'center',
+            marginBottom: 10,
             flexDirection: 'row',
             
         },
@@ -376,8 +339,9 @@ const styles = StyleSheet.create(
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 25,
-            marginLeft: 15,
-            marginRight: 15,
+            marginLeft: 25,
+            marginRight: 25,
+            marginTop: 30,
         },
         
         finish_button_container_button : {

@@ -14,10 +14,10 @@ export default function Setting({ navigation }) {
             <View>
                 <Text style={styles.large_category}>문의</Text>
             </View>
-            <TouchableOpacity onPress={() => alert('1:1 문의')}>
+            <TouchableOpacity onPress={() => navigation.navigate("InquiryScreen")}>
                 <Text style={styles.category}>1:1 문의</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert('문의내역')}>
+            <TouchableOpacity onPress={() => navigation.navigate("Inquiry")}>
                 <Text style={styles.category}>문의내역</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => alert('로그아웃')}>

@@ -1,5 +1,5 @@
 // 모듈 불러오는 부분, 현재 수정중
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Image, ScrollView } from "react-native";
 
 // 아이콘(원격주소) 불러오기
@@ -12,13 +12,32 @@ import { SCREEN_HEIGHT } from "@gorhom/bottom-sheet";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Svg, { Path } from "react-native-svg";
 
+import axios from "axios";
+
 export default function Main({ navigation, route }) { 
     // State
+    // const [ areaData, setAreaData ] = useState({});
+    // const [ carpoolList, setCapoolList ] = useState({});
+    // useEffect
+    /*
+    useEffect(async () => {
+        // 지역설정
+        
+        const getAreaData = await axios.get(`http://3.37.159.244:8080/area?student_number=${route.params.data.student_number}`);
+        const getCarpoolList = await axios.get(`http://3.37.159.244:8080/ticket`);
+        setAreaData(getAreaData);
+        setCarpoolList(getCarpoolList);
 
-    console.log("Main userData : ", route.params );
+    }, []);
+    
+    */
+    console.log("Main 사용자 데아터 : ", route.params );
     const [ toggleCarpoolList, setToggleCarpoolList ] = useState(true);
   
     const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+    // User가 Driver, Pesinger인지
+    const [ userAuth, setUserAuth] = useState("Driver");
 
     return (
         <View style={styles.container}>
@@ -27,17 +46,39 @@ export default function Main({ navigation, route }) {
                     <Text style={styles.logo_text}>MATE</Text>
                 </View>
                 <View style={{width: 120}}/>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={async () => {
+                        const res = await axios.get('http://3.37.159.244:8080/member/');
+                        console.log("profile res : ", res.data);
+                        //navigation.navigate("ProfileScreen");
+
+                        /* ?? 질문 드렸다.
+                        await axios.post('http://3.37.159.244:8080/member/', 
+                            {
+                                headers: "사용자JWT 토큰 ex)ancnjjfkslw.skdkdkfskffk.skdkdkdskdsk",
+                            });
+                        */
+                    }}
+                >
                     <Ionicons name="md-person-circle-outline" size={30} color="#909090" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("Setting")}
+                >
                     <Feather name="settings" size={24} color="#909090" />
                 </TouchableOpacity>
             </View>
             <View style={styles.main}>
                 <View style={{paddingLeft: 20, paddingRight: 20}}>
                     <TouchableOpacity 
-                        onPress={() => navigation.navigate("LocalSettingFirst")}
+                        onPress={() => {
+                            navigation.navigate("LocalSettingFirst");
+                            /*
+                            await axios.post('http://3.37.159.244:8080/area', {
+                                headers: "사용자JWT 토큰 ex)ancnjjfkslw.skdkdkfskffk.skdkdkdskdsk"
+                            });
+                            */
+                        }}
                         style={styles.local_setting}
                     >
                         <View style={styles.local_display}>
@@ -159,7 +200,13 @@ export default function Main({ navigation, route }) {
             <View style={styles.footer}>
                 <TouchableOpacity
                     style={styles.footer_button}
-                    onPress={() => navigation.navigate("BordingList")}
+                    onPress={() => {
+                        if (userAuth === "Driver") {
+                            navigation.navigate("BordingList");
+                        } else {
+                            navigation.navigate("PesingerBordingList");
+                        }
+                    }}
                 >
                     <Text
                         style={{

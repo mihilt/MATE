@@ -31,6 +31,7 @@
     "react-native-keyboard-aware-scroll-view": "0.9.5",
     "react-native-modal-datetime-picker": "^14.0.0",
     "react-native-reanimated": "~2.3.1",
+    "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "3.3.2",
     "react-native-select-dropdown": "^1.8.0",
     "react-native-svg": "^9.3.3",

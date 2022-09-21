@@ -1,16 +1,19 @@
 // 모듈 불러오는 부분, 현재 수정중
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 // 아이콘(원격주소) 불러오기
 import { AntDesign } from '@expo/vector-icons';
 
 import SelectList from 'react-native-dropdown-select-list';
 
+import axios from 'axios';
+
 export default function LocalSettingFirst({ navigation, route }) {
+
     // 드롭메뉴 State
     const [selected, setSelected] = useState('');
     const localData = ['경운대학교', '인동', '옥계'];
-
+    
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -35,7 +38,17 @@ export default function LocalSettingFirst({ navigation, route }) {
             </View>
             <View style={styles.footer}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Main')}
+                    onPress={() => { 
+                        navigation.navigate('Main')
+                        /*
+                        await axios.put('http://3.37.159.244:8080/area', {
+                            area: selected,
+                            },{
+                                headers: '사용자JWT 토큰 ex)ancnjjfkslw.skdkdkfskffk.skdkdkdskdsk'
+                            },
+                        );
+                        */
+                    }}
                     style={styles.next_btn}>
                     <Text style={styles.next_btn_text}>설정하기</Text>
                 </TouchableOpacity>
