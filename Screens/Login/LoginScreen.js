@@ -31,7 +31,7 @@ import axios from 'axios';
         //console.log(route.params.url);
         //console.log("kakao state data route : ", route.params);
         const res = await axios.get(route.params.url.replace("LoginTo", "Login"));
-        console.log("응답 : ", res.data);
+        console.log("백엔드로 부터 사용자 데이터 응답 : ", res.data);
         if (res.data.member === false) {
           navigation.navigate("SignUpScreen", res.data);
         } else {

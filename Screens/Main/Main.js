@@ -13,6 +13,34 @@ import axios from 'axios';
 export default function Main({ navigation, route }) {
 
     // state
+    const [ areaData, setAreaData ] = useState();
+    const [ carpoolList, setCarpoolList ] = useState();
+
+    useEffect(() => {
+        /*
+        // 1. 지역 설정 API
+        // 지역설정 api 호출 부분 area: "인동"(default 값)
+        // 지역을 설정 했으면 그 지역으로 할당 되야 한다. 다시 로그인 하면 설정한 지역으로 받아야함. 사용자(멤버)테이블에 지역설정 멤버가 있어야 될것 같다.
+
+        const resArea = axios.get('http://3.37.159.244:8080/area', {
+            memberEmail: "zonins3@gmail.com",
+        });
+        
+        setAreaData(resArea);
+
+        //const areaRes = axios.get('http://3.37.159.244:8080/area');
+        */
+
+        // 2. 카풀리스트
+        /*
+        const carpoolListRes = axios.get('카풀리스트 url');
+        setCarpoolList(carpoolListRes);
+        */
+
+        // 3. 예약된 카풀 어떤 url에 있는 곳인지 모르겠음. 사용자(member)테이블에 예약된 카풀이 있는지 관련 멤버가 있어야 될것 같다.
+        
+    }, []);
+
     const [ ticketList, setTicketList ] = useState(10);
     return (
         <View style={styles.container}>

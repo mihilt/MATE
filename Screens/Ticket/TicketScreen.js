@@ -32,7 +32,7 @@ export default function TicketScreen({navigation, route}) {
     const [ selectToggle, setSelectToggle ] = useState(["무료"]);
     const selectToggleList = ["무료", "유료"];
 
-    const localData = ["경운대학교", "인동", "옥계"];
+    const localData = ["인동", "경운대학교"];
 
     // 입력창 state
     const [ pensingerCount, setPesingerCount ] = useState("");
@@ -215,7 +215,16 @@ export default function TicketScreen({navigation, route}) {
                                                         <SelectList 
                                                             setSelected={setStartPoint}
                                                             data={localData}
-                                                            onSelect={() => alert(startPoint)}
+                                                            onSelect={() => {
+                                                                if ((localData.indexOf(startPoint) - (localData.length-1)) < 0) {
+                                                                    
+                                                                    setEndPoint(localData[localData.indexOf(startPoint)+1]);
+                                                                } else {
+                                                                    console.log("d");
+                                                                    setEndPoint(localData[0]);
+                                                                    
+                                                                }
+                                                            }}
                                                             placeholder="출발지"
                                                             search={false}
                                                             
@@ -240,14 +249,10 @@ export default function TicketScreen({navigation, route}) {
                                                             />
                                                         </Svg>
                                                     </View>
-                                                    <View style={styles.selectListContainer}>
-                                                        <SelectList 
-                                                            setSelected={setEndPoint}
-                                                            data={localData}
-                                                            onSelect={() => alert(endPoint)}
-                                                            placeholder="도착지"
-                                                            search={false}                                                                
-                                                        /> 
+                                                    <View style={{flexDirection: 'row'}}>
+                                                        <View style={{justifyContent: 'center', alignItems: 'center', width: 135, borderWidth: 1, borderRadius: 10, borderColor: 'gray'}}>
+                                                            <Text>{endPoint === "" ? "도착지(자동)" : endPoint}</Text>
+                                                        </View>
                                                     </View>                                                                                           
                                                 </View>                                        
                                             </View>

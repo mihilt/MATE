@@ -14,7 +14,14 @@ import { useFonts, NotoSansKR_400Regular, NotoSansKR_500Mediu, NotoSansKR_100Thi
 
 //SVG
 import Svg, { Path, G, Mask, Rect } from "react-native-svg";
+
+// 클립보드
+import * as Clipboard from 'expo-clipboard';
+
 export default function BordingList({navigation, route}) {
+
+    // state
+    const [copiedText, setCopiedText] = React.useState('');
 
     const deviceWidth = Dimensions.get("window").width;
     const deviceHeight = Dimensions.get("window").height;
@@ -71,6 +78,13 @@ export default function BordingList({navigation, route}) {
         { cancelable: false }
     );
 
+    // 클립보드 핸들러
+
+    const copyToClipboard =  async () => {
+        Clipboard.setString('https://open.kakao.com/o/gB1fw7Ae');
+        alert("오픈채팅 링크 복사 하였습니다.")
+    };
+
     return (
         <View 
             style={{flex: 1, backgroundColor: "#FFFFFF", }}
@@ -112,7 +126,10 @@ export default function BordingList({navigation, route}) {
                         
                         
                         
-                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 200, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 15, marginLeft: 40, marginTop: 20, marginBottom: 15, borderColor: '#3A1D1D', borderWidth: 1}}>
+                        <TouchableOpacity 
+                            onPress={() => copyToClipboard()}
+                            style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 200, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 15, marginLeft: 40, marginTop: 20, marginBottom: 15, borderColor: '#3A1D1D', borderWidth: 1}}
+                        >
                             <Svg
                                 id="Capa_1"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +150,7 @@ export default function BordingList({navigation, route}) {
                                 </G>
                             </Svg>
                             <Text style={{marginLeft: 5, fontFamily: 'NotoSansKR_400Regular', color: '#2E2E2E'}}>1:1 오픈 채팅 참여하기</Text>
-                        </View>                        
+                        </TouchableOpacity>                        
                         
                     </View>
                 
