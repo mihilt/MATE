@@ -17,7 +17,8 @@ export default function KakaoWebView({navigation}) {
   
 
   // https://kauth.kakao.com/oauth/authorize?client_id=235fc02960c0239e43b70d9e3fd2c9e6&redirect_uri=http://3.37.159.244:8080/kakaoLogin&response_type=code
-  
+  // http://kauth.kakao.com/oauth/authorize?client_id=8763097c83420044eeea901b962072ab&redirect_uri=http://3.37.159.244:8080/kakaoLogin&client_secret=QQP9e4kuegEA1ZQLUSDFINBknLcDoL8R&response_type=code
+
   // 웹뷰에서 데이터를 받을 때 필요한 함수입니다. 
   const handleOnMessage = ({ nativeEvent: { data } }) => {
     // data에 웹뷰에서 보낸 값이 들어옵니다.

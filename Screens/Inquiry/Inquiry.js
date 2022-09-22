@@ -1,8 +1,20 @@
 import { AntDesign } from '@expo/vector-icons';
-import React from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Inquiry({ navigation }) {
+    const [ inquiryData, setInquiryData ] = useState();
+
+    useEffect(async () => {
+        const res = await axios.get('http://3.37.159.244:8080/QuestionBoard',{
+            "writerEmail" : "zonins3@gmail.com"    
+        });
+        console.log("res : ", res);
+        //console.log("문의 데이터 res2: ", res2);
+        //setInquiryData(res1);    
+    }, []);
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>

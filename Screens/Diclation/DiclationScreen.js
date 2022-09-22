@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView } from 'react-native';
 
 import { AntDesign } from '@expo/vector-icons';
+import axios from 'axios';
 
 export default function DiclationScreen({ navigation }) {
     const [reportable, setReportable] = useState(false);
@@ -94,8 +95,17 @@ export default function DiclationScreen({ navigation }) {
                     <View style={styles.button_container}>
                         <TouchableOpacity
                             disabled={!reportable}
-                            onPress={() => {
-                                alert('신고 접수 했습니다.');
+                            onPress={async () => {
+                                if (etcContent.length !== 0) {
+                                    const res = await axios.post('http://3.37.159.244:8080/ReportBoard/new', {
+                                        "wirterStudentId": "201702003",
+                                        "wirterEmail": "zonins3@gmail.com",
+                                        "reportStudentId": "201602005",
+                                        "content": etcContent,
+                                    })
+                                    alert('신고 접수 했습니다.');
+                                }
+                                
                                 navigation.navigate('Main');
                             }}
                             style={

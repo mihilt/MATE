@@ -13,7 +13,7 @@ import { NotoSansKR_400Regular, NotoSansKR_500Mediu, NotoSansKR_100Thin, NotoSan
 // axios
 import axios from "axios";
 
-export default function ProfileScreen({navigation}) { 
+export default function ProfileScreen({navigation, route}) { 
     // State
     //const [ profileData, setProfleData ] = useState({});
 
@@ -58,8 +58,8 @@ export default function ProfileScreen({navigation}) {
                         <View style={{flexDirection: 'row', }}>                            
                             <Ionicons name="person-circle-sharp" size={60} color="#d9d9d9" />                                                                                                                        
                             <View style={{width: 200, justifyContent: 'center'}}>
-                                <Text style={{fontSize: 16}}>항공정보통신공학과</Text>
-                                <Text style={{marginBottom: 5, marginTop: 5, fontSize: 18}}>최수정</Text>
+                                <Text style={{fontSize: 16}}>{route.params.department}</Text>
+                                <Text style={{marginBottom: 5, marginTop: 5, fontSize: 18}}>{route.params.memberName}</Text>
                                 
                             </View>
                         </View>

@@ -13,7 +13,7 @@ export default function LocalSettingFirst({ navigation, route }) {
     // 드롭메뉴 State
     const [selected, setSelected] = useState('');
     const localData = ['경운대학교', '인동', '옥계'];
-    
+    console.log("회원가입 : ", route.params);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -40,14 +40,14 @@ export default function LocalSettingFirst({ navigation, route }) {
                 <TouchableOpacity
                     onPress={() => { 
                         navigation.navigate('Main')
-                        /*
-                        await axios.put('http://3.37.159.244:8080/area', {
-                            area: selected,
-                            },{
-                                headers: '사용자JWT 토큰 ex)ancnjjfkslw.skdkdkfskffk.skdkdkdskdsk'
-                            },
-                        );
-                        */
+                        
+                        // await axios.put('http://3.37.159.244:8080/area', {
+                        //     area: selected,
+                        //     },{
+                        //         headers: '사용자JWT 토큰 ex)ancnjjfkslw.skdkdkfskffk.skdkdkdskdsk'
+                        //     },
+                        //);
+                        
                     }}
                     style={styles.next_btn}>
                     <Text style={styles.next_btn_text}>설정하기</Text>

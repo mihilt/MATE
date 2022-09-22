@@ -21,23 +21,25 @@ import axios from 'axios';
     
     // state
     // MATE 회원자 인지 확인 하는 state
-    const [ memberCheck, setMemberCheck ] = useState(true);
+    const [ memberCheck, setMemberCheck ] = useState(false);
     
 
     useEffect(async () => {
       //fetchAPI();
-      /*
+      
       if (route.params && route.params.url) {
         //console.log(route.params.url);
         //console.log("kakao state data route : ", route.params);
         const res = await axios.get(route.params.url.replace("LoginTo", "Login"));
-        //console.log("응답 : ", res.data);
-        if (memberCheck) {
-          navigation.navigate("SignUpScreen");
+        console.log("응답 : ", res.data);
+        if (res.data.member === false) {
+          navigation.navigate("SignUpScreen", res.data);
+        } else {
+          navigation.navigate("Main", res.data);
         }
         
-      }*/
-    
+      }
+    /*
       if (true) {
         //console.log(route.params.url);
         //console.log("kakao state data route : ", route.params);
@@ -50,7 +52,7 @@ import axios from 'axios';
             member_name : "",
             department: "",
             student_number: "",
-            auth: "PASSENGER",
+            auth: "P",
             profile_image: "",
             member_timetable: [],
           }});
@@ -60,13 +62,14 @@ import axios from 'axios';
             member_name : "손민석",
             department: "항공소프트웨어공학과",
             student_number: "201702003",
-            auth: "PASSENGER",
+            auth: "P",
             profile_image: "",
             member_timetable: ["월", "화", "수"],
           }})
         }
         
       }
+    */
 
     }, [route.params]);
 

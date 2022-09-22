@@ -1,5 +1,5 @@
 // 모듈 불러오는 부분, 현재 수정중
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 
 // 아이콘(원격주소) 불러오기
@@ -8,6 +8,7 @@ import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SCREEN_HEIGHT } from '@gorhom/bottom-sheet';
 import Svg, { Path } from 'react-native-svg';
+import axios from 'axios';
 
 export default function Main({ navigation, route }) {
 
@@ -22,7 +23,7 @@ export default function Main({ navigation, route }) {
                 <View style={{ width: 120 }} />
                 <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("ProfileScreen")}
+                        onPress={() => navigation.navigate("ProfileScreen", route.params)}
                     >
                         <Ionicons name='md-person-circle-outline' size={30} color='#909090' />
                     </TouchableOpacity>                

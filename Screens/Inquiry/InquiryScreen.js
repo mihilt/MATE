@@ -14,6 +14,7 @@ import axios from "axios";
 import RenderHtml from 'react-native-render-html';
 import { Archivo_500Medium } from "@expo-google-fonts/archivo";
 
+
 /*
     <View style={{marginTop: 12, marginLeft: 12}}>
         <Text style={{fontSize: 10, color: "#989595", fontFamily: 'NotoSansKR_400Regular'}}>카풀에 운행 가능한 차량이 있다면 ‘드라이버’를 선택해 주세요</Text>
@@ -23,7 +24,10 @@ export default function InquiryScreen({navigation}) {
 
     // state
     // TextInput 글자 카운트 출력
+    const [ title, setTitle ] = useState('');
     const [ etcContent, setEtcContent ] = useState('');
+    const [ email, setEmail ] = useState('');
+
     // 동의 아이콘 state
     const [ agree, setAgree ] = useState(false);
     
@@ -83,7 +87,10 @@ export default function InquiryScreen({navigation}) {
                             maxLength={200}                            
                             multiline={true}
                             textAlignVertical='top'                                                                               
-                            placeholder='제목'                                                        
+                            placeholder='제목'        
+                            onChange={(e) => {
+                                setTitle(e.nativeEvent.text);
+                            }}                                                
                             style={{
                                 paddingTop: 5,
                                 borderWidth: 1,
@@ -123,7 +130,10 @@ export default function InquiryScreen({navigation}) {
                             maxLength={200}                            
                             multiline={true}
                             textAlignVertical='top'                                                                        
-                            placeholder='답변 받을 이메일 주소'                                                        
+                            placeholder='답변 받을 이메일 주소'   
+                            onChange={(e) => {
+                                setEmail(e.nativeEvent.text);
+                            }}                                                     
                             style={{
                                 paddingTop: 5,
                                 borderWidth: 1,
@@ -182,6 +192,17 @@ export default function InquiryScreen({navigation}) {
                                 </View>
                             ) : (
                                 <TouchableOpacity 
+                                    onPress={async () => {
+                                        if (title.length > 0 && etcContent.length > 0 && email.length > 0) {
+                                            const res = await axios.post('http://3.37.159.244:8080/QuestionBoard/new', {
+                                                "writerStudentId": "201702003",
+                                                "writerEmail": email,
+                                                "title": title,
+                                                "content": etcContent,                                        
+                                            });
+                                            console.log("문의 제출 응답 : ", res.data);
+                                        }
+                                    }}
                                     style={styles.button_container_next_button}                       
                                 >
                                     <Text style={{ color: '#FFFFFF', fontFamily: 'NotoSansKR_700Bold', fontSize: 23}}>제출하기</Text>

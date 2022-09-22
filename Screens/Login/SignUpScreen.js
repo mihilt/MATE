@@ -13,6 +13,7 @@ import axios from "axios";
 
 export default function SignUpScreen({navigation, route}) {
     
+    console.log("회원가입 : ", route.params);
     // 이름, 학번, 학과 state
     const [ name, setName ] = useState("");
     const [ studentId, setStudentId ] = useState("");
@@ -38,7 +39,7 @@ export default function SignUpScreen({navigation, route}) {
     const profileImgUriRef = useRef("");
 
     // 회원정보 객체 state
-    const [ userData, setUserData ] = useState(route.params.data);
+    const [ userData, setUserData ] = useState(route.params);
 
 
     // 다음 버튼 state
@@ -85,7 +86,7 @@ export default function SignUpScreen({navigation, route}) {
           user.profileImageURI = result.uri;
           profileImgUriRef.current = result.uri;
           setUserData(prev => (
-            {...prev, ["profileImageURI"]: result.uri}
+            {...prev, ["profileImage"]: result.uri}
         ))
         
         }
@@ -113,14 +114,14 @@ export default function SignUpScreen({navigation, route}) {
     const onChangeTextName = (text) => {
         setName(text);
         setUserData(prev => (
-            {...prev, ["member_name"]: text}
+            {...prev, ["memberName"]: text}
         ));        
     }
 
     const onChangeTextStudentId = (text) => {
         setStudentId(text);
         setUserData(prev => (
-            {...prev, ["student_id"]: text}
+            {...prev, ["studentNumber"]: text}
         ));
         
     }
@@ -218,7 +219,8 @@ export default function SignUpScreen({navigation, route}) {
                                                     // 학번, 학과, 이름 입력 했는지 검증
                                                     
                                                     if (studentId.length >= 9 && department.length > 0 && name.length >= 2 ) {
-                                                        completeAlert();      
+                                                        completeAlert(); 
+                                                        userData.member = true;                                                             
                                                         console.log("확인 : ", userData);                                                          
                                                     } else {
                                                         
@@ -233,8 +235,8 @@ export default function SignUpScreen({navigation, route}) {
                                                         GOING_TO_SCHOOL_DAYS: goingSchoolDays.current,
                                                         AUTH: authRef.current,
                                                         PROFILE_IMAGE: profileImgUriRef.current,
-                                                });          
-                                                */
+                                                });          */
+                                                
                                                     //navigation.navigate("Main", userData);                        
                                                 }}
                                             >
@@ -273,9 +275,7 @@ export default function SignUpScreen({navigation, route}) {
                                                                             const id = prev.indexOf(selectData)
                                                                             
                                                                             prev.splice(id, 1);
-                                                                            prev.push(selectData);   
-                                                                            user.auth = prev[0];     
-                                                                            authRef.current = prev[0];  
+                                                                            prev.push(selectData);                                                                                                                                                           
                                                                             setUserData(data => (
                                                                                 {...data, ["auth"]: prev[0]}
                                                                             ));                                                
@@ -348,13 +348,11 @@ export default function SignUpScreen({navigation, route}) {
                                                                         } else {
                                                                             prev.push(day);
                                                                             setUserData(data => (
-                                                                                {...data, ["member_timetable"]: prev}
+                                                                                {...data, ["memberTimetable"]: prev}
                                                                             ))
                                                                             
                                                                             //console.log("등교일 입력후 userData 현황 : ", userData)
-                                                                        }
-                                                                        user.goingSchoolDays = prev;
-                                                                        goingSchoolDaysRef.current = prev;
+                                                                        }                                                                    
                                                                         return prev;                                        
                                                                     });
                                                                 }}
@@ -375,24 +373,18 @@ export default function SignUpScreen({navigation, route}) {
                                                 style={styles.button_container_next_button}
                                                 onPress={async () => {
                                                     // 학번, 학과, 등교일 입력 했는지 검증
-                                                    if (goingSchoolDays.length > 0 ) {                                                                               
-                                                        console.log("meber/new 경로로 서버에게 전송 : ", userData);
+                                                    if (true) {                                                                               
+                                                        console.log("meber/new 경로로 서버에게 전송 : ", {...userData});
                                                         if (true) {
+                                                            userData.member = true; 
+                                                            userData.phoneNumber = "010-2274-2538";                                                         
+
+                                                            //const res = await axios.post(`http://3.37.159.244:8080/member/new`, userData);          
+                                                            //console.log("서버로 받은 결과 : ", res);
                                                             alert("회원가입 성공 하였습나다.");                                                        
                                                             navigation.navigate("Main", userData);
                                                         }
-                                                    }
-                                                    
-                                                    /*
-                                                    const res = await axios.post(`http://3.37.159.244:8080/member/new`, {                                                                    
-                                                        EMAIL: route.params.kakao_account.email,
-                                                        STUDENT_ID: studentIdRef.current,
-                                                        DEPARTMENT: departmentRef.current,
-                                                        GOING_TO_SCHOOL_DAYS: goingSchoolDays.current,
-                                                        AUTH: authRef.current,
-                                                        PROFILE_IMAGE: profileImgUriRef.current,
-                                                });          
-                                                */
+                                                    }                                                                                                                                                        
                                                     //navigation.navigate("Main", userData);                        
                                                 }}
                                             >
