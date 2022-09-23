@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function TicketDetail({ navigation }) {
+export default function TicketDetail({ navigation, route }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -12,13 +12,13 @@ export default function TicketDetail({ navigation }) {
             </View>
             <View style={styles.address}>
                 <View style={{ width: '56%', alignItems: 'flex-end' }}>
-                    <Text style={styles.address_text}>출발지</Text>
+                    <Text style={styles.address_text}>인동</Text>
                 </View>
                 <View style={{ width: '30%', alignItems: 'center' }}>
                     <AntDesign name='arrowright' size={24} color='black' />
                 </View>
                 <View style={{ alignItems: 'flex-start', width: '56%' }}>
-                    <Text style={styles.address_text}>도착지</Text>
+                    <Text style={styles.address_text}>경운대학교</Text>
                 </View>
             </View>
             <View style={styles.form}>

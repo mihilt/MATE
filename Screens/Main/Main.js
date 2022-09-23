@@ -1,6 +1,7 @@
 // 모듈 불러오는 부분, 현재 수정중
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 // 아이콘(원격주소) 불러오기
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
@@ -15,7 +16,62 @@ export default function Main({ navigation, route }) {
     // state
     const [ areaData, setAreaData ] = useState();
     const [ carpoolList, setCarpoolList ] = useState();
+    // route params 상태 유지.
+    //const [ params, setParams ] = useState(route.params);
+    console.log(route.params);
+    const params = useRef(route.params);
+    const isFocused = useIsFocused();
 
+    console.log(params);
+
+
+    /*
+    const [ testList, setTestList ] = useState([{
+        startArea: "인동",
+        endArea: "경운대학교",
+        ticketPrice: "무료",
+        startDtime: "8월 24일, 오전 8시 30분",
+        recruitPerson: 1,
+    }, {
+        startArea: "옥계",
+        endArea: "경운대학교",
+        ticketPrice: "유료",
+        startDtime: "8월 25일, 오전 8시 30분",
+        recruitPerson: 1,
+    }, {
+        startArea: "경운대학교",
+        endArea: "옥계",
+        ticketPrice: "무료",
+        startDtime: "8월 26일, 오전 8시 30분",
+        recruitPerson: 2,
+    }]);
+    */
+   /* 카풀리스트 티켓 클릭 하면 티켓 정보 보여주는 코드
+    testList.map(item => (
+        <TouchableOpacity
+            onPress={() => navigation.navigate('TicketDetail', item)}
+            style={styles.carpool_list_ticket_display}>
+            <View style={styles.profile_image}></View>
+            <View style={styles.carpool_list_ticket_display_title}>
+                <View style={styles.carpool_list_ticket_content}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text>{item.startArea}</Text>
+                        <Text>{' / '}</Text>
+                        <Text style={{ color: '#007AFF', fontWeight: '600' }}>
+                            {item.ticketPrice}
+                        </Text>
+                    </View>
+                    <Text style={styles.carpool_list_ticket_time}>
+                        {item.startDtime}
+                    </Text>
+                </View>
+                <View style={styles.carpool_list_passenger_chip}>
+                    <Text style={styles.carpool_list_passenger_chip_text}>{item.recruitPerson}/4</Text>
+                </View>
+            </View>
+        </TouchableOpacity>
+    ))
+   */
     useEffect(() => {
         /*
         // 1. 지역 설정 API
@@ -51,7 +107,7 @@ export default function Main({ navigation, route }) {
                 <View style={{ width: 120 }} />
                 <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("ProfileScreen", route.params)}
+                        onPress={() => navigation.navigate("ProfileScreen", params.current)}
                     >
                         <Ionicons name='md-person-circle-outline' size={30} color='#909090' />
                     </TouchableOpacity>                
@@ -73,7 +129,7 @@ export default function Main({ navigation, route }) {
                                 <View>
                                     <View style={{ paddingLeft: 20, paddingRight: 20 }}>
                                         <TouchableOpacity
-                                            onPress={() => navigation.navigate('LocalSettingFirst')}
+                                            onPress={() => navigation.navigate('LocalSettingFirst', params.current)}
                                             style={styles.local_setting}>
                                             <View style={styles.local_display}>
                                                 <MaterialCommunityIcons
@@ -82,7 +138,7 @@ export default function Main({ navigation, route }) {
                                                     color='#007AFF'
                                                 />
                                                 <Text style={styles.local_display_text}>지역설정</Text>
-                                                <Text style={styles.local_name}>테스트 지역</Text>
+                                                <Text style={styles.local_name}>{params.current.area ? params.current.area : "인동"}</Text>
                                                 <AntDesign name='right' size={24} color='#909090' />
                                             </View>
                                         </TouchableOpacity>
@@ -132,8 +188,9 @@ export default function Main({ navigation, route }) {
                             return(
                                 <ScrollView>
                                     <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                       
                                         <TouchableOpacity
-                                            onPress={() => navigation.navigate('LocalSettingFirst')}
+                                            onPress={() => navigation.navigate('LocalSettingFirst', params.current)}
                                             style={styles.local_setting}>
                                             <View style={styles.local_display}>
                                                 <MaterialCommunityIcons
@@ -142,7 +199,7 @@ export default function Main({ navigation, route }) {
                                                     color='#007AFF'
                                                 />
                                                 <Text style={styles.local_display_text}>지역설정</Text>
-                                                <Text style={styles.local_name}>테스트 지역</Text>
+                                                <Text style={styles.local_name}>{params.current.area ? params.current.area : "인동"}</Text>
                                                 <AntDesign name='right' size={24} color='#909090' />
                                             </View>
                                         </TouchableOpacity>
@@ -150,7 +207,7 @@ export default function Main({ navigation, route }) {
                                             style={styles.carpool_section}
                                             onPress={() =>
                                                 navigation.navigate('TicketScreen', {
-                                                    firstLocal: '인동',
+                                                    firstLocal: params.current.area,
                                                     secondLocal: '경운대학교'
                                                 })
                                             }>

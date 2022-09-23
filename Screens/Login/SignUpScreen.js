@@ -13,7 +13,6 @@ import axios from "axios";
 
 export default function SignUpScreen({navigation, route}) {
     
-    console.log("회원가입 : ", route.params);
     // 이름, 학번, 학과 state
     const [ name, setName ] = useState("");
     const [ studentId, setStudentId ] = useState("");
@@ -83,7 +82,6 @@ export default function SignUpScreen({navigation, route}) {
     
         if (!result.cancelled) {
           setImage(result.uri);
-          user.profileImageURI = result.uri;
           profileImgUriRef.current = result.uri;
           setUserData(prev => (
             {...prev, ["profileImage"]: result.uri}
@@ -121,7 +119,7 @@ export default function SignUpScreen({navigation, route}) {
     const onChangeTextStudentId = (text) => {
         setStudentId(text);
         setUserData(prev => (
-            {...prev, ["studentNumber"]: text}
+            {...prev, ["studentNumber"]: text, ["area"] : "인동"}
         ));
         
     }
@@ -148,6 +146,7 @@ export default function SignUpScreen({navigation, route}) {
                 text: '확인',
                 onPress: () => {
                     setNextButton(true);
+                    
                 },
                 style: 'defalut'
             }
@@ -220,7 +219,8 @@ export default function SignUpScreen({navigation, route}) {
                                                     
                                                     if (studentId.length >= 9 && department.length > 0 && name.length >= 2 ) {
                                                         completeAlert(); 
-                                                        userData.member = true;                                                             
+                                                        userData.member = true; 
+                                                        userData.auth = "PESINGER";                                                            
                                                         console.log("확인 : ", userData);                                                          
                                                     } else {
                                                         
@@ -271,14 +271,26 @@ export default function SignUpScreen({navigation, route}) {
                                                             return (
                                                                 <TouchableOpacity
                                                                     onPress={() => {
-                                                                        setSelectDriverPesinger(([...prev]) => {
+                                                                        setSelectDriverPesinger(([...prev]) => {                                                                        
                                                                             const id = prev.indexOf(selectData)
                                                                             
                                                                             prev.splice(id, 1);
-                                                                            prev.push(selectData);                                                                                                                                                           
-                                                                            setUserData(data => (
-                                                                                {...data, ["auth"]: prev[0]}
-                                                                            ));                                                
+                                                                            prev.push(selectData);  
+                                                                            console.log(prev);                                                                                                                                                         
+                                                                            setUserData(data => {                 
+                                                                                                                                              
+                                                                                if (prev[0] === "드라이버") {
+                                                                                    prev[0] = "드라이버";
+                                                                                    return (
+                                                                                        {...data, ["auth"]: "DRIVER"}        
+                                                                                    )
+                                                                                } else {
+                                                                                    prev[0] = "패신저";
+                                                                                    return (
+                                                                                        {...data, ["auth"]: "PESINGER"}
+                                                                                    )
+                                                                                }
+                                                                            });                                                
                                                                             return prev;
                                                                         });
                                                                     }} 

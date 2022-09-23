@@ -12,12 +12,15 @@ export default function LocalSettingFirst({ navigation, route }) {
 
     // 드롭메뉴 State
     const [selected, setSelected] = useState('');
-    const localData = ['경운대학교', '인동', '옥계'];
-    console.log("회원가입 : ", route.params);
+    const localData = ['인동', '옥계', '대구'];
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.navigate('Main')}>
+                <TouchableOpacity onPress={() => {                                        
+                        navigation.navigate('Main');
+                    }
+                }>
                     <AntDesign name='left' size={25} color='black' />
                 </TouchableOpacity>
             </View>
@@ -29,7 +32,10 @@ export default function LocalSettingFirst({ navigation, route }) {
                     <SelectList
                         setSelected={setSelected}
                         data={localData}
-                        onSelect={() => alert(selected)}
+                        onSelect={() => { 
+                            alert(selected);
+                            route.params.area = selected;
+                        }}
                         placeholder='지역'
                         search={false}
                     />
@@ -39,7 +45,13 @@ export default function LocalSettingFirst({ navigation, route }) {
             <View style={styles.footer}>
                 <TouchableOpacity
                     onPress={() => { 
-                        navigation.navigate('Main')
+                        console.log(route.params.area);
+                                                
+                        if (selected === '') {
+                            alert("지역 설정 안했습니다.")    
+                        } else {
+                            navigation.goBack('Main', route.params)
+                        }                        
                         
                         // await axios.put('http://3.37.159.244:8080/area', {
                         //     area: selected,

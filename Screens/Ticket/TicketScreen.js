@@ -32,7 +32,7 @@ export default function TicketScreen({navigation, route}) {
     const [ selectToggle, setSelectToggle ] = useState(["무료"]);
     const selectToggleList = ["무료", "유료"];
 
-    const localData = ["인동", "경운대학교"];
+    const localData = [route.params.firstLocal, "경운대학교"];
 
     // 입력창 state
     const [ pensingerCount, setPesingerCount ] = useState("");
@@ -41,7 +41,18 @@ export default function TicketScreen({navigation, route}) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
-    const showDatePicker = () => {
+    // 날짜, 시간 문자열로 변환해서 state 관리하고자 한다.
+    const [ strDate, setStrDate ] = useState('');
+    const [ strTime, setStrTime ] = useState('');
+
+    // 오픈채팅 state
+    const [ openChatText, setOpenChatText ] = useState('');
+
+    // 인원수 
+    const recruitCount = ["1 인", "2 인", "3 인"];
+    const [ selectRecruitCount, setSelectRecruitCount ] = useState('');
+
+    const showDatePicker = () => { 
         setDatePickerVisibility(true);
     };
 
@@ -50,10 +61,10 @@ export default function TicketScreen({navigation, route}) {
     };
 
     const handleConfirm = (date) => {
-        //alert(`A date has been picked: ${date}`);
-        //console.log(date);
+        const str = `${date.getMonth()+1}월 ${date.getDate()}일`;
+        setStrDate(str);
+        console.log("날짜 : ", str);
         hideDatePicker();
-        //setConformDate(date);
     };
 
     const showTimePicker = () => {
@@ -66,6 +77,10 @@ export default function TicketScreen({navigation, route}) {
 
     const handleTimeConfirm = (time) => {
         //alert(`A time has been picked: ${time}`);
+        const str = `${time.getHours()}시 ${time.getMinutes()}분`
+        console.log('시간 : ', str);
+        setStrTime(str);
+        //console.log(strTime);
         hideTimePicker();
         //setConformDate(date);
     };
@@ -74,13 +89,16 @@ export default function TicketScreen({navigation, route}) {
     const onStepBarBtn = () => {
         
         setNext(([...prev]) => {
-            if (prev.length === 1) {
+            if (prev.length === 1 && startPoint !== "") {
                 prev.push(stepbarList[1]);
-            } else if(prev.length === 2) {
+                return prev;
+            } else if(prev.length === 2 && strDate !== "" && strTime !== "") {
                 prev.push(stepbarList[2]);
-          
+                return prev;
+            } else {
+                alert("입력안한 항목이 있습니다.")
+                return prev;
             }
-            return prev;
         })
         
     }
@@ -220,7 +238,7 @@ export default function TicketScreen({navigation, route}) {
                                                                     
                                                                     setEndPoint(localData[localData.indexOf(startPoint)+1]);
                                                                 } else {
-                                                                    console.log("d");
+                                                                    
                                                                     setEndPoint(localData[0]);
                                                                     
                                                                 }
@@ -271,7 +289,7 @@ export default function TicketScreen({navigation, route}) {
                                                     style={{marginLeft: 15}}
                                                     onPress={showDatePicker}
                                                 >                                                    
-                                                    <Text style={[styles.form_label_text, {fontSize: deviceHeight >= 700 ? 18 : 14, fontFamily: 'NotoSansKR_400Regular'}]}>날짜</Text>                                                                                                                                                   
+                                                    <Text style={[styles.form_label_text, {fontSize: deviceHeight >= 700 ? 18 : 14, fontFamily: 'NotoSansKR_400Regular'}]}>{strDate ? strDate : '날짜'}</Text>                                                                                                                                                   
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={[styles.form_container, {marginTop: 20}]}>           
@@ -280,7 +298,7 @@ export default function TicketScreen({navigation, route}) {
                                                     style={{marginLeft: 10}}
                                                     onPress={showTimePicker}
                                                 >
-                                                    <Text style={[styles.form_label_text, {fontSize: deviceHeight >= 700 ? 18 : 14 ,fontFamily: 'NotoSansKR_400Regular'}]}>시간</Text>                                                                                          
+                                                    <Text style={[styles.form_label_text, {fontSize: deviceHeight >= 700 ? 18 : 14 ,fontFamily: 'NotoSansKR_400Regular'}]}>{strTime ? strTime : '시간'}</Text>                                                                                          
                                                 </TouchableOpacity>             
                                             </View>
                                             <View style={{ paddingTop: 25, paddingLeft: 15, paddingRight: 15}}>
@@ -324,11 +342,29 @@ export default function TicketScreen({navigation, route}) {
                                         <>
                                             <View style={styles.form_container}>                        
                                                 <Ionicons name="md-chatbubble-outline" size={deviceHeight >= 700 ? 32 : 28} color="#007AFF" />
-                                                <TextInput placeholder="오픈 채팅방 링크" placeholderTextColor="#989595" style={{marginLeft: 10, fontFamily: 'NotoSansKR_400Regular'}}/>                                                                                        
+                                                <TextInput 
+                                                    placeholder="오픈 채팅방 링크"
+                                                    placeholderTextColor="#989595"
+                                                    onChange={(e) => {
+                                                        setOpenChatText(e.nativeEvent.text);
+                                                    }}
+                                                    style={{marginLeft: 10, fontFamily: 'NotoSansKR_400Regular'}}
+                                                />                                                                                        
                                             </View>
-                                            <View style={[styles.form_container, {marginTop: 20}]}>                             
-                                                <Image source={require("../../assets/person_icon.png")} style={{width: deviceHeight >= 700 ? 32 : 28, height: deviceHeight >= 700 ? 32 : 28}}/>
-                                                <TextInput value={pensingerCount} onChangeText={(text)=> setPesingerCount(text)}onEndEditing={(text) => setPesingerCount( prev => prev +"인")} placeholder="인원 수" placeholderTextColor="#989595" style={{marginLeft: 10, fontFamily: 'NotoSansKR_400Regular'}} />                                                                      
+                                            <View style={[styles.form_container, {marginTop: 20, alignItems: 'flex-start'}]}>
+                                                <View>
+                                                    <Image source={require("../../assets/person_icon.png")} style={{width: deviceHeight >= 700 ? 32 : 28, height: deviceHeight >= 700 ? 32 : 28}}/>
+                                                </View>
+                                                <View style={{marginLeft: 15,}}>
+                                                    <SelectList 
+                                                        setSelected={setSelectRecruitCount}
+                                                        data={recruitCount}   
+                                                        onSelect={() => console.log(selectRecruitCount)}                                                     
+                                                        placeholder="인원 수"
+                                                        search={false}
+                                                        
+                                                    />                              
+                                                </View>
                                             </View>
                                             <View style={styles.message_container}>
                                                 <Text style={styles.message_container_text}>차량번호 사진, 계좌번호를 안내해주세요</Text>
@@ -357,7 +393,13 @@ export default function TicketScreen({navigation, route}) {
                                     } else {
                                         return (
                                             <TouchableOpacity 
-                                                onPress={() => navigation.navigate("Main") }
+                                                onPress={() => {
+                                                    if (openChatText !== "" && selectRecruitCount !== "") {
+                                                        navigation.navigate("BordingList") 
+                                                    } else {
+                                                        alert("입력 안한 항목이 있습니다.")
+                                                    }
+                                                }}
                                                 style={styles.button_container_next_button}
                                             >
                                                 <Text style={{color: '#FFFFFF', fontSize: deviceHeight >= 700 ? 18 : 16, fontFamily: 'NotoSansKR_700Bold'}}>개설하기</Text>

@@ -18,7 +18,7 @@ export default function ProfileScreen({navigation, route}) {
     //const [ profileData, setProfleData ] = useState({});
 
     // 등교 데이터 state
-    const [ goingSchoolDays, setGoingSchoolDays ] = useState([]);
+    const [ goingSchoolDays, setGoingSchoolDays ] = useState(["월", "화", "수"]);
     const days = ["월", "화", "수", "목", "금"];
     /*
     useEffect(async () => {
@@ -87,24 +87,12 @@ export default function ProfileScreen({navigation, route}) {
                                 const isSelected = goingSchoolDays.includes(day);
                                 console.log(isSelected);
                                 return (                    
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            setGoingSchoolDays(([...prev]) => {
-                                                const id = prev.indexOf(day);
-                                                //console.log(id); // 날짜 있으면 id 값이 0, 없으면 -1(등교일 추가).
-                                                if (id > -1) {
-                                                    prev.splice(id, 1);
-                                                } else {
-                                                    prev.push(day);                                                                                                                                        
-                                                }
-                                                return prev;                                        
-                                            });
-                                        }}
+                                    <View
                                         style={{ backgroundColor: isSelected ? "#007AFF" : "#FFFFFF", width: 35, height: 35, justifyContent: 'center', alignItems: 'center', borderColor: isSelected ? '' : '#D9D9D9', borderRadius: 50, borderWidth: isSelected ? 0 : 1}}                                                        
                                     >
                                         
                                         <Text style={{color: isSelected ? "#FFFFFF" : "#D9D9D9", }}>{day}</Text>                                    
-                                    </TouchableOpacity>                                    
+                                    </View>                                    
                                 )
                             })
                         }
@@ -115,7 +103,7 @@ export default function ProfileScreen({navigation, route}) {
                         <Text style={{fontWeight: 'bold', fontSize: 17, marginLeft: 30}}>최근 탑승 목록</Text>
                     </View>
                     <View style={{paddingLeft:30, paddingRight: 30}}>
-                        <TouchableOpacity style={styles.carpool_list_ticket_display}>
+                        <View style={styles.carpool_list_ticket_display}>
                             <Ionicons name="person-circle-sharp" size={35} color="#d9d9d9" />                                                                                                                        
                             <View>
                                 <View style={styles.carpool_list_ticket_display_title}>
@@ -128,8 +116,8 @@ export default function ProfileScreen({navigation, route}) {
                             <View style={{width: 40, height: 25, borderRadius: 10, backgroundColor: '#D9D9D9', justifyContent: 'center', alignItems: 'center'}}>
                                 <Text style={{color: '#FFFFFF'}}>4/4</Text>
                             </View>                        
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.carpool_list_ticket_display}>
+                        </View>
+                        <View style={styles.carpool_list_ticket_display}>
                             <Ionicons name="person-circle-sharp" size={35} color="#d9d9d9" />      
                             <View>
                                 <View style={styles.carpool_list_ticket_display_title}>
@@ -142,8 +130,8 @@ export default function ProfileScreen({navigation, route}) {
                             <View style={{width: 40, height: 25, borderRadius: 10, backgroundColor: '#D9D9D9', justifyContent: 'center', alignItems: 'center'}}>
                                 <Text style={{color: '#FFFFFF'}}>1/4</Text>
                             </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.carpool_list_ticket_display}>
+                        </View>
+                        <View style={styles.carpool_list_ticket_display}>
                             <Ionicons name="person-circle-sharp" size={35} color="#d9d9d9" />      
                             <View>
                                 <View style={styles.carpool_list_ticket_display_title}>
@@ -156,7 +144,7 @@ export default function ProfileScreen({navigation, route}) {
                             <View style={{width: 40, height: 25, borderRadius: 10, backgroundColor: '#D9D9D9', justifyContent: 'center', alignItems: 'center',}}>
                                 <Text style={{color: '#FFFFFF'}}>3/4</Text>
                             </View>
-                        </TouchableOpacity>
+                        </View>
                     </View>
                     
                 </View>

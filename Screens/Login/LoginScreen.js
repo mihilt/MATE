@@ -33,11 +33,13 @@ import axios from 'axios';
         const res = await axios.get(route.params.url.replace("LoginTo", "Login"));
         console.log("백엔드로 부터 사용자 데이터 응답 : ", res.data);
         if (res.data.member === false) {
+          if (res.data.auth === null) {
+            res.data.auth = "d";
+          }
           navigation.navigate("SignUpScreen", res.data);
         } else {
           navigation.navigate("Main", res.data);
-        }
-        
+        }        
       }
     /*
       if (true) {
@@ -142,8 +144,7 @@ import axios from 'axios';
               onPress={() => navigation.navigate("KakaoWebView")}               
             >
               <Text style={styles.text}>카카오 로그인</Text>
-            </TouchableOpacity>
-            
+            </TouchableOpacity>            
           </View>
         </View>
       </TouchableWithoutFeedback>

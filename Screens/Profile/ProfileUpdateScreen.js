@@ -137,15 +137,14 @@ export default function ProfileUpdateScreen({navigation}) {
 
     console.log(userData);
     return (
-        <KeyboardAvoidingView 
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        <View         
             style={{flex: 1, backgroundColor: "#F5F5F5"}}
         >
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
                         <TouchableOpacity 
-                            onPress={() => navigation.navigate("StudendNumberLoginScreen")}
+                            onPress={() => navigation.navigate("ProfileScreen")}
                             style={{width: 35, height: 35, justifyContent: 'center'}}
                         >                        
                             <AntDesign name="left" size={25} color="black" />                        
@@ -296,7 +295,7 @@ export default function ProfileUpdateScreen({navigation}) {
                     </View>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 
