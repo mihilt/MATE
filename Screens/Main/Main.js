@@ -16,13 +16,13 @@ export default function Main({ navigation, route }) {
     // state
     const [ areaData, setAreaData ] = useState();
     const [ carpoolList, setCarpoolList ] = useState();
+    const [ memberData, setMemberData ] = useState();
+
     // route params 상태 유지.
     //const [ params, setParams ] = useState(route.params);
     console.log(route.params);
     const params = useRef(route.params);
     const isFocused = useIsFocused();
-
-    console.log(params);
 
 
     /*
@@ -72,8 +72,27 @@ export default function Main({ navigation, route }) {
         </TouchableOpacity>
     ))
    */
-    useEffect(() => {
+    useEffect(async () => {
+        
+        const auth = { 
+            "Authorization": `Bearer ${params.current.token}`
+        };
+        
+        console.log("Authorization console : ", auth);
+
+        const res = await axios.get(`http://www.godseun.com/member`, {
+            headers: { 
+                "Authorization": `Bearer ${params.current.token}`,
+            },                                                    
+        }).then(res => {
+            console.log("main promise res : ", res);
+            setMemberData(res);
+        })
+        .catch((e) => console.warn(e));
+
+
         /*
+        
         // 1. 지역 설정 API
         // 지역설정 api 호출 부분 area: "인동"(default 값)
         // 지역을 설정 했으면 그 지역으로 할당 되야 한다. 다시 로그인 하면 설정한 지역으로 받아야함. 사용자(멤버)테이블에 지역설정 멤버가 있어야 될것 같다.

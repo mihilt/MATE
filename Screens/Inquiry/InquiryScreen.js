@@ -37,6 +37,8 @@ export default function InquiryScreen({navigation}) {
     const { width } = useWindowDimensions();
     console.log( "window : ", width)
     
+    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaXNzIjoiY2FycG9vbCBhcHAiLCJpYXQiOjE2NjQwMDc1MjIsImV4cCI6MTY2NDA5MzkyMn0.WG6xx-sqh9ljJKoPyDioJldK4LjwOnWsjkewcvB998aas1l3_7JWelnuHGPvgny6vLK1GFO8TNh4AdIcsizbhA'
+
     // 폰트 설정
     let [ fontLoaded ] = useFonts({
         NotoSansKR_500Medium,
@@ -192,15 +194,19 @@ export default function InquiryScreen({navigation}) {
                                 </View>
                             ) : (
                                 <TouchableOpacity 
-                                    onPress={async () => {
+                                    onPress={() => {
                                         if (title.length > 0 && etcContent.length > 0 && email.length > 0) {
-                                            const res = await axios.post('http://3.37.159.244:8080/QuestionBoard/new', {
+                                            axios.post('http://3.37.159.244:8080/QuestionBoard/new',                                            
+                                            {
                                                 "writerStudentId": "201702003",
-                                                "writerEmail": email,
+                                                //"writerEmail": email, 협의 필요~
                                                 "title": title,
                                                 "content": etcContent,                                        
-                                            });
-                                            console.log("문의 제출 응답 : ", res.data);
+                                            }, {
+                                                headers: {"Authorization" : `Bearer ${token}`},
+                                            }).then((res) => {                                    
+                                                console.log("문의 제출 응답 : ", res.data);
+                                            })
                                         }
                                     }}
                                     style={styles.button_container_next_button}                       

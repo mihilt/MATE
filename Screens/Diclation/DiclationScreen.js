@@ -103,6 +103,7 @@ export default function DiclationScreen({ navigation }) {
                                         "reportStudentId": "201602005",
                                         "content": etcContent,
                                     })
+                                    console.log(res);
                                     alert('신고 접수 했습니다.');
                                 }
                                 

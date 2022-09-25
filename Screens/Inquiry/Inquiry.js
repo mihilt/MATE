@@ -5,12 +5,18 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Inquiry({ navigation }) {
     const [ inquiryData, setInquiryData ] = useState();
+    const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaXNzIjoiY2FycG9vbCBhcHAiLCJpYXQiOjE2NjQwMDc1MjIsImV4cCI6MTY2NDA5MzkyMn0.WG6xx-sqh9ljJKoPyDioJldK4LjwOnWsjkewcvB998aas1l3_7JWelnuHGPvgny6vLK1GFO8TNh4AdIcsizbhA'
+    
+    
+    useEffect(() => {
+        axios.get('http://3.37.159.244:8080/QuestionBoard' , { headers: {"Authorization" : `Bearer ${token}`} })
+            .then((res) => {
+                console.log("문의 데이터 : ", res);
+            })
+            .catch((error) => console.warn(error));
 
-    useEffect(async () => {
-        const res = await axios.get('http://3.37.159.244:8080/QuestionBoard',{
-            "writerEmail" : "zonins3@gmail.com"    
-        });
-        console.log("res : ", res);
+        //const res = await axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    
         //console.log("문의 데이터 res2: ", res2);
         //setInquiryData(res1);    
     }, []);

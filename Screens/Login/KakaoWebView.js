@@ -39,7 +39,7 @@ export default function KakaoWebView({navigation}) {
         originWhitelist={['*']}
         scalesPageToFit={false}
         javaScriptEnabled={true}
-        source={{uri : 'https://kauth.kakao.com/oauth/authorize?client_id=235fc02960c0239e43b70d9e3fd2c9e6&redirect_uri=http://3.37.159.244:8080/kakaoLoginTo&response_type=code'}}        
+        source={{uri : 'https://kauth.kakao.com/oauth/authorize?client_id=8763097c83420044eeea901b962072ab&redirect_uri=http://www.godseun.com/kakaoLoginTo&response_type=code'}}        
         onHttpError={(e) => console.log("onHttpError : ", e)}
       />              
     </View>
